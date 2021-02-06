@@ -4,7 +4,5 @@ package 'EnergySupply' {
 	part def Battery {
 	  port energyIn : EnergyInPort;
 	  port energyOut : EnergyOutPort;
-	  
-	  attribute capacity : ScalarValues::Real;
 	}
 }
