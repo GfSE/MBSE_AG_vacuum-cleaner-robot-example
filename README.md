@@ -1,0 +1,1 @@
+- Komponentendiagramm (i.W.S.) von T.I.: https://www.ti.com/solution/cordless-vacuum-cleaner
