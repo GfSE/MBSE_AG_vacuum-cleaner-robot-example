@@ -1,1 +1,2 @@
 - Komponentendiagramm (i.W.S.) von T.I.: https://www.ti.com/solution/cordless-vacuum-cleaner
+- Paper Development of a vacuum cleaner robot https://www.sciencedirect.com/science/article/pii/S1110016818300899
