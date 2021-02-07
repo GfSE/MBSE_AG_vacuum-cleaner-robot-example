@@ -3,6 +3,12 @@ package 'EnergySupplyTypes' {
 	import ScalarValues::*;
 
   item def ElectricalEnergy;
+  
+  enum def COLOR {
+    RED;
+    YELLOW;
+    GREEN;
+  }
 
 	/**
 	 * Ports 
@@ -15,12 +21,12 @@ package 'EnergySupplyTypes' {
     in item energyOut : ElectricalEnergy;
   }
   
-  port def RelativeBatteryLevelInPort {
+  port def RelativeBatteryLevelPort {
     attribute voltageInPercent : ScalarValues::Real; 
   }
   
-  port def RelativeBatteryLevelOutPort {
-    attribute voltageInPercent : ScalarValues::Real; 
+  port def BatteryLevelColorPort {
+    attribute color : COLOR;
   }
 
  /**
@@ -35,6 +41,11 @@ package 'EnergySupplyTypes' {
   connection def EnergyToEnergy {
     end : ElectricalEnergy;
     end : ElectricalEnergy;
+  }
+  
+  connection def ColorToColor {
+    end : COLOR;
+    end : COLOR;
   }
 
 }

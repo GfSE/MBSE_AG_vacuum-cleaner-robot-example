@@ -3,6 +3,6 @@ package 'BLI' {
 
 	part def LED {
     // data flows
-    port batteryLevel : RelativeBatteryLevelInPort; 
+    port batteryLevelColor : BatteryLevelColorInPort; 
 	}
 }

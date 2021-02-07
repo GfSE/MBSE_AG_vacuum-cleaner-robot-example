@@ -6,6 +6,6 @@ package 'EnergySupply' {
     port energyIn : EnergyInPort;
     port energyOut : EnergyOutPort;
     // data flows
-    port batteryLevel : RelativeBatteryLevelInPort;
+    port batteryLevel : RelativeBatteryLevelPort;
   }
 }
