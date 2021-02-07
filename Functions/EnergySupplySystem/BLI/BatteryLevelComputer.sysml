@@ -10,7 +10,9 @@ package 'BLI' {
     
     attribute capacity : ScalarValues::Real = 1000;
     
-
+    /** Wie kommt die Action nun an die Port-Werte? */
+    
+    action computeThings : ComputeThings
     
 	}
 	
