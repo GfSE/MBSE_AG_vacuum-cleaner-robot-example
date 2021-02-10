@@ -2,6 +2,8 @@ package 'EnergySupplyTypes' {
 
 	import ScalarValues::*;
 
+  // units?
+
   item def ElectricalEnergy;
   
   enum def COLOR {
@@ -14,15 +16,16 @@ package 'EnergySupplyTypes' {
 	 * Ports 
 	 */
 	port def EnergyInPort {
-	  in item e : ElectricalEnergy;
+	  in item e : ElectricalEnergy; // units
 	}
 	
 	port def EnergyOutPort {   
-    in item energyOut : ElectricalEnergy;
+    out item energyOut : ElectricalEnergy; // ~
   }
   
   port def RelativeBatteryLevelPort {
-    attribute voltageInPercent : ScalarValues::Real; 
+    attribute voltageInPercent : ScalarValues::Real;
+    // in ??? wert : Real; 
   }
   
   port def BatteryLevelColorPort {

@@ -6,7 +6,6 @@ package 'BLI' {
     port energyIn : EnergyInPort;
     // data flows
     port batteryLevel : RelativeBatteryLevelPort;
-    port batteryLevelColor : BatteryLevelColorPort;
     
     part blc : BatteryLevelComputer;
     part led : LED;
@@ -15,6 +14,8 @@ package 'BLI' {
     
     connection : WhySoComplicated connect blc::batteryLevel to batteryLevel;
     
-    connection : WhySoComplicated connect blc::batteryLevel to led::batteryLevel; 
+    connection : WhySoComplicated connect blc::batteryLevel to led::batteryLevel;
+    
+    // E -> LED.E 
 	}
 }

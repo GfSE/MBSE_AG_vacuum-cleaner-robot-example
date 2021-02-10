@@ -8,7 +8,8 @@ package 'EnergySupply' {
 
   alias BatteryLevelIndicator as Indicator;
 
-  part def EnergySupplySystem specializes ElectricalComponent {
+  // woher wissen wir was die 'oberste' Systemkomponente ist?
+  part def EnergySupplySystem {
   	part c : Charger;
   	part b : Battery;
   	part i : Indicator;
@@ -18,18 +19,18 @@ package 'EnergySupply' {
   	port batteryLevel : BatteryLevelOutPort;
   	
   	// energy from the environment to charger
-  	connect EnergyToEnergy : connect energyIn to c::energyIn;
+  	connect EnergyToEnergy : energyIn to c::energyIn;
   	
   	// energy from charger to battery
-  	connect EnergyToEnergy : connect c::energyOut to b::energyIn;
+  	connect EnergyToEnergy : c::energyOut to b::energyIn;
   	
   	// energy from battery to battery level indicator
-    connect EnergyToEnergy : connect b::energyOut to i::energyIn;
+    connect EnergyToEnergy : b::energyOut to i::energyIn;
     
     // energy from battery to envirnonemnt
-    connect EnergyToEnergy : connect b::energyOut to energyOut;
+    connect EnergyToEnergy : b::energyOut to energyOut;
     
     // battery level from indicator to environment
-    connect WhySoComplicated : connect i::batteryLevel to batteryLevel;
+    connect WhySoComplicated : i::batteryLevel to batteryLevel;
   	}
 }

@@ -16,6 +16,8 @@ package 'BLI' {
     
 	}
 	
+	// statechart
+	
 	/* vv Das hier wirkt recht kompliziert vv */
 	
 	action def ComputeThings(in  energy   : ScalarValues::Real, 
@@ -64,4 +66,6 @@ package 'BLI' {
 	                                    out color : EnergySupplyTypes::COLOR) {
 	  
 	}
+	
+	//  calc für ComputeBatteryLevelColor fehlt
 }

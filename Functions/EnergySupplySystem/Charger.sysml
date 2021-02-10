@@ -7,5 +7,7 @@ package 'EnergySupply' {
     port energyOut : EnergyOutPort;
     // data flows
     port batteryLevel : RelativeBatteryLevelPort;
+    
+    // aus staubsauger ausbauen?
   }
 }
