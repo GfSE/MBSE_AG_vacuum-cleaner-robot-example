@@ -2,8 +2,11 @@ package 'EnergySupplyTypes' {
 
 	import ScalarValues::*;
 
-  // units?
+  // TODO:
+  // Wollen wir SI-Einheiten verwenden?
 
+  /// DATA TYPES ///////////////////////////////////////////////////////////////
+  
   item def ElectricalEnergy;
   
   enum def COLOR {
@@ -12,16 +15,11 @@ package 'EnergySupplyTypes' {
     GREEN;
   }
 
-	/**
-	 * Ports 
-	 */
-	port def EnergyInPort {
-	  in item e : ElectricalEnergy; // units
-	}
+	/// PORTS ////////////////////////////////////////////////////////////////////
 	
-	port def EnergyOutPort {   
-    out item energyOut : ElectricalEnergy; // ~
-  }
+	port def EnergyInOutPort {
+	  inout item e : ElectricalEnergy; // units
+	}
   
   port def RelativeBatteryLevelPort {
     attribute voltageInPercent : ScalarValues::Real;
@@ -32,9 +30,7 @@ package 'EnergySupplyTypes' {
     attribute color : COLOR;
   }
 
- /**
-  * Connections
-  */
+ /// CONNECTIONS ///////////////////////////////////////////////////////////////
   
   connection def WhySoComplicated {
     end : ScalarValues::Real;

@@ -3,69 +3,87 @@ package 'BLI' {
 
 	part def BatteryLevelComputer {
 	   // physical flows
-    port energyIn : EnergyInPort;
+    port energyIn : EnergyInOutPort;
     // data flows
     port batteryLevel : BatteryLevelColorPort;
     port batteryLevelColor : BatteryLevelColorPort;
     
     attribute capacity : ScalarValues::Real = 1000;
     
-    /** Wie kommt die Action nun an die Port-Werte? */
-    
-    action computeThings : ComputeThings
+    // TODO: 
+    //  Zuweisung besitmmt falsch weil hier Attributen Ports zugewiesen werden
+    exhibit BatteryLevelComputerStates {
+      in ref  en = energyIn;
+      in ref  cn = capactiy; // 'this' wäre praktisch
+      out ref batteryLevel = bl;
+      out ref batteryLevelColor = co;
+      
+    }
     
 	}
 	
-	// statechart
+	/// STATES ///////////////////////////////////////////////////////////////////
 	
-	/* vv Das hier wirkt recht kompliziert vv */
-	
-	action def ComputeThings(in  energy   : ScalarValues::Real, 
-                           in  capacity : ScalarValues::Real,
-                           out batLev   : ScalarValues::Real,
-                           out color : EnergySupplyTypes::COLOR) {
-    
-    bind compBatLev::energy = energy;
-    bind compBatLev::capacity = capacity;
-    bind compBatLev::batLev = batLev;
-    
-    /* Muss man die Parameter hier wirklich wiederholen?  
-     */
-    action compBatLev : ComputeBatteryLevel(in  energy   : ScalarValues::Real, 
-                                            in  capacity : ScalarValues::Real,
-                                            out batLev   : ScalarValues::Rea);
-                                            
-    bind compBatLev:batLev to compBatLevCol:batLev; 
-                                            
+	// Statechart: Weil die Definition von Actions mit Calculations und deren
+	// Werteübergabe schlecht gelöst ist, gibt es nur eine Action und nur einen
+	// Zustang, d.h. im Kern: a [epsilon] / berechneAlles --> b
 
-    action compBatLevCol(in  batlev : ScalarValues::Real
-                         out color : EnergySupplyTypes::COLOR);
-
-    /* Ist der Port batteryLevelColor hier wirklich sichtbar? 
-     * Wie starkt schränkt das wieder Wiederverwendbarkeit von dieser
-     * Action Def ein?
-     * */
-    bind compBatLevCol::color to batteryLevelColor;  
-                             
-  }
-	
-	calc def BatteryLevelCalc(eng : Real, cap : Real) {
-    eng / cap
-  }
-	
-	action def ComputeBatteryLevel(in  energy   : ScalarValues::Real, 
-	                               in  capacity : ScalarValues::Real,
-	                               out batLev   : ScalarValues::Real) {
-    // action calls calculation
-    calc doesItNeedANameAnyway : BatteryLevelCalc(energy, capacity)
-        return batLev;
+	state def BatteryLevelComputerStates {
+	  entry: then a;
 	  
-	}
-
-	action def ComputeBatteryLevelColor(in  batlev : ScalarValues::Real
-	                                    out color : EnergySupplyTypes::COLOR) {
+	  state a {
+	    // TODO: ist die Syntax hier korrekt oder müssen die Typen wieder
+	    // mit anegeben werden?
+	    entry act : ActComputeBatteryInfo(en, ca, bl, co);
+	  }
+	  
+	  // TODO: 
+	  // Wie gelangen die Berechnungsergebnisse batteryLevel und color
+	  // nun in die ausgehenden Ports?
+	  
+	  // Transition von a zu sich selbst.
+	  accept true then a;
 	  
 	}
 	
-	//  calc für ComputeBatteryLevelColor fehlt
+  /// ACTIONS //////////////////////////////////////////////////////////////////
+	
+	action def ActComputeBatteryInfo(in  energy       : Real, 
+	                                 in  capacity     : Real,
+	                                 out batteryLevel : Real,
+	                                 out color        : COLOR) {
+	                                    
+    // Die Aktion delegiert nun an eine Berechnung
+    
+    // TODO: 
+    // Muss diese benannt sein?
+    calc doesItNeedANameAnyway : CalcBatteryLevel(energy, capacity)
+      return batteryLevel = ???; 
+        // TODO: Wie kommt man an das Ergebnis von doesItNeedANameAnyway ? 
+        
+    calc nameNeccessary : CalcBatteryLevelColor(batteryLevel)
+      return color = ???; 
+      
+      // TODO: 
+      Wie kommt man an das Ergebnis von nameNeccessary ?
+	}
+
+	/// CALCULATTIONS ////////////////////////////////////////////////////////////
+	
+	calc def CalcBatteryLevel(energy   : ScalarValues::Real, 
+	                           capacity : ScalarValues::Real) {
+   return energy / capacity
+  }
+  
+  calc def CalcBatteryLevelColor(batteryLevel   : ScalarValues::Real) {
+    atttribute resultingColor = COLOR::YELLOW;
+    // TODO: 
+    // Wie das wohl funktioniert?
+    // 
+    // if (batteryLevel < 0.2)
+    //  resultingColor = COLOR::RED;
+    // if (batteryLevel > 0.8)
+    //   resultingColor = COLOR::GREEN;
+    return resultingColor;
+  }
 }

@@ -3,7 +3,7 @@ package 'BLI' {
 
 	part def BatteryLevelIndicator {
 	  // physical flows
-    port energyIn : EnergyInPort;
+    port energyIn : EnergyInOutPort;
     // data flows
     port batteryLevel : RelativeBatteryLevelPort;
     

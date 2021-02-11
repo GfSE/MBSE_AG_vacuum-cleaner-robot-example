@@ -12,25 +12,25 @@ package 'EnergySupply' {
   part def EnergySupplySystem {
   	part c : Charger;
   	part b : Battery;
-  	part i : Indicator;
+  	part i : BatteryLevelIndicator;
   	
-    port energyIn : EnergyInPort;
-    port energyOut : EnergyOutPort;
+    port energyIn : EnergyInOutPort;
+    port energyOut : EnergyInOutPort;
   	port batteryLevel : BatteryLevelOutPort;
   	
   	// energy from the environment to charger
-  	connect EnergyToEnergy : energyIn to c::energyIn;
+  	connection EnergyToEnergy : connect energyIn to c::energyIn;
   	
   	// energy from charger to battery
-  	connect EnergyToEnergy : c::energyOut to b::energyIn;
+  	connection EnergyToEnergy : connect c::energyOut to b::energyIn;
   	
   	// energy from battery to battery level indicator
-    connect EnergyToEnergy : b::energyOut to i::energyIn;
+    connection EnergyToEnergy : connect b::energyOut to i::energyIn;
     
     // energy from battery to envirnonemnt
-    connect EnergyToEnergy : b::energyOut to energyOut;
+    connection EnergyToEnergy : connect b::energyOut to energyOut;
     
     // battery level from indicator to environment
-    connect WhySoComplicated : i::batteryLevel to batteryLevel;
+    connection WhySoComplicated : connect i::batteryLevel to batteryLevel;
   	}
 }
