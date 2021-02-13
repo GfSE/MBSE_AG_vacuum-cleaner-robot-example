@@ -23,7 +23,7 @@ package 'VacuumCleanerSystem' {
 		doc /* The vehicle run-time shall be equal or higher than 120 min. */
 		
 		//Welche Abwandlungen von SI-Einheiten sind alle als SI modellierbar? cm nicht, min anscheinend schon
-		require constraint { vacuumCleaner::mass >= 120@[SI::min] }
+		require constraint { vacuumCleaner::runTimeMax >= 120@[SI::min] }
 	}
 	
 	requirement vacuumSystemDimensionRequirement {
