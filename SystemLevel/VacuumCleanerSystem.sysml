@@ -1,8 +1,8 @@
-package VacuumCleanerSystem {
+package 'VacuumCleanerSystem' {
 	//Was ist für den Import noch erforderlich?
-	//import  DriveUnit::*;
+	import  DriveUnit::*;
 		
-	part def VacuumingCleanerSystem {
+	part def VacuumCleanerSystem {
 		attribute mass :> ISQ::mass;
 		attribute runTimeMax :> ISQ::time;
 		attribute height :> ISQ::length;
@@ -12,7 +12,7 @@ package VacuumCleanerSystem {
 	}
 	//Werte von https://kaeni.de/technische-daten-zum-xiaomi-mi-vacuum-robot/
 	requirement vacuumSystemMassRequirement {
-		subject vacuumCleaner : VacuumingCleanerSystem;
+		subject vacuumCleaner : VacuumCleanerSystem;
 		doc /* The vehicle mass shall be less than or equal to 5 kg. */
 		
 		require constraint { vacuumCleaner::mass <= 5@[SI::kg] }
