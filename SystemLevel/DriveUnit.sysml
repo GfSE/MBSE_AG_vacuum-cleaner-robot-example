@@ -139,9 +139,27 @@ package 'DriveUnit' { //Spaces lead to problems in %show
         }
         
         part def Lasertower {
-            
+            attribute distance : Real; // abstand in meter
+            attribute distanceAngle : Real; // vinkel der zum abstand gemessen wurden
+            attribute motor; // für das rotieren
+
+            port position;
+            port powerSupply;
         }
-        
+
+        part def Bumber {
+            attribute isContact : Real;
+
+            port contact;
+        }
+
+        part def Infrarotdiode {
+            attribute isPSU : Real;
+            attribute psuDistance : Real;
+
+            port psu;
+        }
+
         part def testInheritance :> dcMotor; // Dies ist eine echte Vererbung
         
         /* part Instanzierung 
@@ -161,6 +179,11 @@ package 'DriveUnit' { //Spaces lead to problems in %show
             part motor2 : dcMotor;
         }
         
+        part orientation : Lasertower;
+
+        part collision : Bumber;
+
+        part psuDetection : Infrarotdiode;
        
         //satisfy Beschleunigen by driveUnit; // Funktioniert noch nicht
         
