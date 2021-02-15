@@ -3,8 +3,9 @@ package 'EnergySupply' {
 
   part def Charger {
     // physical flows
-    port energyIn : EnergyInOutPort;
+    port energyIn  : EnergyInOutPort;
     port energyOut : EnergyInOutPort;
+    
     // data flows
     port batteryLevel : RelativeBatteryLevelPort;
     

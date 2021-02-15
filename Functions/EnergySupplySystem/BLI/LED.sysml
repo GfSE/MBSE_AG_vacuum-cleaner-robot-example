@@ -1,8 +1,13 @@
 package 'BLI' {
-  import EnergySupplyTypes::*;;
+  import EnergySupplyTypes::*;
 
-	part def LED {
+  part def LED {
+	  // physical flows
+    port energyIn          : EnergyInOutPort;
+    
     // data flows
     port batteryLevelColor : BatteryLevelColorInPort; 
 	}
+	
+	// TODO: Wie interagiert dieses Modell mit Code? 
 }

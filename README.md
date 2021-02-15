@@ -1,3 +1,6 @@
+# Dokumentation zur SysML v2
+- Unter https://github.com/Systems-Modeling/SysML-v2-Release/tree/master/doc
+
 # Generelle Informationen
 - Komponentendiagramm (i.W.S.) von T.I.: https://www.ti.com/solution/cordless-vacuum-cleaner
 - Paper Development of a vacuum cleaner robot https://www.sciencedirect.com/science/article/pii/S1110016818300899
