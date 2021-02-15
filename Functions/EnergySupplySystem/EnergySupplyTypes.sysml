@@ -23,6 +23,7 @@ package 'EnergySupplyTypes' {
   
   port def RelativeBatteryLevelPort {
     attribute voltageInPercent : ScalarValues::Real;
+    // TODO: Muss es hier ein flow feature geben
     // in ??? wert : Real; 
   }
   

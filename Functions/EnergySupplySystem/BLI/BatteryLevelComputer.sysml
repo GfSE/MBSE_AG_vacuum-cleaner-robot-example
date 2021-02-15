@@ -2,22 +2,22 @@ package 'BLI' {
 	import EnergySupplyTypes::*;
 
 	part def BatteryLevelComputer {
-	   // physical flows
-    port energyIn : EnergyInOutPort;
+	
+    // physical flows
+    port energyIn          : EnergyInOutPort;
+  
     // data flows
-    port batteryLevel : BatteryLevelColorPort;
+    port batteryLevel      : RelativeBatteryLevelPort;
     port batteryLevelColor : BatteryLevelColorPort;
+  
+    // attributes  
+    attribute capacity     : ScalarValues::Real = 1000;
     
-    attribute capacity : ScalarValues::Real = 1000;
-    
-    // TODO: 
-    //  Zuweisung besitmmt falsch weil hier Attributen Ports zugewiesen werden
     exhibit BatteryLevelComputerStates {
-      in ref  en = energyIn;
-      in ref  cn = capactiy; // 'this' wäre praktisch
-      out ref batteryLevel = bl;
-      out ref batteryLevelColor = co;
-      
+      in  ref en                             = energyIn::e;
+      in  ref cn                             = capactiy; // 'this' wäre praktisch
+      out ref batteryLevel::voltageInPercent = bl;
+      out ref batteryLevelColor::color       = co;
     }
     
 	}
@@ -26,14 +26,15 @@ package 'BLI' {
 	
 	// Statechart: Weil die Definition von Actions mit Calculations und deren
 	// Werteübergabe schlecht gelöst ist, gibt es nur eine Action und nur einen
-	// Zustang, d.h. im Kern: a [epsilon] / berechneAlles --> b
+	// Zustand, d.h. im Kern: a [epsilon] / berechneAlles --> b
 
 	state def BatteryLevelComputerStates {
+	  // initial state a
 	  entry: then a;
 	  
 	  state a {
 	    // TODO: ist die Syntax hier korrekt oder müssen die Typen wieder
-	    // mit anegeben werden?
+	    // mit angegeben werden?
 	    entry act : ActComputeBatteryInfo(en, ca, bl, co);
 	  }
 	  

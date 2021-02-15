@@ -2,8 +2,10 @@ package 'EnergySupply' {
   import EnergySupplyTypes::*;
 
 	part def Battery {
-	  port energyIn : EnergyInOutPort;
+	  // ports
+	  port energyIn  : EnergyInOutPort;
 	  port energyOut : EnergyInOutPort;
+	  
 	  // data flows
     port batteryLevel : RelativeBatteryLevelPort;
     
