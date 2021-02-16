@@ -19,7 +19,5 @@ package 'BLI' {
     connection : WhySoComplicated connect blc::batteryLevel to batteryLevel;
     
     connection : WhySoComplicated connect blc::batteryLevel to led::batteryLevel;
-    
-    // E -> LED.E 
 	}
 }

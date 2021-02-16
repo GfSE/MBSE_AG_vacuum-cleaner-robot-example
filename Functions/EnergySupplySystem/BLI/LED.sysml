@@ -10,4 +10,5 @@ package 'BLI' {
 	}
 	
 	// TODO: Wie interagiert dieses Modell mit Code? 
+	// opaque actions
 }
