@@ -43,20 +43,43 @@ package 'SuctionDevice' {
 			port airIn : Ports::ExternalAirPort;
 			port airOut : Ports::InternalAirPort;
 			port energyIn : Ports::EnergyInOutPort;
-			port suctionLevelIn : ~Ports::SuctionPressurePort;
+			port suctionLevelIn : ~Ports::SuctionLevelPort;
 	
-			connect sm::suctionPressureOut to sc::suctionPressureIn;
-			connect energyIn to sm::energyIn;
-			connect suctionLevelIn to sm::suctionLevelIn;
-			connect airIn to sc::airIn;
-			connect sc::airOut to airOut;
+			interface def AirIn {
+				end supplierPort : Ports::ExternalAirPort;
+            	end consumerPort : Ports::ExternalAirPort;
+			}
+	
+			interface : AirIn connect supplierPort => airIn to consumerPort => sc::airIn;
 			
+			interface def SuctionPressure {
+				end supplierPort : Ports::SuctionPressurePort;
+            	end consumerPort : Ports::SuctionPressurePort;
+			}
 	
-			// interface : SuctionPressure connect supplierPort => sm::suctionPressureOut to consumerPort => sc::suctionPressureIn;
-			// interface : EnergyIn connect supplierPort => energyIn to consumerPort => sm:energyIn;
-			// interface : SuctionLevel connect supplierPort => suctionLevelIn to sm::suctionLevelIn;
-			// interface : ExternalAir connect supplierPort => airIn to sc::airIn;
-			// interface : InternalAir connect supplierPort => sc::airOut to airOut;
+			interface : SuctionPressure connect supplierPort => sm::suctionPressureOut to consumerPort => sc::suctionPressureIn;
+			
+			interface def EnergySupply {
+				end supplierPort : Ports::EnergyInOutPort;
+            	end consumerPort : Ports::EnergyInOutPort;
+			}
+	
+			interface : EnergySupply connect supplierPort => energyIn to consumerPort => sm::energyIn;
+			
+			interface def SuctionLevel {
+				end supplierPort : Ports::SuctionLevelPort;
+            	end consumerPort : Ports::SuctionLevelPort;
+			}
+	
+			interface : SuctionLevel connect supplierPort => suctionLevelIn to consumerPort => sm::suctionLevelIn;
+						
+			interface def AirOut {
+				end supplierPort : Ports::InternalAirPort;
+            	end consumerPort : Ports::InternalAirPort;
+			}
+	
+			interface : AirOut connect supplierPort => sc::airOut to consumerPort => airOut;			
+			
 		}
 	}
 }

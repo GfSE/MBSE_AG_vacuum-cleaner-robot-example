@@ -36,11 +36,28 @@ package 'BrushSystem' {
 			
 			port rotationLevelIn : ~Ports::RotationLevelPort;
 			port energyIn : Ports::EnergyInOutPort;
+			
+			interface def EnergySupply {
+				end supplierPort : Ports::EnergyInOutPort;
+            	end consumerPort : Ports::EnergyInOutPort;
+			}
 	
-			connect rotationLevelIn to bm::rotationLevelIn;
-			connect energyIn to bm::energyIn;
-			connect bm::rotationSpeedOut to mb::rotationSpeedIn;
-			connect bm::rotationSpeedOut to rb::rotationSpeedIn;
+			interface : EnergySupply connect supplierPort => energyIn to consumerPort => bm::energyIn;
+			
+			interface def RotationSpeed {
+				end supplierPort : Ports::RotationSpeedPort;
+            	end consumerPort : Ports::RotationSpeedPort;
+			}
+	
+			interface : RotationSpeed connect supplierPort => bm::rotationSpeedOut to consumerPort => mb::rotationSpeedIn;
+			interface : RotationSpeed connect supplierPort => bm::rotationSpeedOut to consumerPort => rb::rotationSpeedIn;
+	
+			interface def RotationLevel {
+				end supplierPort : Ports::RotationLevelPort;
+            	end consumerPort : Ports::RotationLevelPort;
+			}
+			
+			interface : RotationLevel connect supplierPort => rotationLevelIn to consumerPort => bm::rotationLevelIn;
 			
 		}
 	}
