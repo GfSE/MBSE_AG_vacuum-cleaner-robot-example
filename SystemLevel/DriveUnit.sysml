@@ -111,6 +111,8 @@ package 'DriveUnit' { //Spaces lead to problems in %show
         import ISQ::*;
         //import ISQ::Electromagnetism::*; // Für import von voltage
         import SI::*; 
+        import Requirements::*;
+        import functionalArchitecture::*;
         
         /* part defs für Definition von logischen Elementen 
         
@@ -126,7 +128,25 @@ package 'DriveUnit' { //Spaces lead to problems in %show
         
         */
         
+        enum def EeArchitecture {
+            enum arm;
+            enum arm64;
+            enum i386;
+            enum amd64;
+        }
+        
         part def logicalDriveUnit;        
+        
+        part def driveController {
+            attribute architecture : EeArchitecture;
+            
+            part stearingController;
+            part orientationController;
+        }
+        
+        part def tire {
+            attribute diameter : LengthValue; //LengthValue kommt aus dem ISQ-Paket und beinhaltet ein Real und eine Einheit
+        }
         
         part def dcMotor {
             attribute maxTorque :> ISQ::torque; // maximales Drehmoment
@@ -135,12 +155,34 @@ package 'DriveUnit' { //Spaces lead to problems in %show
             
             port powerSupply;
             port torque;
-             
+            
+            part motorTire : tire [1..2];
+            
+            state def motorDirection {
+                entry; then idle;
+                
+                state idle;
+                state left;
+                state right;
+                
+                transition idle_to_left
+                    first idle
+                    then left;
+                transition idle_to_right
+                    first idle
+                    then right;
+                transition left_to_idle
+                    first left
+                    then idle;
+                transition right_to_idle
+                    first right
+                    then idle;               
+            }
         }
         
         part def Lasertower {
             attribute distance : Real; // abstand in meter
-            attribute distanceAngle : Real; // vinkel der zum abstand gemessen wurden
+            attribute distanceAngle : Real; // winkel der zum abstand gemessen wurden
             attribute motor; // für das rotieren
 
             port position;
@@ -148,7 +190,7 @@ package 'DriveUnit' { //Spaces lead to problems in %show
         }
 
         part def Bumber {
-            attribute isContact : Real;
+            attribute isContact : Boolean;
 
             port contact;
         }
@@ -159,38 +201,38 @@ package 'DriveUnit' { //Spaces lead to problems in %show
 
             port psu;
         }
-
+        
         part def testInheritance :> dcMotor; // Dies ist eine echte Vererbung
         
-        /* part Instanzierung 
-        - Motor links
-        - Motor Rechts
-        - 1x Lasertower
-        - 1x Bumper
-        - Infrarot zur Kommunikation
-        - Ladekontakt +
-        - Ladekontakt -
-        - 2x tire
-        
-        */
-        
         part driveUnit : logicalDriveUnit {
-            part motor1 : dcMotor;
-            part motor2 : dcMotor;
+        
+            /* part Instanzierung 
+            - Motor links
+            - Motor Rechts
+            - 1x Lasertower
+            - 1x Bumper
+            - Infrarot zur Kommunikation
+            - Ladekontakt +
+            - Ladekontakt -
+            - 2x tire
+            */
+            
+            part motor1 : dcMotor {
+                part tire1 redefines motorTire[1];
+            }
+            part motor2 : dcMotor {
+                part tire2 redefines motorTire[1];
+            }
+            part drvController : driveController{ 
+                attribute redefines architecture = EeArchitecture::arm; //man muss bei "redefine" keinen neuen Namen vergeben.
+            }
+            part orientation : Lasertower;
+            part collision : Bumber;
+            part psuDetection : Infrarotdiode;
         }
         
-        part orientation : Lasertower;
-
-        part collision : Bumber;
-
-        part psuDetection : Infrarotdiode;
-       
         //satisfy Beschleunigen by driveUnit; // Funktioniert noch nicht
         
     }
     
 }
-
-
-
-    
