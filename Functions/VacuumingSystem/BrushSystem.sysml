@@ -16,6 +16,20 @@ package 'BrushSystem' {
 			out item electricalEnergy;
 		}
 	}
+	package 'Interfaces' {
+		interface def EnergySupply {
+			end supplierPort : Ports::EnergyInOutPort;
+            end consumerPort : Ports::EnergyInOutPort;
+		}
+		interface def RotationSpeed {
+			end supplierPort : Ports::RotationSpeedPort;
+            end consumerPort : Ports::RotationSpeedPort;
+		}
+		interface def RotationLevel {
+			end supplierPort : Ports::RotationLevelPort;
+            end consumerPort : Ports::RotationLevelPort;
+		}
+	}
 	package 'Structure' {
 		part def BrushMotor{
 			port energyIn : Ports::EnergyInOutPort;
@@ -36,29 +50,13 @@ package 'BrushSystem' {
 			
 			port rotationLevelIn : ~Ports::RotationLevelPort;
 			port energyIn : Ports::EnergyInOutPort;
-			
-			interface def EnergySupply {
-				end supplierPort : Ports::EnergyInOutPort;
-            	end consumerPort : Ports::EnergyInOutPort;
-			}
 	
-			interface : EnergySupply connect supplierPort => energyIn to consumerPort => bm::energyIn;
-			
-			interface def RotationSpeed {
-				end supplierPort : Ports::RotationSpeedPort;
-            	end consumerPort : Ports::RotationSpeedPort;
-			}
+			interface : Interfaces::EnergySupply connect supplierPort => energyIn to consumerPort => bm::energyIn;
+
+			interface : Interfaces::RotationSpeed connect supplierPort => bm::rotationSpeedOut to consumerPort => mb::rotationSpeedIn;
+			interface : Interfaces::RotationSpeed connect supplierPort => bm::rotationSpeedOut to consumerPort => rb::rotationSpeedIn;
 	
-			interface : RotationSpeed connect supplierPort => bm::rotationSpeedOut to consumerPort => mb::rotationSpeedIn;
-			interface : RotationSpeed connect supplierPort => bm::rotationSpeedOut to consumerPort => rb::rotationSpeedIn;
-	
-			interface def RotationLevel {
-				end supplierPort : Ports::RotationLevelPort;
-            	end consumerPort : Ports::RotationLevelPort;
-			}
-			
-			interface : RotationLevel connect supplierPort => rotationLevelIn to consumerPort => bm::rotationLevelIn;
-			
+			interface : Interfaces::RotationLevel connect supplierPort => rotationLevelIn to consumerPort => bm::rotationLevelIn;
 		}
 	}
 }
