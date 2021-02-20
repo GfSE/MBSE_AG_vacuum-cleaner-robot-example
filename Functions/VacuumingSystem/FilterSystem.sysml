@@ -1,17 +1,38 @@
 package 'FilterSystem' {
+	// Auf dem Linux System mit Version 2020-12 wollen nicht mal die ISQ und SI imports funktionieren --> sollte mit dem neuen RC geprüft werden
+	import SI::*;
 	
 	package 'Ports' {
 	//Ports (temporarily taken from VacuumTypes)
 		port def ExternalAirPort {
-			out item externalAir; // :m³ ? 
+			// Unterschied zwischen out item zu out? In sysml/src/examples/'Vehicle Example'/VehicleDefinitions.sysml (2020-12 Pilot) wird nur out verwendet
+			out externalAir :> SI::'m³'; 
+			
 		}
 		port def InternalAirPort {
-			in item internalAir; // :m³ ?
+			in internalAir :> SI::'m³';
 		}
 		
-		port def Debris {
-			inout item debris;
+		port def DebrisPort {
+			inout item debris :> SI::'m³';
 		}
+	}
+
+	package 'Interfaces' {
+		// Interface complementary to suction device
+		interface def AirOut {
+			end supplierPort : Ports::ExternalAirPort;
+            end consumerPort : Ports::ExternalAirPort;
+		}
+		interface def AirIn {
+			end supplierPort : Ports::InternalAirPort;
+            end consumerPort : Ports::InternalAirPort;
+		}
+		interface def DebrisOut {
+			end supplierPort : Ports::DebrisPort;
+            end consumerPort : Ports::DebrisPort;
+		}
+		
 	}
 
 	package 'Structure' {
@@ -20,12 +41,12 @@ package 'FilterSystem' {
 			/* The Tank stores debris that has been filtered */
 			//attributes/Signals
 			// Vom Filter in den Tank
-			port debrisIn : Ports::Debris;
-			// Zum Tank s�ubern
-			port debrisOut : Ports::Debris;
+			port debrisIn : Ports::DebrisPort;
+			// Zum Tank s�ubern
+			port debrisOut : Ports::DebrisPort;
 			
 			
-			// F�r die Interactions wichtig, wo soll das am besten untergebracht werden?
+			// F�r die Interactions wichtig, wo soll das am besten untergebracht werden?
 			//attribute def TankFillingSignal;
 			//attribute def TankFullSignal;
 			//attribute def EmptyingTankSignal;
@@ -39,7 +60,7 @@ package 'FilterSystem' {
 			/* The Filter separates the air from the debris*/
 	
 			port dirtAir : Ports::InternalAirPort;
-			port debrisOut : Ports::Debris;
+			port debrisOut : Ports::DebrisPort;
 			port cleanAir : Ports::ExternalAirPort;
 				
 		}		
@@ -51,8 +72,8 @@ package 'FilterSystem' {
 			
 			port airIn : Ports::InternalAirPort;
 			port airOut : Ports::ExternalAirPort;
-				
-			connect filter::debrisOut to tank::debrisIn;
+			
+			interface : Interfaces::AirIn connect supplierPort => airIn to consumerPort => airOut;
 		}
 	}
 }

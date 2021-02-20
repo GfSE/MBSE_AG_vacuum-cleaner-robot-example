@@ -1,30 +1,33 @@
 package 'VacuumingTypes' {
 
-	// import ScalarValues::*;
+	//import ScalarValues::*; //Wo brauchen wir ScalarValues? Werden diese nicht eher über SI abgedeckt? (importiert ScalarValues)
+	import SI::*;	// Für m³ etc.
+	import ISQSpaceTime::*; // angularVelocity
+	import ISQMechanics::*; // pressure
 	
 	package 'Ports' {
 		// Internal ports for Vacuuming System
 		port def RotationSpeedPort {
-			out item rotationSpeed; // :rpm
+			out item rotationSpeed :> ISQSpaceTime::angularVelocity; // :rpm
 		}
 		port def SuctionPressurePort {
-			out item suctionPressue; // :bar
+			out item suctionPressue :> ISQMechanics::pressure; // Kann man die Pressure hier nehmen, oder geht es dabei vorrangig um mechanische Flächendrücke?
 		}
 		port def InternalAirPort {
-			out item internalAir; // :m³ ?
+			out item internalAir :> SI::'m³'; // :m³ ?
 		}
 		port def DebrisPort {
-			out item debris; // dimension?
+			out item debris :> SI::'m³'; // dimension?
 		}
 		// External ports for vacuuming system
 		port def SuctionLevelPort {
 			out item suctionLevel; // :% (from control -> needs to be moved there)
 		}
 		port def ExternalAirPort {
-			in item externalAir; // :m³ ? 
+			in item externalAir :> SI::'m³'; // :m³ ? 
 		}
 		port def RotationLevelPort{
-			out item rotationLevel; // :% (from control -> needs to be moved there)
+			out item rotationLevel :> SI::'m³'; // :% (from control -> needs to be moved there)
 		}
 		// Temporarily added (from Energy Supply)
 		port def EnergyInOutPort {
