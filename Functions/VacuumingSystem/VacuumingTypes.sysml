@@ -7,27 +7,29 @@ package 'VacuumingTypes' {
 	
 	package 'Ports' {
 		// Internal ports for Vacuuming System
+		// Die genutzen Types sind nicht auf Items übertragbar --> falls die item def wichtig war, gerne austauschen
 		port def RotationSpeedPort {
-			out item rotationSpeed :> ISQSpaceTime::angularVelocity; // :rpm
+			out rotationSpeed :> ISQSpaceTime::angularVelocity; // :rpm
 		}
 		port def SuctionPressurePort {
-			out item suctionPressue :> ISQMechanics::pressure; // Kann man die Pressure hier nehmen, oder geht es dabei vorrangig um mechanische Flächendrücke?
+			out suctionPressue :> ISQMechanics::pressure; // Kann man die Pressure hier nehmen, oder geht es dabei vorrangig um mechanische Flächendrücke?
 		}
 		port def InternalAirPort {
-			out item internalAir :> SI::'m³'; // :m³ ?
+			out internalAir :> SI::'m³'; // :m³ ?
+			
 		}
 		port def DebrisPort {
-			out item debris :> SI::'m³'; // dimension?
+			out debris :> SI::'m³'; // dimension?
 		}
 		// External ports for vacuuming system
 		port def SuctionLevelPort {
-			out item suctionLevel; // :% (from control -> needs to be moved there)
+			out suctionLevel; // :% (from control -> needs to be moved there)
 		}
 		port def ExternalAirPort {
-			in item externalAir :> SI::'m³'; // :m³ ? 
+			in externalAir :> SI::'m³'; // :m³ ? 
 		}
 		port def RotationLevelPort{
-			out item rotationLevel :> SI::'m³'; // :% (from control -> needs to be moved there)
+			out rotationLevel :> SI::'m³'; // :% (from control -> needs to be moved there)
 		}
 		// Temporarily added (from Energy Supply)
 		port def EnergyInOutPort {

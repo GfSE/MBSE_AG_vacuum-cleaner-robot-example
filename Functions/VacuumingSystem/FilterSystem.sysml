@@ -1,20 +1,20 @@
 package 'FilterSystem' {
 	// Auf dem Linux System mit Version 2020-12 wollen nicht mal die ISQ und SI imports funktionieren --> sollte mit dem neuen RC geprüft werden
+	// in Windows kein Problem damit --> evventuell liegt es doch an dem compile-Vorgang. Der Vergleich zwischen den RC-Kandidaten wird also nicht mit den beiden Maschinen durchgeführt
 	import SI::*;
 	
 	package 'Ports' {
 	//Ports (temporarily taken from VacuumTypes)
 		port def ExternalAirPort {
-			// Unterschied zwischen out item zu out? In sysml/src/examples/'Vehicle Example'/VehicleDefinitions.sysml (2020-12 Pilot) wird nur out verwendet
-			out externalAir :> SI::'m³'; 
-			
+			// Wofür haben wir hier die item Definition genutzt? In sysml/src/examples/'Vehicle Example'/VehicleDefinitions.sysml (2020-12 Pilot) wird nur out verwendet
+			out externalAir :> SI::'m³'; 			
 		}
 		port def InternalAirPort {
 			in internalAir :> SI::'m³';
 		}
 		
 		port def DebrisPort {
-			inout item debris :> SI::'m³';
+			inout debris :> SI::'m³';
 		}
 	}
 

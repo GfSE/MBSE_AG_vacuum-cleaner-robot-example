@@ -1,7 +1,8 @@
 package 'Vacuuming System' {
-	//import BrushSystem::*;
-	//import SuctionDevice::*;
-	//import FilterSystem::*;
+	// @TODO: Hier dann mit neuem RC prüfen, ob der import funktioniert (mit und ohne Anführungsstriche prüfen)
+	import 'BrushSystem'::*;
+	import SuctionDevice::*;
+	import FilterSystem::*;
 	import 'VacuumingTypes'::*;
 	
 	part def VacuumingSystem{
