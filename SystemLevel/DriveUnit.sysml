@@ -113,30 +113,14 @@ package 'DriveUnit' { //Spaces lead to problems in %show
         import SI::*; 
         import Requirements::*;
         import functionalArchitecture::*;
-        
-        /* part defs für Definition von logischen Elementen 
-        
-        - Motor
-        - Lasertower
-        - Bumper 
-        - Infrarotdiode (Kommunikation mit der PSU)
-        - Ladekontakt
-        - Drive Controller
-        -- Steuern
-        -- Orientieren
-        - tire
-        
-        */
-        
+
         enum def EeArchitecture {
             enum arm;
             enum arm64;
             enum i386;
             enum amd64;
         }
-        
-        part def logicalDriveUnit;        
-        
+
         part def driveController {
             attribute architecture : EeArchitecture;
             
@@ -179,13 +163,17 @@ package 'DriveUnit' { //Spaces lead to problems in %show
                     then idle;               
             }
         }
-        
+
         part def Lasertower {
             attribute distance : Real; // abstand in meter
             attribute distanceAngle : Real; // winkel der zum abstand gemessen wurden
             attribute motor; // für das rotieren
 
-            port position;
+            port def LaserTwowerPosition{
+                out attribute angle : Real;
+                out attribute distance: Real;
+            }
+
             port powerSupply;
         }
 
@@ -204,19 +192,8 @@ package 'DriveUnit' { //Spaces lead to problems in %show
         
         part def testInheritance :> dcMotor; // Dies ist eine echte Vererbung
         
-        part driveUnit : logicalDriveUnit {
-        
-            /* part Instanzierung 
-            - Motor links
-            - Motor Rechts
-            - 1x Lasertower
-            - 1x Bumper
-            - Infrarot zur Kommunikation
-            - Ladekontakt +
-            - Ladekontakt -
-            - 2x tire
-            */
-            
+        part def logicalDriveUnit {
+
             part motor1 : dcMotor {
                 part tire1 redefines motorTire[1];
             }
@@ -230,7 +207,15 @@ package 'DriveUnit' { //Spaces lead to problems in %show
             part collision : Bumber;
             part psuDetection : Infrarotdiode;
         }
-        
+
+        part def driveUnit{
+            part driver : logicalDriveUnit;
+            port def powerSupplyPort{
+                out attribute power :> ISQ::voltage;
+                out attribute ground :> ISQ::voltage;
+            }
+        }
+
         //satisfy Beschleunigen by driveUnit; // Funktioniert noch nicht
         
     }
