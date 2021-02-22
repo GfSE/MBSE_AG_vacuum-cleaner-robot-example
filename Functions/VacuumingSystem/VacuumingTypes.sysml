@@ -4,6 +4,7 @@ package 'VacuumingTypes' {
 	import SI::*;	// Für m³ etc.
 	import ISQSpaceTime::*; // angularVelocity
 	import ISQMechanics::*; // pressure
+	import ScalarValues::*; //Real
 	
 	package 'Ports' {
 		// Internal ports for Vacuuming System
@@ -11,29 +12,43 @@ package 'VacuumingTypes' {
 		port def RotationSpeedPort {
 			out rotationSpeed :> ISQSpaceTime::angularVelocity; // :rpm
 		}
+		
 		port def SuctionPressurePort {
 			out suctionPressue :> ISQMechanics::pressure; // Kann man die Pressure hier nehmen, oder geht es dabei vorrangig um mechanische Flächendrücke?
 		}
+		
 		port def InternalAirPort {
-			out internalAir :> SI::'m³'; // :m³ ?
+			out item internalAir{
+				attribute vol :> SI::'m³';
+			}
+		}
 			
-		}
 		port def DebrisPort {
-			out debris :> SI::'m³'; // dimension?
+			out item debris{
+				attribute vol:> SI::'m³';
+				attribute mass :> SI::kg;
+			}
 		}
+		
 		// External ports for vacuuming system
 		port def SuctionLevelPort {
-			out suctionLevel; // :% (from control -> needs to be moved there)
+			out attribute suctionLevel : Real; // :% (from control -> needs to be moved there)
 		}
 		port def ExternalAirPort {
-			in externalAir :> SI::'m³'; // :m³ ? 
+			in item externalAir {
+				attribute vol :> SI::'m³';
+			}
 		}
 		port def RotationLevelPort{
-			out rotationLevel :> SI::'m³'; // :% (from control -> needs to be moved there)
+			out rotationLevel : Real; // :% (from control -> needs to be moved there)
 		}
-		// Temporarily added (from Energy Supply)
+		// Temporarily added (from Energy Supply) and adapted
 		port def EnergyInOutPort {
-			out item electricalEnergy; // dimension?
+			out item electricalEnergy {
+				attribute voltage :> SI::V;
+				attribute current :> SI::A;
+				attribute power :> SI::W;
+			} 
 		}
 	}
 	

@@ -19,9 +19,8 @@ package 'Vacuuming' {
 		import Structure::*;
 		import Structure::Tank::*;
 		
-		//actually a state change structure
-		state tankLevelChanges : TankLevelChanges (usedTank : Tank) {
-			
+		//using Signals from Tank
+		state def TankLevelChanges (usedTank : Tank) {
 			entry; then empty;
 			 
 			state empty : TankLevel;
@@ -39,21 +38,42 @@ package 'Vacuuming' {
 			accept EmptyingTankSignal
 				then empty;
 		}
-				
+		// Potentieller Bug (siehe DriveUnit): Status müssen aktuell bei ihrem auftreten definiert werden --> Am Anfang alle States zu definiert führt zu einer Schleife
+		state def TankLevelChangesTrans (usedTank : Tank) {
+			entry; then empty;
+			 
+			state empty : TankLevel;
+					
+			transition empty_to_filling
+				first empty
+				then filling;
+			
+			state filling : TankLevel;
+																			
+			transition filling_to_full	
+				first filling
+				then full;
+			
+			state full : TankLevel;
+			
+			transition full_to_empty	
+				first full
+				then empty;
+		}
+		
+		// Example at 'Action Definition Example-1.sysml'		
 		item def Debris;
 		item def AirWithDirt;
 		item def CleanAir;
 		
-		//action def Vacuuming(in debris : Debris, out cleanAir : CleanAir);
 		action def SuctionProcess(in debris : Debris, out airwithDirt : AirWithDirt);
 		action def Filter(in airWithDirt : AirWithDirt, out cleanAir : CleanAir);	
 		
 		action def Vacuuming(in debris : Debris, out cleanAir : CleanAir){ 
-			// still some errors with the bind
-			bind suctionProcess::debris = debris;
 			
 			//Hier werden noch einige Fehler angezeigt, allerdings treten die auch in den Beispielen auf. Wie wird damit in zukunft umgegangen?
-			action suctionProcess:SuctionProcess (in debris, out airWithDirt)
+			action suctionProcess : SuctionProcess (in debris, out airWithDirt)
+			bind suctionProcess::debris = debris;
 			
 			flow suctionProcess::airWithDirt to filter::airWithDirt;			
 			action filter : Filter(in airWithDirt, out cleanAir)

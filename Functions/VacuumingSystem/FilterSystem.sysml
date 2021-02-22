@@ -6,15 +6,23 @@ package 'FilterSystem' {
 	package 'Ports' {
 	//Ports (temporarily taken from VacuumTypes)
 		port def ExternalAirPort {
-			// Wofür haben wir hier die item Definition genutzt? In sysml/src/examples/'Vehicle Example'/VehicleDefinitions.sysml (2020-12 Pilot) wird nur out verwendet
-			out externalAir :> SI::'m³'; 			
+			// Wenn nur out/in/inout genommen wird, übernimmt er den Definitionstyp
+			// In sysml/src/examples/'Vehicle Example'/VehicleDefinitions.sysml (2020-12 Pilot) wird nur out verwendet
+			out item externalAir{
+				attribute volume :> SI::'m³';
+			}	
 		}
 		port def InternalAirPort {
-			in internalAir :> SI::'m³';
+			in item internalAir{
+				attribute volume :> SI::'m³';
+			} 
 		}
 		
 		port def DebrisPort {
-			inout debris :> SI::'m³';
+			inout item debris {
+				attribute volume :> SI::'m³';
+				attribute mass :> SI::kg;
+			}
 		}
 	}
 
@@ -42,7 +50,7 @@ package 'FilterSystem' {
 			//attributes/Signals
 			// Vom Filter in den Tank
 			port debrisIn : Ports::DebrisPort;
-			// Zum Tank s�ubern
+			// Zum Tank säubern
 			port debrisOut : Ports::DebrisPort;
 			
 			
@@ -67,13 +75,18 @@ package 'FilterSystem' {
 		
 		part def FilterSystem
 		{
-			part filter : Filter;
+			part filter : Filter{
+				port redefines dirtAir;
+				port redefines debrisOut;
+				port redefines cleanAir;	
+			}
+			
 			part tank : Tank;		
 			
 			port airIn : Ports::InternalAirPort;
 			port airOut : Ports::ExternalAirPort;
 			
-			interface : Interfaces::AirIn connect supplierPort => airIn to consumerPort => airOut;
+			interface : Interfaces::AirOut connect SupplierPort => filter::cleanAir to consumerPort => airOut;
 		}
 	}
 }

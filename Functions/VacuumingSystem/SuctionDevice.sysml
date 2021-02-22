@@ -1,17 +1,22 @@
 package 'SuctionDevice' {
+	import ScalarValues::*;
+    import ISQ::*;
+    import SI::*;
+    import Occurrences::*;
 	// import EnergySupplyTypes::*;
 	// import VacuumingTypes::*;
 	
 	package 'Ports' {
 		//Ports (temporarily taken from VacuumTypes)
 		port def SuctionPressurePort {
-			out item suctionPressue; // :bar
+			out attribute suctionPressure :> ISQMechanics::pressure;
 		}
 		port def SuctionLevelPort {
-			out item suctionLevel; // :% (from control -> needs to be moved there)
+			out attribute suctionLevel : Real; // :% (from control -> needs to be moved there)
 		}
+		// Welcher Typ wird bei items verwendet? Occurrence wirft keinen Fehler, scheint also davon abgeleitet zu sein.
 		port def ExternalAirPort {
-			in item externalAir; // :m³ ? 
+			in item externalAir : Occurrence; // :m³ ? 
 		}
 		port def InternalAirPort {
 			out item internalAir; // :m³ ?
@@ -22,6 +27,7 @@ package 'SuctionDevice' {
 			out item electricalEnergy;
 		}
 	}
+	
 	package 'Interfaces' {
 		// Interface Definitions for Vacuuming System
 		interface def AirIn {
@@ -47,7 +53,7 @@ package 'SuctionDevice' {
 	}
 	package 'Calculations' {
 		// Definition of calculations for SuctionDevice
-		calc def calcPowerOut (powerLevel, maxPower) = powerLevel * maxPower;
+		calc def calcPowerOut (powerLevel , maxPower) = powerLevel * maxPower;
 		calc def calcPressureOut (inPower) = inPower * 10; // generic number
 	}
 	package 'Structure' {
@@ -58,14 +64,15 @@ package 'SuctionDevice' {
 			
 			attribute maximumPower; // :maxType = 800;
 			
-			calc powerOut : calcPowerOut (
+			calc powerOut : 'Calculations'::calcPowerOut (
 				powerLevel = suctionLevelIn::suctionLevel,
 				maxPower = maximumPower
-			) return pOut
+			) return pOut;
 			
-			calc pressureOut : calcPressureOut (
+			calc pressureOut : 'Calculations'::calcPressureOut (
 				inPower = powerOut::pOut
 			) return prOut = suctionPressureOut::suctionPressure;
+			
 		}
 		
 		part def SuctionChamber {
@@ -76,8 +83,18 @@ package 'SuctionDevice' {
 		
 		part def SuctionDevice
 		{
-			part sm : SuctionMotor;
-			part sc : SuctionChamber;		
+			// redifines der Ports sind erforderlich, um den common Kontext herzustellen --> ist allerdings nicht zwingend erforderlich
+			part sm : SuctionMotor{
+				port redefines suctionPressureOut; 
+				port redefines energyIn;
+				port redefines suctionLevelIn;
+			}
+			
+			part sc : SuctionChamber{
+				port redefines suctionPressureIn;
+				port redefines airIn;
+				port redefines airOut;
+			}		
 			
 			port airIn : Ports::ExternalAirPort;
 			port airOut : Ports::InternalAirPort;
@@ -85,15 +102,10 @@ package 'SuctionDevice' {
 			port suctionLevelIn : ~Ports::SuctionLevelPort;
 	
 			interface : Interfaces::AirIn connect supplierPort => airIn to consumerPort => sc::airIn;
-	
 			interface : Interfaces::SuctionPressure connect supplierPort => sm::suctionPressureOut to consumerPort => sc::suctionPressureIn;
-	
 			interface : Interfaces::EnergySupply connect supplierPort => energyIn to consumerPort => sm::energyIn;
-	
 			interface : Interfaces::SuctionLevel connect supplierPort => suctionLevelIn to consumerPort => sm::suctionLevelIn;
-	
 			interface : Interfaces::AirOut connect supplierPort => sc::airOut to consumerPort => airOut;			
-			
 		}
 	}
 }
