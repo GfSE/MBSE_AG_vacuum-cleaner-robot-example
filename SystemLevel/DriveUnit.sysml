@@ -137,6 +137,28 @@ package 'DriveUnit' { //Spaces lead to problems in %show
             attribute rpm0 : Real; // Nenndrehzahl
             attribute voltage :> ISQ::voltage; // Voltage;
             
+            action def ConvertEletricalToMechanicalEnergy (in current, in voltage, in rpm0, out mechanicalEnergy) {
+                calc def Torque (current:>SI::A, voltage:>ISQ::voltage, rpm0:>ISQ::frequency):> ISQ::torque {
+                    attribute POut = 0.95 * current * voltage;
+                    attribute omega = 2 * 3.14 * rpm0;
+                    
+                    POut / omega
+                }
+            }
+            
+            action def ProvideTorque (in current, in voltage, in rpm0, out torque:>ISQ::torque) {
+                
+                bind convertEnergy::current = current;
+                bind convertEnergy::voltage = voltage;
+                bind convertEnergy::rpm0 = rpm0;
+                
+                action convertEnergy:ConvertEletricalToMechanicalEnergy (in current, in voltage, in rpm0, out mechanicalEnergy);
+                
+                bind convertEnergy::mechanicalEnergy = torque;
+                
+            }
+                
+            
             port powerSupply;
             port torque;
             
@@ -146,18 +168,23 @@ package 'DriveUnit' { //Spaces lead to problems in %show
                 entry; then idle;
                 
                 state idle;
-                state left;
-                state right;
-                
+               
                 transition idle_to_left
                     first idle
                     then left;
+                
                 transition idle_to_right
                     first idle
                     then right;
+                
+                state left;               
+                
                 transition left_to_idle
                     first left
                     then idle;
+                
+                state right;
+                
                 transition right_to_idle
                     first right
                     then idle;               
@@ -165,7 +192,7 @@ package 'DriveUnit' { //Spaces lead to problems in %show
         }
 
         part def Lasertower {
-            attribute distance : Real; // abstand in meter
+            attribute distance : LengthValue; // abstand in meter
             attribute distanceAngle : Real; // winkel der zum abstand gemessen wurden
             attribute motor; // für das rotieren
 
