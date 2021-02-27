@@ -1,8 +1,6 @@
-package 'FilterSystem' {
-	// Auf dem Linux System mit Version 2020-12 wollen nicht mal die ISQ und SI imports funktionieren --> sollte mit dem neuen RC geprüft werden
-	// in Windows kein Problem damit --> evventuell liegt es doch an dem compile-Vorgang. Der Vergleich zwischen den RC-Kandidaten wird also nicht mit den beiden Maschinen durchgeführt
-	import SI::*;
-	
+package FilterSystem {
+	import SI::*; // SI-Import funktioniert nach clean import
+	import VacuumingTypes::*; // auch mit neuem RC dateiübergreifender Import nicht möglich
 	package 'Ports' {
 	//Ports (temporarily taken from VacuumTypes)
 		port def ExternalAirPort {
@@ -54,7 +52,7 @@ package 'FilterSystem' {
 			port debrisOut : Ports::DebrisPort;
 			
 			
-			// F�r die Interactions wichtig, wo soll das am besten untergebracht werden?
+			// Für die Interactions wichtig, wo soll das am besten untergebracht werden?
 			//attribute def TankFillingSignal;
 			//attribute def TankFullSignal;
 			//attribute def EmptyingTankSignal;
@@ -75,6 +73,7 @@ package 'FilterSystem' {
 		
 		part def FilterSystem
 		{
+			// Mit neuem RC wird hier ein Fehler geworfen --> sollte allerdings sowieso geändert werden in Definitions package
 			part filter : Filter{
 				port redefines dirtAir;
 				port redefines debrisOut;

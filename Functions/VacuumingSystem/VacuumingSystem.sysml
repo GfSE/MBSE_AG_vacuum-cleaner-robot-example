@@ -1,9 +1,10 @@
 package 'Vacuuming System' {
-	// @TODO: Hier dann mit neuem RC prüfen, ob der import funktioniert (mit und ohne Anführungsstriche prüfen)
-	import 'BrushSystem'::*;
+	// @TODO: auch mit neuem RC hier kein Import möglich (Linux-Test)
+	private import 'BrushSystem'::*;
 	import SuctionDevice::*;
 	import FilterSystem::*;
 	import 'VacuumingTypes'::*;
+	
 	
 	part def VacuumingSystem{
 		part bs : BrushSystem::'Structure'::BrushSystem;
