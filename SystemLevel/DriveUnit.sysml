@@ -75,9 +75,7 @@ package 'DriveUnit' { //Spaces lead to problems in %show
             part def physicalThing {
                 attribute cdb_object_id;
             }
-            
         }
-             
     }
     
     package functionalArchitecture {
@@ -101,19 +99,41 @@ package 'DriveUnit' { //Spaces lead to problems in %show
             }
             
             interface : energySupply connect supplierPort => EnergieSpeichern::FEnergy to consumerPort => Beschleunigen::FEnergy;
-
         }
     }
-    
-    package logicalArchitecture {
-        
-        import ScalarValues::*;
-        import ISQ::*;
-        //import ISQ::Electromagnetism::*; // Für import von voltage
-        import SI::*; 
-        import Requirements::*;
-        import functionalArchitecture::*;
 
+    package calculationDefinition{
+        calc def Torque (current:>SI::A, voltage:>ISQ::voltage, rpm0:>ISQ::frequency):> ISQ::torque {
+                attribute POut = 0.95 * current * voltage;
+                attribute omega = 2 * 3.14 * rpm0;
+
+                POut / omega // return value
+        }
+    }
+
+    package portDef{
+        port def powerSupplyPort{
+                out attribute power :> ISQ::voltage;
+                out attribute ground :> ISQ::voltage;
+        }
+
+        port def LaserTowerPosition{
+                out attribute angle : Real;
+                out attribute distance: Real;
+            }
+
+        port def contact;
+        port def torque;
+    }
+
+    package partDef
+    {
+        import portDef::*;
+
+        part def tire {
+            attribute diameter : LengthValue; //LengthValue kommt aus dem ISQ-Paket und beinhaltet ein Real und eine Einheit
+        }
+        
         enum def EeArchitecture {
             enum arm;
             enum arm64;
@@ -128,22 +148,13 @@ package 'DriveUnit' { //Spaces lead to problems in %show
             part orientationController;
         }
         
-        part def tire {
-            attribute diameter : LengthValue; //LengthValue kommt aus dem ISQ-Paket und beinhaltet ein Real und eine Einheit
-        }
-        
         part def dcMotor {
             attribute maxTorque :> ISQ::torque; // maximales Drehmoment
             attribute rpm0 : Real; // Nenndrehzahl
             attribute voltage :> ISQ::voltage; // Voltage;
             
             action def ConvertEletricalToMechanicalEnergy (in current, in voltage, in rpm0, out mechanicalEnergy) {
-                calc def Torque (current:>SI::A, voltage:>ISQ::voltage, rpm0:>ISQ::frequency):> ISQ::torque {
-                    attribute POut = 0.95 * current * voltage;
-                    attribute omega = 2 * 3.14 * rpm0;
-                    
-                    POut / omega
-                }
+                calc Torque;
             }
             
             action def ProvideTorque (in current, in voltage, in rpm0, out torque:>ISQ::torque) {
@@ -158,9 +169,8 @@ package 'DriveUnit' { //Spaces lead to problems in %show
                 
             }
                 
-            
-            port powerSupply;
-            port torque;
+            port psu :powerSupplyPort;
+            port Torque : torque;
             
             part motorTire : tire [1..2];
             
@@ -195,29 +205,46 @@ package 'DriveUnit' { //Spaces lead to problems in %show
             attribute distance : LengthValue; // abstand in meter
             attribute distanceAngle : Real; // winkel der zum abstand gemessen wurden
             attribute motor; // für das rotieren
-
-            port def LaserTwowerPosition{
-                out attribute angle : Real;
-                out attribute distance: Real;
-            }
-
-            port powerSupply;
+            port position : LaserTowerPosition;
+            port psu : powerSupplyPort;
         }
 
         part def Bumber {
             attribute isContact : Boolean;
 
-            port contact;
+            port Contact : contact;
+        }
+
+        part def infrarotController{
+                // berechnet Abbstand
+            //sendet signal
         }
 
         part def Infrarotdiode {
-            attribute isPSU : Real;
-            attribute psuDistance : Real;
-
-            port psu;
-        }
+            attribute isPSU : Boolean; // wir fahren gerade auf die powersupply zu
+            attribute psuDistance : LengthValue;
+            part InfrarotController;
+            port infrared{
+                out attribute signalOut;
+                in attribute signalIn;
+            }
+            port psu :powerSupplyPort;
+        }  
+    }
         
-        part def testInheritance :> dcMotor; // Dies ist eine echte Vererbung
+    package logicalArchitecture {
+        
+        import ScalarValues::*;
+        import ISQ::*;
+        //import ISQ::Electromagnetism::*; // Für import von voltage
+        import SI::*; 
+        import Requirements::*;
+        import functionalArchitecture::*;
+        import calculationDefinition::*;
+        import partDef::*;
+        
+        
+        //part def testInheritance :> dcMotor; // Dies ist eine echte Vererbung
         
         part def logicalDriveUnit {
 
@@ -234,17 +261,18 @@ package 'DriveUnit' { //Spaces lead to problems in %show
             part collision : Bumber;
             part psuDetection : Infrarotdiode;
         }
+        //satisfy Beschleunigen by driveUnit; // Funktioniert noch nicht
+    }
+    
+    package systemContext{
+        import logicalArchitecture::*;
+        import portDef::*;
 
         part def driveUnit{
             part driver : logicalDriveUnit;
-            port def powerSupplyPort{
-                out attribute power :> ISQ::voltage;
-                out attribute ground :> ISQ::voltage;
+            port psu :powerSupplyPort;
+            
             }
         }
-
-        //satisfy Beschleunigen by driveUnit; // Funktioniert noch nicht
-        
     }
-    
 }
