@@ -111,16 +111,42 @@ package 'DriveUnit' { //Spaces lead to problems in %show
         }
     }
 
+    package interfaceDef{
+        import portDef::*;
+        
+        interface def EnergyInterface{
+            end supplierPort {
+                in item energyIn;
+                out item energyOut;
+            }
+            end consumerPort{
+                in item energyIn;
+                out item energyOut;
+            }
+            
+            stream supplierPort::energyOut to consumerPort::energyIn;
+            stream consumerPort::energyOut to supplierPort::energyIn;
+        }
+        
+    }
+    
     package portDef{
         port def powerSupplyPort{
-                out attribute power :> ISQ::voltage;
-                out attribute ground :> ISQ::voltage;
+            inout attribute power :> ISQ::voltage;
+            inout attribute ground :> ISQ::voltage;
+        }
+        
+        port def mountingPort;
+        
+        port def externalPowerSupplyPort {
+            in attribute power :> ISQ::voltage;
+            in attribute ground :> ISQ::voltage;
         }
 
         port def LaserTowerPosition{
-                out attribute angle : Real;
-                out attribute distance: Real;
-            }
+            out attribute angle : Real;
+            out attribute distance: Real;
+        }
 
         port def contact;
         port def torque;
@@ -267,12 +293,54 @@ package 'DriveUnit' { //Spaces lead to problems in %show
     package systemContext{
         import logicalArchitecture::*;
         import portDef::*;
+        import interfaceDef::*;
+        
+        part def soi {
 
-        part def driveUnit{
-            part driver : logicalDriveUnit;
-            port psu :powerSupplyPort;
-            
+            part def driveUnit{
+                part driver :logicalDriveUnit;
+                port psu :powerSupplyPort;
+                port clips[*] :mountingPort;
+                port screwsAndThreads[*] :mountingPort;
             }
+
+            part def VacuumCleanerSystem{
+                port psu :powerSupplyPort;
+                port clips[*] :mountingPort;
+                port screwsAndThreads[*] :mountingPort;
+            }
+
+            part def EnergySubSystem{
+                port psu :powerSupplyPort;
+                port psuExt :externalPowerSupplyPort;
+                port clips[*] :mountingPort;
+                port screwsAndThreads[*] :mountingPort;
+            }
+            
         }
+        
+        part def chargingStation{
+            attribute coordinateX;
+            attribute coordinateY;
+            attribute inDirection;
+        }
+
+        part def room{
+            attribute area;
+            attribute floorMaterial;
+            attribute hasSlope : Boolean; // Wurde eine Treppe oder ähnlicher Abhang erkannt
+
+            part def map;
+        }
+        
+        part def envorionment{
+            attribute temperature;
+            attribute humidity;
+            attribute brightness;
+        }
+        
+        interface : EnergyInterface connect supplierPort => soi::EnergySubSystem::psu to consumerPort => soi::driveUnit::psu; //ergibt noch eine WARNING, da psuPort und Interface Ports nicht den gleichen Kontext haben
+        interface : EnergyInterface connect supplierPort => soi::EnergySubSystem::psu to consumerPort => soi::VacuumCleanerSystem::psu; //ergibt noch eine WARNING, da psuPort und Interface Ports nicht den gleichen Kontext haben
+        
     }
 }
