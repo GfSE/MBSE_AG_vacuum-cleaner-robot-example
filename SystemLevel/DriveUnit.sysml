@@ -150,6 +150,17 @@ package 'DriveUnit' { //Spaces lead to problems in %show
 
         port def contact;
         port def torque;
+        
+        port def i2c{
+            attribute SDA;
+            attribute SCL;
+            attribute vin;
+            attribute ground;
+        }
+        
+        port def psuSignal{
+            attribute isChargingPositioN : Boolean;
+        }
     }
 
     package partDef
@@ -245,16 +256,15 @@ package 'DriveUnit' { //Spaces lead to problems in %show
                 // berechnet Abbstand
             //sendet signal
         }
-
-        part def Infrarotdiode {
-            attribute isPSU : Boolean; // wir fahren gerade auf die powersupply zu
-            attribute psuDistance : LengthValue;
-            part InfrarotController;
-            port infrared{
-                out attribute signalOut;
-                in attribute signalIn;
-            }
-            port psu :powerSupplyPort;
+        part def timeOfFlightSensor{
+            port i2cSlave : i2c;
+        }
+        
+        part def timeofFlightController{
+            part timeOfFlightSensor;
+            port psu : powerSupplyPort;
+            port i2cMaster : i2c;
+            
         }  
     }
         
@@ -285,7 +295,7 @@ package 'DriveUnit' { //Spaces lead to problems in %show
             }
             part orientation : Lasertower;
             part collision : Bumber;
-            part psuDetection : Infrarotdiode;
+            part psuDetection : timeofFlightController;
         }
         //satisfy Beschleunigen by driveUnit; // Funktioniert noch nicht
     }
