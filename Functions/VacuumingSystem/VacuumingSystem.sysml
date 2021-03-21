@@ -1,5 +1,5 @@
 package 'Vacuuming System' {
-	// @TODO: auch mit neuem RC hier kein Import möglich (Linux-Test)
+	// mit dem neusten Pilot (frisch von Git, commit 81df3ba, 15.03.2021) und Eclipse 2021-03 Modeling, werfen die Imports keine Fehler mehr!
 	private import 'BrushSystem'::*;
 	import SuctionDevice::*;
 	import FilterSystem::*;
@@ -7,8 +7,8 @@ package 'Vacuuming System' {
 	
 	
 	part def VacuumingSystem{
-		part bs : BrushSystem::'Structure'::BrushSystem;
-		part sd : SuctionDevice::'Structure'::SuctionDevice;
-		part fs : FilterSystem::'Structure'::FilterSystem;
+		part bs : BrushSystem;
+		part sd : SuctionDevice;
+		part fs : FilterSystem;
 	}
 }

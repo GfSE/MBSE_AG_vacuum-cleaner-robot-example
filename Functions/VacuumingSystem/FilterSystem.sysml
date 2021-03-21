@@ -102,9 +102,9 @@ package FilterSystem {
 			}
 			part fil:Filter;
 			// @TODO: clean up port --> currently no sense here
-			bind fil::cleanAir=airOut;
-			interface airExchange:AirExchange 
-			connect fil::dirtAir to tank::debrisIn;
+			//bind fil::cleanAir=airOut;
+			//interface airExchange:AirExchange 
+			//connect fil::dirtAir to tank::debrisIn;
 			
 		}
 	}

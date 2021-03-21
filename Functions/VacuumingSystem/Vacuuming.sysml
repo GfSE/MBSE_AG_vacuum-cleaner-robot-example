@@ -1,6 +1,6 @@
 package 'Vacuuming' {
-	//import VacuumCleanerSystem::*;
-	//import DriveUnit::systemsEngineeringDomain::*; 
+	import VacuumCleanerSystem::*;
+	import DriveUnit::systemsEngineeringDomain::*; 
 	
 	package 'Structure' {
 		part def Filter;
@@ -70,17 +70,16 @@ package 'Vacuuming' {
 		action def Filter(in airWithDirt : AirWithDirt, out cleanAir : CleanAir);	
 		
 		action def Vacuuming(in debris : Debris, out cleanAir : CleanAir){ 
+					
+			action suctionProcess : SuctionProcess (in debris, out airWithDirt);
+			action filterAct : Filter(in airWithDirt, out cleanAir);
 			
-			//Hier werden noch einige Fehler angezeigt, allerdings treten die auch in den Beispielen auf. Wie wird damit in zukunft umgegangen?
-			action suctionProcess : SuctionProcess (in debris, out airWithDirt)
 			bind suctionProcess::debris = debris;
+			bind filterAct::cleanAir = cleanAir;
 			
-			flow suctionProcess::airWithDirt to filter::airWithDirt;			
-			action filter : Filter(in airWithDirt, out cleanAir)
+			flow suctionProcess::airWithDirt to filterAct::airWithDirt;			
 			
-			bind filter::cleanAir = cleanAir;
 		}
-		// Action Allocation Example (21 in training) noch fehlerhaft
 	}
 		
 }
