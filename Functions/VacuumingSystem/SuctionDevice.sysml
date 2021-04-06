@@ -1,58 +1,38 @@
 package SuctionDevice {
+	// Standard libraries
 	import ScalarValues::*;
     import ISQ::*;
     import ISQMechanics::*;
     import SI::*;
     
+    // Local libraries
+    import EnergySupplyTypes::*;
+	import VacuumingTypes::*;
+    
+    // Local imports
     import Definitions::*;
 
-	// Local import not possible
-	// import EnergySupplyTypes::*;
-	// import VacuumingTypes::*;
-	
+	// Model packages
 	package Definitions {
 		import PortDefinitions::*;
 		import InterfaceDefinitions::*;
 		import PartDefinitions::*;
 		import CalculationDefinitions::*;
 	
+		// Definition of internal ports
 		package PortDefinitions {
-			//Ports (temporarily taken from VacuumTypes)
 			port def SuctionPowerPort {
 				out item suctionPower {
 					attribute suctionPower :> ISQ::power;
 				}
 			}
-			
-			port def SuctionLevelPort {
-				out item suctionLevel {
-					attribute suctionLevel : Real; // :% (from control -> needs to be moved there)
-				}
-			}
-		
-			port def ExternalAirPort {
-				in item externalAir{
-					attribute volume :> ISQSpaceTime::volume;
-				} 
-			}
-			
-			port def InternalAirPort {
-				out item internalAir{
-					attribute volume :> ISQSpaceTime::volume;
-				} 
-			}
-			
-			// Other Ports (from EnergySupply)
-			port def EnergyInOutPort {
-				out item electricalEnergy;
-			}
 		}
-	
+			
+		// Definition of internal interfaces
 		package InterfaceDefinitions {
-		// Interface Definitions for Vacuuming System
 			interface def AirIn {
-				end supplierPort : ExternalAirPort;
-            	end consumerPort : ExternalAirPort;
+				end supplierPort : VacuumingTypes::PortDefinitions::ExternalAirPort;
+            	end consumerPort : VacuumingTypes::PortDefinitions::ExternalAirPort;
 			}
 			
 			interface def SuctionPressure {
@@ -61,38 +41,42 @@ package SuctionDevice {
 			}
 		
 			interface def EnergySupply {
-				end supplierPort : EnergyInOutPort;
-            	end consumerPort : EnergyInOutPort;
+				end supplierPort : EnergySupplyTypes::EnergyInOutPort;
+            	end consumerPort : EnergySupplyTypes::EnergyInOutPort;
 			}
 			
 			interface def SuctionLevel {
-				end supplierPort : SuctionLevelPort;
-            	end consumerPort : SuctionLevelPort;
+				end supplierPort : VacuumingTypes::PortDefinitions::SuctionLevelPort;
+            	end consumerPort : VacuumingTypes::PortDefinitions::SuctionLevelPort;
 			}
 			
 			interface def AirOut {
-				end supplierPort : InternalAirPort;
-            	end consumerPort : InternalAirPort;
+				end supplierPort : VacuumingTypes::PortDefinitions::InternalAirPort;
+            	end consumerPort : VacuumingTypes::PortDefinitions::InternalAirPort;
 			}
 		}
 		
 		package CalculationDefinitions {
 		// Definition of calculations for SuctionDevice
-			calc def calcActualPower (powerLevel : Real, maxPower :> ISQ::power) :> ISQ::power {
+			calc def calcActualPower (powerLevel : ScalarValues::Real, maxPower :> ISQ::power) :> ISQ::power {
             	powerLevel * maxPower 
         	}
         
         // Definition of calculations for SuctionChamber
-		calc def calcVolFlow (actPower :> ISQ::power, diffPressure :> ISQ::pressure) :> ISQMechanics::volumeFlowRate {
+			calc def calcVolFlow (actPower :> ISQ::power, diffPressure :> ISQ::pressure) :> ISQMechanics::volumeFlowRate {
 				actPower / diffPressure
+			}
+			
+			calc def inOutFlow (inFlow :> ISQSpaceTime::volume, volFlow :> ISQMechanics::volumeFlowRate) :> ISQSpaceTime::volume {
+				// not sure how to model, without time steps	
 			}
 		}
 	
 		package  PartDefinitions {
 			part def SuctionMotor {
-				port energyIn : EnergyInOutPort; //direction?
+				port energyIn : EnergySupplyTypes::EnergyInOutPort;
 				port suctionPowerOut : SuctionPowerPort;
-				port suctionLevelIn : ~SuctionLevelPort;
+				port suctionLevelIn : ~VacuumingTypes::PortDefinitions::SuctionLevelPort;
 			
 				attribute par_maximumPower:>ISQ::power;
 			
@@ -104,8 +88,8 @@ package SuctionDevice {
 			}
 		
 			part def SuctionChamber {
-				port airIn : ExternalAirPort;
-				port airOut : InternalAirPort;
+				port airIn : VacuumingTypes::PortDefinitions::ExternalAirPort;
+				port airOut : VacuumingTypes::PortDefinitions::InternalAirPort;
 				port suctionPowerIn : ~SuctionPowerPort;
 				
 				attribute par_diffPressure:>ISQ::pressure;
@@ -118,10 +102,10 @@ package SuctionDevice {
 		
 			part def SuctionDevice {	
 			
-				port airIn : ExternalAirPort;
-				port airOut : InternalAirPort;
-				port energyIn : EnergyInOutPort;
-				port suctionLevelIn : ~SuctionLevelPort;
+				port airIn : VacuumingTypes::PortDefinitions::ExternalAirPort;
+				port airOut : VacuumingTypes::PortDefinitions::InternalAirPort;
+				port energyIn : EnergySupplyTypes::EnergyInOutPort;
+				port suctionLevelIn : ~VacuumingTypes::PortDefinitions::SuctionLevelPort;
 			}
 		}
 	}

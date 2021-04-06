@@ -1,50 +1,41 @@
 package BrushSystem {
+	// Standard libraries
 	import ScalarValues::*;
     import ISQ::*;
     import ISQMechanics::*;
     import SI::*;
     import ISQSpaceTime::*;
     
+    // Local libraries
+    import EnergySupplyTypes::*;
+	import VacuumingTypes::*;
+    
+    // Local imports
     import Definitions::*;
-
-	// Local import not possible
-	// import EnergySupplyTypes::*;
-	// import VacuumingTypes::*;
-	
+    
+    // Model packages
 	package Definitions {
-		
 		import PortDefinitions::*;
 		import InterfaceDefinitions::*;
 		import InterfaceDefinitions::*;
 		import PartDefinitions::*;
 		import CalculationDefinitions::*;
 		
+		// Definition of internal ports
 		package PortDefinitions {
-		//Ports (temporarily taken from VacuumTypes)
 			
 			port def RotationSpeedPort {
-				out item rotationSpeed{
+				out item rotationSpeed {
 					attribute rotationSpeed :> ISQSpaceTime::rotationalFrequency; // :rpm
 				}
-			}
-			
-			port def RotationLevelPort {
-				out item rotationLevel {
-					attribute rotationLevel : Real;
-				} 
-			}
-	
-			// Other Ports (from EnergySupply)
-			port def EnergyInOutPort {
-				out item electricalEnergy;
 			}
 		}
 		
 		package InterfaceDefinitions {
 		
 			interface def EnergySupply {
-				end supplierPort : EnergyInOutPort;
-            	end consumerPort : EnergyInOutPort;
+				end supplierPort : EnergySupplyTypes::EnergyInOutPort;
+            	end consumerPort : EnergySupplyTypes::EnergyInOutPort;
 			}
 		
 			interface def RotationSpeed {
@@ -53,8 +44,8 @@ package BrushSystem {
 			}
 			
 			interface def RotationLevel {
-				end supplierPort : RotationLevelPort;
-            	end consumerPort : RotationLevelPort;
+				end supplierPort : VacuumingTypes::PortDefinitions::RotationLevelPort;
+            	end consumerPort : VacuumingTypes::PortDefinitions::RotationLevelPort;
 			}
 		}
 		
@@ -68,15 +59,15 @@ package BrushSystem {
 		package PartDefinitions {
 			
 			part def BrushMotor {	
-				port energyIn : EnergyInOutPort;
-				port rotationLevelIn : ~RotationLevelPort;
+				port energyIn : EnergySupplyTypes::EnergyInOutPort;
+				port rotationLevelIn : ~VacuumingTypes::PortDefinitions::RotationLevelPort;
 				port rotationSpeedOut : RotationSpeedPort;
 				
 				attribute par_maximumRPM :> ISQSpaceTime::rotationalFrequency;
 				
 				calc actualRPM : calcActualRPM (
 					rotationLevel = rotationLevelIn::rotationLevel::rotationLevel,
-					maxPower = par_maximumRPM
+					maxRPM = par_maximumRPM
 				) return pOut = rotationSpeedOut::rotationSpeed::rotationSpeed;
 			}
 			
@@ -84,23 +75,20 @@ package BrushSystem {
 				port rotationSpeedIn : ~RotationSpeedPort;
 			}
 			
-			part def RotatingBrush{
+			part def RotatingBrush {
 				port rotationSpeedIn : ~RotationSpeedPort;
 			}
 		
-			part def BrushSystem
-			{
-				port rotationLevelIn : ~RotationLevelPort;
-				port energyIn : EnergyInOutPort;
-				
-				
+			part def BrushSystem {
+				port rotationLevelIn : ~VacuumingTypes::PortDefinitions::RotationLevelPort;
+				port energyIn : EnergySupplyTypes::EnergyInOutPort;
 			}	
 		}
 	}
 	
 	package PartsTree {
 		part brushSystem : BrushSystem {
-			part mainBrush : MainBrush{
+			part mainBrush : MainBrush {
 				port redefines rotationSpeedIn;
 			} 
 			

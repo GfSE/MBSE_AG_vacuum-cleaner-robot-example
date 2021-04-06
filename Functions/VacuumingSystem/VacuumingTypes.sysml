@@ -1,28 +1,40 @@
-package 'VacuumingTypes' {
-
-	//import ScalarValues::*; //Wo brauchen wir ScalarValues? Werden diese nicht eher über SI abgedeckt? (importiert ScalarValues)
+package VacuumingTypes {
+	// Standard libraries
 	import SI::*;	// Für m³ etc.
 	import ISQSpaceTime::*; // angularVelocity
 	import ISQMechanics::*; // pressure
 	import ScalarValues::*; //Real
 	
-	package 'Ports' {
-		// Internal ports for Vacuuming System
-		// Die genutzen Types sind nicht auf Items übertragbar --> falls die item def wichtig war, gerne austauschen
-		port def RotationSpeedPort {
-			out rotationSpeed :> ISQSpaceTime::angularVelocity; // :rpm
+	// External ports of vacuuming system subsystems
+	package PortDefinitions {
+		
+		// Suction Device
+		port def SuctionLevelPort {
+			out item suctionLevel {
+				attribute suctionLevel : Real; // :% (from control -> needs to be moved there)
+			}
 		}
 		
-		port def SuctionPressurePort {
-			out suctionPressue :> ISQMechanics::pressure; // Kann man die Pressure hier nehmen, oder geht es dabei vorrangig um mechanische Flächendrücke?
+		port def ExternalAirPort {
+			in item externalAir{
+				attribute volume :> ISQSpaceTime::volume;
+			} 
 		}
 		
 		port def InternalAirPort {
 			out item internalAir{
-				attribute vol :> SI::'m³';
-			}
+				attribute volume :> ISQSpaceTime::volume;
+			} 
+		}
+		
+		// Brush System	
+		port def RotationLevelPort {
+			out item rotationLevel {
+				attribute rotationLevel : Real; // :% (from control -> needs to be moved there)
+			} 
 		}
 			
+		// Filter System
 		port def DebrisPort {
 			out item debris{
 				attribute vol:> SI::'m³';
@@ -30,19 +42,8 @@ package 'VacuumingTypes' {
 			}
 		}
 		
-		// External ports for vacuuming system
-		port def SuctionLevelPort {
-			out attribute suctionLevel : Real; // :% (from control -> needs to be moved there)
-		}
-		port def ExternalAirPort {
-			in item externalAir {
-				attribute vol :> SI::'m³';
-			}
-		}
-		port def RotationLevelPort{
-			out rotationLevel : Real; // :% (from control -> needs to be moved there)
-		}
 		// Temporarily added (from Energy Supply) and adapted
+		// Switch to original library is now possible -> to be removed here !!
 		port def EnergyInOutPort {
 			out item electricalEnergy {
 				attribute voltage :> SI::V;
@@ -52,35 +53,37 @@ package 'VacuumingTypes' {
 		}
 	}
 	
-	package 'Interfaces' {
-		// Interface Definitions for Vacuuming System
-		interface def AirIn {
-			end supplierPort : Ports::ExternalAirPort;
-            end consumerPort : Ports::ExternalAirPort;
+	// Interfaces between vacuuming system subsystems
+	package InterfaceDefinitions {
+		
+		interface def ExternalAir {
+			end supplierPort : PortDefinitions::ExternalAirPort;
+            end consumerPort : PortDefinitions::ExternalAirPort;
 		}
-		interface def SuctionPressure {
-			end supplierPort : Ports::SuctionPressurePort;
-            end consumerPort : Ports::SuctionPressurePort;
-		}
+		
 		interface def EnergySupply {
-			end supplierPort : Ports::EnergyInOutPort;
-            end consumerPort : Ports::EnergyInOutPort;
+			end supplierPort : EnergySupplyTypes::EnergyInOutPort;
+            end consumerPort : EnergySupplyTypes::EnergyInOutPort;
 		}
+		
 		interface def SuctionLevel {
-			end supplierPort : Ports::SuctionLevelPort;
-            end consumerPort : Ports::SuctionLevelPort;
+			end supplierPort : PortDefinitions::SuctionLevelPort;
+            end consumerPort : PortDefinitions::SuctionLevelPort;
 		}
-		interface def AirOut {
-			end supplierPort : Ports::InternalAirPort;
-            end consumerPort : Ports::InternalAirPort;
-		}
-		interface def RotationSpeed {
-			end supplierPort : Ports::RotationSpeedPort;
-            end consumerPort : Ports::RotationSpeedPort;
-		}
+		 
 		interface def RotationLevel {
-			end supplierPort : Ports::RotationLevelPort;
-            end consumerPort : Ports::RotationLevelPort;
+			end supplierPort : PortDefinitions::RotationLevelPort;
+            end consumerPort : PortDefinitions::RotationLevelPort;
+		}
+		
+		interface def Debris {
+			end supplierPort : PortDefinitions::DebrisPort;
+			end consumerPort : PortDefinitions::DebrisPort;
+		}
+		
+		interface def InternalAir {
+			end supplierPort : PortDefinitions::InternalAirPort;
+			end consumerPort : PortDefinitions::InternalAirPort;
 		}
 	}
 }
