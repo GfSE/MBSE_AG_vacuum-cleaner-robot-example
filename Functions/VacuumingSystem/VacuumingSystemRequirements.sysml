@@ -2,21 +2,27 @@ package VacuumingSystemRequirements {
 	
 	// Standard libraries
 	import SI::*;
+	import Requirements::*;
 	
-	// Local imports
+	// Local import
 	import VacuumingSystem::*;
 	import SystemRequirements::*;
 	
 	package SuctionDeviceRequirements {
-		requirement suctionPower {
-			subject suctionDevice : SuctionDevice;
-			doc /* ... */
+	// Requirements for suction device
+		requirement id 'sd1' SuctionPower : PhysicalRequirementCheck {
+			subject suctionMotor : SuctionMotor;
+			doc /* The maximum suction power shall be at least 1000W */
 		
-			require constraint {}
-			}
+			require constraint {suctionMotor::par_maximumPower >= 1000@[SI::W]}
+		}
 	}
 	
-	package FilterSystemRequirements {}
-	package BrushSystemRequirements {}
+	// 
+	// How to use requirement defs from "Requirements", e.g. PhysicalRequirementCheck?
+	// How to link requirements (subsystem) to other requirements (system), e.g. "derive"?
+	//
 	
+	package BrushSystemRequirements {}
+	package FilterSystemRequirements {}
 }
