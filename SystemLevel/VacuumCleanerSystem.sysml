@@ -13,4 +13,12 @@ package VacuumCleanerSystem {
 		// Additional parts from subsystems needs to be added
 	}
 	
+	
+	part vacuumCleanerSystem : VacuumCleanerSystem {
+		part vacuuming : VacuumingSystem;
+		//part driveUnit : DriveUnit;
+		//part nav : NavigationSystem;
+		//part energ : EnergySupplySystem;
+	}
+	
 }

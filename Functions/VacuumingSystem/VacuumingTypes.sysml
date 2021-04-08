@@ -36,7 +36,7 @@ package VacuumingTypes {
 			
 		// Filter System
 		port def DebrisPort {
-			out item debris{
+			inout item debris{
 				attribute vol:> SI::'m³';
 				attribute mass :> SI::kg;
 			}

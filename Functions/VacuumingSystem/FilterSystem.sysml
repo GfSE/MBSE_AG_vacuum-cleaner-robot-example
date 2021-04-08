@@ -2,10 +2,8 @@ package FilterSystem {
 	private import SI::*; // SI-Import funktioniert nach clean import
 	private import ISQMechanics::*; // Mass
 	private import ISQSpaceTime::*; // Volume
+	import VacuumingTypes::*;
 	import Definitions::*; // no nested import required
-	
-
-	//import VacuumingTypes::*; // auch mit neuem RC dateiübergreifender Import nicht möglich
 	
 	package Definitions {
 		//To avoid nested imports;
@@ -14,45 +12,8 @@ package FilterSystem {
 		import ItemDefinitions::*;
 		import PartDefinitions::*;
 		
-		package PortDefinitions {
-			//Ports (temporarily taken from VacuumTypes)
-			port def ExternalAirPort {
-				// Wenn nur out/in/inout genommen wird, übernimmt er den Definitionstyp
-				// In sysml/src/examples/'Vehicle Example'/VehicleDefinitions.sysml (2020-12 Pilot) wird nur out verwendet
-				// item für sachen die 'fließen' oder extern beeinflusst werden
-				out item externalAir {
-					attribute volume :> ISQSpaceTime::volume; // Einheiten werden dann erst den spezifisch verwendeten Werten gegeben
-				}	
-			}
-		
-			port def InternalAirPort {
-				in item internalAir{
-					attribute volume :> ISQSpaceTime::volume;
-				} 
-			}
-		
-			port def DebrisPort {
-				inout item debris {
-					attribute volume :> ISQSpaceTime::volume;
-					attribute mass :> ISQMechanics::mass;
-				}
-			}
-		}
-
 		package InterfaceDefinitions {
-			// Interface complementary to suction device
-			interface def AirExchange {
-				end supplierPort : ExternalAirPort;
-            	end consumerPort : ExternalAirPort;
-			}
-			interface def AirIn {
-				end supplierPort : InternalAirPort;
-            	end consumerPort : InternalAirPort;
-			}
-			interface def DebrisOut {
-				end supplierPort : DebrisPort;
-            	end consumerPort : DebrisPort;
-			}
+			
 		}
 		
 		package ItemDefinitions {
@@ -74,6 +35,7 @@ package FilterSystem {
 				enum usageLevel : UsageLevel; 
 				port dirtyAir: InternalAirPort;
 				port cleanAir : ExternalAirPort;
+				port debrisOut : DebrisPort;
 			}
 			part def Tank {
 				attribute mass :> ISQMechanics::mass;
@@ -89,6 +51,7 @@ package FilterSystem {
 				perform action filterSys;
 				port airIn : InternalAirPort;
 				port airOut : ExternalAirPort;
+				port debrisOut : DebrisPort;
 				exhibit state filterState;
 				
 			}
@@ -99,13 +62,13 @@ package FilterSystem {
 			part tank:Tank{
 				attribute redefines mass=0.5@[kg];
 				attribute redefines volume=0.001@[m^3]; // liter [l] nicht als Einheit vorhanden?
+				port redefines debrisIn;
 			}
-			part fil:Filter;
-			// @TODO: clean up port --> currently no sense here
-			//bind fil::cleanAir=airOut;
-			//interface airExchange:AirExchange 
-			//connect fil::dirtAir to tank::debrisIn;
+			part fil:Filter{
+				port redefines debrisOut;
+			}
 			
+			interface : VacuumingTypes::InterfaceDefinitions::Debris connect supplierPort => fil::debrisOut to consumerPort => tank::debrisIn;			
 		}
 	}
 }
