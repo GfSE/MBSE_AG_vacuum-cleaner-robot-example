@@ -2,6 +2,7 @@ package 'DriveUnit' { //Spaces lead to problems in %show
     import ScalarValues::*;
     import ISQ::*;
     import SI::*;
+    import ISQElectromagnetism::*;
     
     
     package Requirements {
@@ -128,12 +129,20 @@ package 'DriveUnit' { //Spaces lead to problems in %show
             stream consumerPort::energyOut to supplierPort::energyIn;
         }
         
+        interface def PowerInterface{
+            end supplierPort{
+                inout item PowerInOut;
+            }
+            end consumerPort{
+                inout item PowerInOut;
+            }
+            stream supplierPort::PowerInOut to consumerPort::PowerInOut;
+        }
     }
     
     package portDef{
         port def powerSupplyPort{
-            inout attribute power :> ISQ::voltage;
-            inout attribute ground :> ISQ::voltage;
+            inout attribute power :> ISQElectromagnetism::instantaneousPower; // alias of electricPower
         }
         
         port def mountingPort;
@@ -160,6 +169,17 @@ package 'DriveUnit' { //Spaces lead to problems in %show
         
         port def psuSignal{
             attribute isChargingPositioN : Boolean;
+        }
+        
+        port def DriveUnitPowerSupply{
+            inout attribute power :> ISQElectromagnetism::instantaneousPower; // alias of electricPower
+        }
+        
+        port def DriverUnitControlSignal{
+            // this is an example port, there are other possibilities
+            in attribute forwards : Boolean;
+            in attribute left : Boolean;
+            in attribute right: Boolean;
         }
     }
 
@@ -278,6 +298,7 @@ package 'DriveUnit' { //Spaces lead to problems in %show
         import functionalArchitecture::*;
         import calculationDefinition::*;
         import partDef::*;
+        import interfaceDef::*;
         
         
         //part def testInheritance :> dcMotor; // Dies ist eine echte Vererbung
@@ -296,7 +317,15 @@ package 'DriveUnit' { //Spaces lead to problems in %show
             part orientation : Lasertower;
             part collision : Bumber;
             part psuDetection : timeofFlightController;
+            
+            port powerSupply : DriveUnitPowerSupply;
+            port controlSignal : DriverUnitControlSignal;
+    
         }
+            interface : PowerInterface connect supplierPort => logicalDriveUnit::powerSupply to consumerPort => logicalDriveUnit::motor1::psu;
+            interface : PowerInterface connect supplierPort => logicalDriveUnit::powerSupply to consumerPort => logicalDriveUnit::motor2::psu;
+            interface : PowerInterface connect supplierPort => logicalDriveUnit::powerSupply to consumerPort => logicalDriveUnit::orientation::psu;
+
         //satisfy Beschleunigen by driveUnit; // Funktioniert noch nicht
     }
     
