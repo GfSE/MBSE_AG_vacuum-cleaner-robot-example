@@ -4,7 +4,7 @@ package 'BLI' {
 	part def BatteryLevelComputer {
 	
     // physical flows
-    port energyIn          : EnergyInOutPort;
+    port energy          : PowerInOutPort; // Singal interface anstelle von Energy
   
     // data flows
     port batteryLevel      : RelativeBatteryLevelPort;
@@ -14,7 +14,7 @@ package 'BLI' {
     attribute capacity     : ScalarValues::Real = 1000;
     
     exhibit BatteryLevelComputerStates {
-      in  ref en                             = energyIn::e;
+      in  ref en                             = energy::power;
       in  ref cn                             = capactiy; // 'this' wäre praktisch
       out ref batteryLevel::voltageInPercent = bl;
       out ref batteryLevelColor::color       = co;
@@ -49,7 +49,7 @@ package 'BLI' {
 	
   /// ACTIONS //////////////////////////////////////////////////////////////////
 	
-	action def ActComputeBatteryInfo(in  energy       : Real, 
+	action def ActComputeBatteryInfo(in  energy       : ISQElectromagnetism::instantaneousPower,
 	                                 in  capacity     : Real,
 	                                 out batteryLevel : Real,
 	                                 out color        : COLOR) {

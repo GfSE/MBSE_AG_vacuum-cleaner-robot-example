@@ -3,7 +3,7 @@ package 'BLI' {
 
   part def LED {
 	  // physical flows
-    port energyIn          : EnergyInOutPort;
+    port energy            : PowerInOutPort;
     
     // data flows
     port batteryLevelColor : BatteryLevelColorInPort; 

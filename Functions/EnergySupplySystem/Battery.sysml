@@ -3,9 +3,8 @@ package 'EnergySupply' {
 
 	part def Battery {
 	  // ports
-	  port energyIn  : EnergyInOutPort;
-	  port energyOut : EnergyInOutPort;
-	  
+	  port energy : PowerInOutPort;
+
 	  // data flows
     port batteryLevel : RelativeBatteryLevelPort;
     

@@ -4,7 +4,7 @@ package 'BLI' {
 	part def BatteryLevelIndicator {
 	  
 	  // physical flows
-    port energyIn : EnergyInOutPort;
+    port energy : PowerInOutPort;
     
     // data flows
     port batteryLevel : RelativeBatteryLevelPort;
@@ -12,9 +12,9 @@ package 'BLI' {
     part blc : BatteryLevelComputer;
     part led : LED;
     
-    connection : EnergyToEnergy   connect energyIn          to blc::energyIn;
+    connection : EnergyToEnergy   connect energy            to blc::energyIn;
     
-    connection : EnergyToEnergy   connect energyIn          to led::energyIn;
+    connection : EnergyToEnergy   connect energy            to led::energyIn;
     
     connection : WhySoComplicated connect blc::batteryLevel to batteryLevel;
     
