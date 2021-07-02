@@ -33,10 +33,13 @@ package BrushSystem {
 		
 		package InterfaceDefinitions {
 		
-			interface def EnergySupply {
-				end supplierPort : EnergySupplyTypes::EnergyInOutPort;
-            	end consumerPort : EnergySupplyTypes::EnergyInOutPort;
-			}
+		doc /* 
+		 * from PortDef
+		 */
+			//interface def EnergySupply {
+			//	end supplierPort : EnergySupplyTypes::EnergyInOutPort;
+            //	end consumerPort : EnergySupplyTypes::EnergyInOutPort;
+			//}
 		
 			interface def RotationSpeed {
 				end supplierPort : RotationSpeedPort;
@@ -59,7 +62,7 @@ package BrushSystem {
 		package PartDefinitions {
 			
 			part def BrushMotor {	
-				port energyIn : EnergySupplyTypes::EnergyInOutPort;
+				port energyIn : PortDef::PowerInOutPort;
 				port rotationLevelIn : ~VacuumingTypes::PortDefinitions::RotationLevelPort;
 				port rotationSpeedOut : RotationSpeedPort;
 				
@@ -81,7 +84,7 @@ package BrushSystem {
 		
 			part def BrushSystem {
 				port rotationLevelIn : ~VacuumingTypes::PortDefinitions::RotationLevelPort;
-				port energyIn : EnergySupplyTypes::EnergyInOutPort;
+				port energyIn : PortDef::PowerInOutPort;
 			}	
 		}
 	}
@@ -107,7 +110,7 @@ package BrushSystem {
 			port redefines rotationLevelIn;
 			port redefines energyIn; 
 
-			interface : EnergySupply connect supplierPort => energyIn to consumerPort => brushMotor::energyIn;
+			interface : PortDef::PowerInterface connect supplierPort => energyIn to consumerPort => brushMotor::energyIn;
 			interface : RotationSpeed connect supplierPort => brushMotor::rotationSpeedOut to consumerPort => mainBrush::rotationSpeedIn;
 			interface : RotationSpeed connect supplierPort => brushMotor::rotationSpeedOut to consumerPort => rotatingBrush::rotationSpeedIn;
 			interface : RotationLevel connect supplierPort => rotationLevelIn to consumerPort => brushMotor::rotationLevelIn;

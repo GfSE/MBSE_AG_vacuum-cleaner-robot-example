@@ -40,10 +40,10 @@ package SuctionDevice {
             	end consumerPort : SuctionPowerPort;
 			}
 		
-			interface def EnergySupply {
-				end supplierPort : EnergySupplyTypes::EnergyInOutPort;
-            	end consumerPort : EnergySupplyTypes::EnergyInOutPort;
-			}
+			//interface def EnergySupply {
+			//	end supplierPort : EnergySupplyTypes::EnergyInOutPort;
+            //	end consumerPort : EnergySupplyTypes::EnergyInOutPort;
+			//}
 			
 			interface def SuctionLevel {
 				end supplierPort : VacuumingTypes::PortDefinitions::SuctionLevelPort;
@@ -74,7 +74,7 @@ package SuctionDevice {
 	
 		package  PartDefinitions {
 			part def SuctionMotor {
-				port energyIn : EnergySupplyTypes::EnergyInOutPort;
+				port energyIn : PortDef::PowerInOutPort;
 				port suctionPowerOut : SuctionPowerPort;
 				port suctionLevelIn : ~VacuumingTypes::PortDefinitions::SuctionLevelPort;
 			
@@ -104,7 +104,7 @@ package SuctionDevice {
 			
 				port airIn : VacuumingTypes::PortDefinitions::ExternalAirPort;
 				port airOut : VacuumingTypes::PortDefinitions::InternalAirPort;
-				port energyIn : EnergySupplyTypes::EnergyInOutPort;
+				port energyIn : PortDef::PowerInOutPort;
 				port suctionLevelIn : ~VacuumingTypes::PortDefinitions::SuctionLevelPort;
 			}
 		}
@@ -137,7 +137,7 @@ package SuctionDevice {
 			
 			interface : AirIn connect supplierPort => airIn to consumerPort => suctionChamber::airIn;
 			interface : SuctionPressure connect supplierPort => suctionMotor::suctionPowerOut to consumerPort => suctionChamber::suctionPowerIn;
-			interface : EnergySupply connect supplierPort => energyIn to consumerPort => suctionMotor::energyIn;
+			interface : PortDef::PowerInterface connect supplierPort => energyIn to consumerPort => suctionMotor::energyIn;
 			interface : SuctionLevel connect supplierPort => suctionLevelIn to consumerPort => suctionMotor::suctionLevelIn;
 			interface : AirOut connect supplierPort => suctionChamber::airOut to consumerPort => airOut;	
 		}

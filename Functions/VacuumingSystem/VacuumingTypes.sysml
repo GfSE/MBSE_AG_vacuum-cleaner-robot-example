@@ -4,6 +4,7 @@ package VacuumingTypes {
 	import ISQSpaceTime::*; // angularVelocity
 	import ISQMechanics::*; // pressure
 	import ScalarValues::*; //Real
+	import PortDef::*;
 	
 	// External ports of vacuuming system subsystems
 	package PortDefinitions {
@@ -44,13 +45,13 @@ package VacuumingTypes {
 		
 		// Temporarily added (from Energy Supply) and adapted
 		// Switch to original library is now possible -> to be removed here !!
-		port def EnergyInOutPort {
-			out item electricalEnergy {
-				attribute voltage :> SI::V;
-				attribute current :> SI::A;
-				attribute power :> SI::W;
-			} 
-		}
+		//port def EnergyInOutPort {
+		//	out item electricalEnergy {
+		//		attribute voltage :> SI::V;
+		//		attribute current :> SI::A;
+		//		attribute power :> SI::W;
+		//	} 
+		//}
 	}
 	
 	// Interfaces between vacuuming system subsystems
@@ -61,10 +62,20 @@ package VacuumingTypes {
             end consumerPort : PortDefinitions::ExternalAirPort;
 		}
 		
-		interface def EnergySupply {
-			end supplierPort : EnergySupplyTypes::EnergyInOutPort;
-            end consumerPort : EnergySupplyTypes::EnergyInOutPort;
-		}
+		doc /*
+		 * Power Interface from PortDef is used:
+		 * interface def PowerInterface {
+  	    end supplierPort : PowerInOutPort;
+  	    end consumerPort : PowerInOutPort;
+  	}
+		 
+		 */
+		//interface def EnergySupply {
+		//	end supplierPort : EnergySupplyTypes::EnergyInOutPort;
+        //    end consumerPort : EnergySupplyTypes::EnergyInOutPort;
+		//}
+		
+		
 		
 		interface def SuctionLevel {
 			end supplierPort : PortDefinitions::SuctionLevelPort;
