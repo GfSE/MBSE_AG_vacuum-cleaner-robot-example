@@ -4,17 +4,25 @@ package VacuumingTypes {
 	import ISQSpaceTime::*; // angularVelocity
 	import ISQMechanics::*; // pressure
 	import ScalarValues::*; //Real
-	import PortDef::*;
+	//import PortDef::*; deprecated, use Signals instead
+	import Signals::*;
 	
 	// External ports of vacuuming system subsystems
 	package PortDefinitions {
 		
+		// Imported from Signals library
+		port def SuctionLevelPort :> NumericSignal;
+		port def RotationLevelPort :> NumericSignal;
+		port def PowerInOutVac :> Signals::BatterySignals::PowerInOutPort;
+		
+		
 		// Suction Device
-		port def SuctionLevelPort {
-			out item suctionLevel {
-				attribute suctionLevel : Real; // :% (from control -> needs to be moved there)
-			}
-		}
+		//port def SuctionLevelPort {
+		// {
+		//	out item suctionLevel {
+		//		attribute suctionLevel : Real; // :% (from control -> needs to be moved there)
+		//	}
+		//}
 		
 		port def ExternalAirPort {
 			in item externalAir{
@@ -29,11 +37,11 @@ package VacuumingTypes {
 		}
 		
 		// Brush System	
-		port def RotationLevelPort {
-			out item rotationLevel {
-				attribute rotationLevel : Real; // :% (from control -> needs to be moved there)
-			} 
-		}
+		//port def RotationLevelPort :> NumericSignal {
+		//	out item rotationLevel {
+		//		attribute rotationLevel : Real; // :% (from control -> needs to be moved there)
+		//	} 
+		//}
 			
 		// Filter System
 		port def DebrisPort {
@@ -42,16 +50,6 @@ package VacuumingTypes {
 				attribute mass :> SI::kg;
 			}
 		}
-		
-		// Temporarily added (from Energy Supply) and adapted
-		// Switch to original library is now possible -> to be removed here !!
-		//port def EnergyInOutPort {
-		//	out item electricalEnergy {
-		//		attribute voltage :> SI::V;
-		//		attribute current :> SI::A;
-		//		attribute power :> SI::W;
-		//	} 
-		//}
 	}
 	
 	// Interfaces between vacuuming system subsystems
@@ -62,30 +60,20 @@ package VacuumingTypes {
             end consumerPort : PortDefinitions::ExternalAirPort;
 		}
 		
-		doc /*
-		 * Power Interface from PortDef is used:
-		 * interface def PowerInterface {
-  	    end supplierPort : PowerInOutPort;
-  	    end consumerPort : PowerInOutPort;
-  	}
-		 
-		 */
-		//interface def EnergySupply {
-		//	end supplierPort : EnergySupplyTypes::EnergyInOutPort;
-        //    end consumerPort : EnergySupplyTypes::EnergyInOutPort;
-		//}
+
+		interface def SuctionLevel :> Signals::NumericSignalInterface;
+		interface def RotationLevel :> Signals::NumericSignalInterface;
 		
 		
-		
-		interface def SuctionLevel {
+		/* interface def SuctionLevel {
 			end supplierPort : PortDefinitions::SuctionLevelPort;
             end consumerPort : PortDefinitions::SuctionLevelPort;
-		}
+		}*/
 		 
-		interface def RotationLevel {
+		/*interface def RotationLevel {
 			end supplierPort : PortDefinitions::RotationLevelPort;
             end consumerPort : PortDefinitions::RotationLevelPort;
-		}
+		}*/
 		
 		interface def Debris {
 			end supplierPort : PortDefinitions::DebrisPort;

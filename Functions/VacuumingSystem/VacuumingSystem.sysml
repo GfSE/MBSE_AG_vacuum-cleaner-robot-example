@@ -6,7 +6,7 @@ package VacuumingSystem {
 	
 	
 	part def VacuumingSystem {
-		port energyIn : PortDef::PowerInOutPort;
+		port energyIn : VacuumingTypes::PortDefinitions::PowerInOutVac;
 		port airIn : VacuumingTypes::PortDefinitions::ExternalAirPort;
 		port airOut : VacuumingTypes::PortDefinitions::InternalAirPort;
 		port suctionLevel : ~VacuumingTypes::PortDefinitions::SuctionLevelPort;
@@ -34,8 +34,8 @@ package VacuumingSystem {
 		}
 
 		interface : VacuumingTypes::InterfaceDefinitions::ExternalAir connect supplierPort => airIn to consumerPort => sd::airIn;
-		interface : PortDef::PowerInterface connect supplierPort => energyIn to consumerPort => sd::energyIn;
-		interface : PortDef::PowerInterface connect supplierPort => energyIn to consumerPort => bs::energyIn;
+		interface : Signals::BatterySignals::VacuumSystemPowerInterface connect supplierPort => energyIn to consumerPort => sd::energyIn;
+		interface : Signals::BatterySignals::VacuumSystemPowerInterface connect supplierPort => energyIn to consumerPort => bs::energyIn;
 		interface : VacuumingTypes::InterfaceDefinitions::SuctionLevel connect supplierPort => suctionLevel to consumerPort => sd::suctionLevelIn;
 		interface : VacuumingTypes::InterfaceDefinitions::RotationLevel connect supplierPort => rotationLevel to consumerPort => bs::rotationLevelIn;
 		 

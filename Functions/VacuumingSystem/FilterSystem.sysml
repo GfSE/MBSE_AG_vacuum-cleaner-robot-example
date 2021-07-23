@@ -4,6 +4,7 @@ package FilterSystem {
 	private import ISQSpaceTime::*; // Volume
 	import VacuumingTypes::*;
 	import Definitions::*; // no nested import required
+	import Signals::*;
 	
 	package Definitions {
 		//To avoid nested imports;
@@ -32,13 +33,13 @@ package FilterSystem {
 		
 		package PartDefinitions {
 			part def Filter {
-				enum usageLevel : UsageLevel; 
+				port usageLevel : Signals::NumericSignal; 
 				port dirtyAir: InternalAirPort;
 				port cleanAir : ExternalAirPort;
 				port debrisOut : DebrisPort;
 			}
 			part def Tank {
-				attribute mass :> ISQMechanics::mass;
+				attribute mass;// :> ISQMechanics::mass; //fehler beu der Typangabe
 				attribute volume :> ISQSpaceTime::volume;
 				enum fillLevel : FillLevel;
 				// Vom Filter in den Tank
