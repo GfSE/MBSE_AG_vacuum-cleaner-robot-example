@@ -10,10 +10,14 @@ package VacuumingTypes {
 	// External ports of vacuuming system subsystems
 	package PortDefinitions {
 		
-		// Imported from Signals library
-		port def SuctionLevelPort :> NumericSignal;
-		port def RotationLevelPort :> NumericSignal;
-		port def PowerInOutVac :> Signals::BatterySignals::PowerInOutPort;
+		// Wie kann man sicherstellen, dass das zweite Attribute nicht vererbt wird, bzw. weggelassen wird
+		port def SuctionLevelPort :> BatterySignals::VacuumSystemPowerOutPort {
+				out attribute redefines suctionPower :> ISQMechanics::power;
+            }
+        port def RotationLevelPort :> BatterySignals::VacuumSystemPowerOutPort {
+        		out attribute redefines brushPower :> ISQMechanics::power; 	
+        	}
+		//port def PowerInOutVac :> Signals::BatterySignals::PowerInOutPort;
 		
 		
 		// Suction Device
@@ -50,6 +54,9 @@ package VacuumingTypes {
 				attribute mass :> SI::kg;
 			}
 		}
+		
+		port def FillStatePort :> NumericSignal;
+				
 	}
 	
 	// Interfaces between vacuuming system subsystems
@@ -61,8 +68,9 @@ package VacuumingTypes {
 		}
 		
 
-		interface def SuctionLevel :> Signals::NumericSignalInterface;
-		interface def RotationLevel :> Signals::NumericSignalInterface;
+		interface def SuctionLevel :> Signals::BatterySignals::VacuumSystemPowerInterface;
+		interface def RotationLevel :> Signals::BatterySignals::VacuumSystemPowerInterface;
+		interface def FillStateLevel :> Signals::NumericSignalInterface;
 		
 		
 		/* interface def SuctionLevel {
@@ -83,6 +91,6 @@ package VacuumingTypes {
 		interface def InternalAir {
 			end supplierPort : PortDefinitions::InternalAirPort;
 			end consumerPort : PortDefinitions::InternalAirPort;
-		}
+		} 
 	}
 }

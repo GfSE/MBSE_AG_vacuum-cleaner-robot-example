@@ -46,11 +46,11 @@ package SuctionDevice {
             	end consumerPort : EnergySupplyTypes::EnergyInOutPort;
 			}*/
 			
-			interface def SuctionLevel {
+		/*	interface def SuctionLevel {
 				end supplierPort : VacuumingTypes::PortDefinitions::SuctionLevelPort;
             	end consumerPort : VacuumingTypes::PortDefinitions::SuctionLevelPort;
 			}
-			
+			*/
 			interface def AirOut {
 				end supplierPort : VacuumingTypes::PortDefinitions::InternalAirPort;
             	end consumerPort : VacuumingTypes::PortDefinitions::InternalAirPort;
@@ -59,7 +59,7 @@ package SuctionDevice {
 		
 		package CalculationDefinitions {
 		// Definition of calculations for SuctionDevice
-			calc def calcActualPower (powerLevel :> VacuumingTypes::PortDefinitions::SuctionLevelPort::val, maxPower :> ISQ::power) :> ISQ::power {
+			calc def calcActualPower (powerLevel :> VacuumingTypes::PortDefinitions::SuctionLevelPort::suctionPower, maxPower :> ISQ::power) :> ISQ::power {
             	powerLevel * maxPower 
         	}
         
@@ -75,14 +75,14 @@ package SuctionDevice {
 	
 		package  PartDefinitions {
 			part def SuctionMotor {
-				port energyIn : VacuumingTypes::PortDefinitions::PowerInOutVac;
+				//port energyIn : VacuumingTypes::PortDefinitions::PowerInOutVac;
 				port suctionPowerOut : SuctionPowerPort;
 				port suctionLevelIn : ~VacuumingTypes::PortDefinitions::SuctionLevelPort;
 			
 				attribute par_maximumPower:>ISQ::power;
 			
 				calc powerOut : calcActualPower (
-					powerLevel = suctionLevelIn::val,
+					powerLevel = suctionLevelIn::suctionPower,
 					maxPower = par_maximumPower
 				) return pOut = suctionPowerOut::suctionPower::suctionPower;
 			
@@ -105,7 +105,7 @@ package SuctionDevice {
 			
 				port airIn : VacuumingTypes::PortDefinitions::ExternalAirPort;
 				port airOut : VacuumingTypes::PortDefinitions::InternalAirPort;
-				port energyIn : VacuumingTypes::PortDefinitions::PowerInOutVac;
+				//port energyIn : VacuumingTypes::PortDefinitions::PowerInOutVac;
 				port suctionLevelIn : ~VacuumingTypes::PortDefinitions::SuctionLevelPort;
 			}
 		}
@@ -116,7 +116,7 @@ package SuctionDevice {
 			part suctionMotor : SuctionMotor {
 				// redefines der Ports sind erforderlich, um den common Kontext herzustellen --> ist allerdings nicht zwingend erforderlich
 				port redefines suctionPowerOut ; 
-				port redefines energyIn;
+				//port redefines energyIn;
 				port redefines suctionLevelIn;
 				
 				// Maximum suction pressure 1000W
@@ -133,13 +133,13 @@ package SuctionDevice {
 			
 			port redefines airIn;
 			port redefines airOut;
-			port redefines energyIn;
+			//port redefines energyIn;
 			port redefines suctionLevelIn;
 			
 			interface : AirIn connect supplierPort => airIn to consumerPort => suctionChamber::airIn;
 			interface : SuctionPressure connect supplierPort => suctionMotor::suctionPowerOut to consumerPort => suctionChamber::suctionPowerIn;
-			interface : PortDef::PowerInterface connect supplierPort => energyIn to consumerPort => suctionMotor::energyIn;
-			interface : SuctionLevel connect supplierPort => suctionLevelIn to consumerPort => suctionMotor::suctionLevelIn;
+			//interface : PortDef::PowerInterface connect supplierPort => energyIn to consumerPort => suctionMotor::energyIn;
+			interface : VacuumingTypes::InterfaceDefinitions::SuctionLevel connect supplierPort => suctionLevelIn to consumerPort => suctionMotor::suctionLevelIn;
 			interface : AirOut connect supplierPort => suctionChamber::airOut to consumerPort => airOut;	
 		}
 	}

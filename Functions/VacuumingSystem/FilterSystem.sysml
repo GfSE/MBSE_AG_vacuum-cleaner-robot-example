@@ -46,6 +46,7 @@ package FilterSystem {
 				port debrisIn : DebrisPort;
 				// Zum Tank säubern
 				port debrisOut : DebrisPort;	
+				port fillState : FillStatePort;
 			}
 			
 			part def FilterSystem{
@@ -54,6 +55,7 @@ package FilterSystem {
 				port airOut : ExternalAirPort;
 				port debrisOut : DebrisPort;
 				exhibit state filterState;
+				port fillState : FillStatePort;
 				
 			}
 		}
@@ -64,12 +66,14 @@ package FilterSystem {
 				attribute redefines mass=0.5@[kg];
 				attribute redefines volume=0.001@[m^3]; // liter [l] nicht als Einheit vorhanden?
 				port redefines debrisIn;
+				port redefines fillState;
 			}
 			part fil:Filter{
 				port redefines debrisOut;
 			}
 			
-			interface : VacuumingTypes::InterfaceDefinitions::Debris connect supplierPort => fil::debrisOut to consumerPort => tank::debrisIn;			
+			interface : VacuumingTypes::InterfaceDefinitions::Debris connect supplierPort => fil::debrisOut to consumerPort => tank::debrisIn;
+			interface : VacuumingTypes::InterfaceDefinitions::FillStateLevel connect src => tank::fillState to tgt => fillState;
 		}
 	}
 }
