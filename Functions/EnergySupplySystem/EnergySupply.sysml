@@ -14,26 +14,25 @@ package EnergySupply {
     /* Part definitions */
     
     part def EnergySupplySystem {
-        part battery : Battery;
-        part cpu : CPU;
-        part led : LED;
+        part battery    : Battery;
+        part cpu        : CPU;
+        part led        : LED;
     }
     
     part def Battery {
-        port energy : PowerInOutPort;
-        port current : VoltageSignal;
-        port tmp : Temperature;
+        port energy     : PowerInOutPort;
+        port current    : VoltageSignal;
+        port tmp        : Temperature;
     }
     
     part def CPU {
-        part blc : BatteryLevelComputer;
-        
-        port energy : PowerInOutPort;
+        part blc        : BatteryLevelComputer;
+        port energy     : PowerInOutPort;
     }
     
     part def BatteryLevelComputer {
-        port current : ~VoltageSignal;
-        port tmp : ~Temperature;
+        port current    : ~VoltageSignal;
+        port tmp        : ~Temperature;
         
         port emergencyStop : BooleanSignal;
         port powerSignal   : PowerSignal;
