@@ -2,8 +2,15 @@ package 'EnergySupplyTypes' {
 
 	import ScalarValues::*;
 
-  // TODO:
-  // Wollen wir SI-Einheiten verwenden?
+  doc /*
+    =======================================================================
+    This package defines basic datatypes used throughout the EnergySupply
+    and related components
+    =======================================================================
+    */  
+
+
+  // TODO: Should we use SI units?
 
   /// DATA TYPES ///////////////////////////////////////////////////////////////
   
@@ -18,7 +25,7 @@ package 'EnergySupplyTypes' {
 	/// PORTS ////////////////////////////////////////////////////////////////////
 	
 	port def EnergyInOutPort {
-	  inout item e : ElectricalEnergy; // units
+	  inout item e : ElectricalEnergy; // TODO: units?
 	}
   
   port def RelativeBatteryLevelPort {
