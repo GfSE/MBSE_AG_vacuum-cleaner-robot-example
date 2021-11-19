@@ -3,6 +3,7 @@
 	<name>vacuum-cleaner-robot-example</name>
 	<comment></comment>
 	<projects>
+		<project>sysml.library</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

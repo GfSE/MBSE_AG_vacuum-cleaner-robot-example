@@ -63,8 +63,8 @@ package FilterSystem {
 	package PartsTree {
 		part filterSystem : FilterSystem { 
 			part tank:Tank{
-				attribute redefines mass=0.5@[kg];
-				attribute redefines volume=0.001@[m^3]; // liter [l] nicht als Einheit vorhanden?
+				attribute redefines mass=0.5[kg];
+				attribute redefines volume=0.001[m^3]; // liter [l] nicht als Einheit vorhanden?
 				port redefines debrisIn;
 				port redefines fillState;
 			}
