@@ -10,9 +10,9 @@ package EnergySupply {
         part bms        : BatteryMangementSystem; // TODO: Needs to be imported
 
         // Ports
-        port energy     : PowerInOutPort; // in
-        port batSig     : BatterySignal; // in
-        port ledSig     : LEDSignal; // out
+        port requriedEnergy : PowerInOutPort; // in
+        port batSig         : BatterySignal; // in
+        port ledSig         : LEDSignal; // out
 
         interface : BatterySignalInterface connect
             src => batSig to

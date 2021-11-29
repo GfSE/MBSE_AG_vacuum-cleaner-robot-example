@@ -11,12 +11,10 @@ package 'Energy Supply System' {
     */  
 
   part def Battery {
-    // ports
-    port energy : PowerInOutPort;
-
-    // data flows
-    // OLD: port batterySignal : RelativeBatteryLevelPort;
-    port batSig : BatterySignal;
+    // Ports
+    port requriedEnergy : PowerInOutPort; // in
+    port providedEnergy : PowerInOutPort; // out
+    port batSig         : BatterySignal; // out
 
     
     // TOOD: Decompose in individual cells

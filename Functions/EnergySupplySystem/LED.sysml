@@ -3,8 +3,9 @@ package 'BLI' {
   import Signals::*;
 
   part def LED {   
-    // data flows
-    port ledSignal : LEDSignal; 
+    // Ports
+    port ledSignal 			: LEDSignal; 
+    port requriedEnergy : EnergyInOutPort;
 	}
 
 	action def setColor(in color : LED_COLOR) {

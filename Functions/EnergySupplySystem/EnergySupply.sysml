@@ -15,66 +15,36 @@ package EnergySupply {
     /* Part definitions */
     
     part def EnergySupplySystem {
-        part battery    : Battery;
-        part cpu        : CPU;
-        part led        : LED;
-    }
-    
-    part def Battery {
-        port energy     : PowerInOutPort;
-        port current    : VoltageSignal;
-        port temp       : Temperature;
-    }
+        // Parts
+        part bat : Battery;
+        part cpu : CPU;
+        part led : LED;
 
-    
-    
-    /* Part instances */
-    
-    part ess : EnergySupplySystem {
-        interface : PowerInOutInterface connect
-            src => battery::energy to
-            tgt => cpu::energy;
-        
-        interface : VoltageSignalInterface connect
-            src => battery::current to
-            tgt => cpu::blc::current;
-        
-        interface : TemperatureInterface connect
-            src => battery::tmp to
-            tgt => cpu::blc::tmp;
-        
-        interface : TemperatureInterface connect
-            src => battery::tmp to
-            tgt => cpu::blc::tmp;
-        
-        interface : LEDInterface connect
-            src => cpu::blc::led to
-            tgt => led::cmd;
-        
-        interface : PowerInOutInterface connect
-            src => charger::energy to
-            tgt => battery::energy;
-        
-        interface : BooleanSignalInterface connect
-            src => cpu::blc::emergencyStop to
-            tgt => charger::emergencyStop;
-        
-        interface : PowerSignalInterface connect
-            src => cpu::blc::powerSignal to
-            tgt => charger::powerSignal;
-        
-    /* Interfaces that would be available if we knew the other parts */
-    
-    /*
-        interface : AmpereHourConsumptionInterface connect
-            src => motor::consumption to
-            tgt => cpu::blc::motorConsumption;
-    
-        interface : AmpereHourConsumptionInterface connect
-            src => fan::consumption to
-            tgt => cpu::blc::fanConsumption;
-    */
-    
+        // Ports
+        port requiredEnergy : PowerInOutPort; // in
+
+        // Connections
+        interface : RequiredEnergyInterface connect
+            src => requiredEnergy to
+            tgt => bat::requiredEnergy;
+
+        interface : PowerInterface connect
+            src => bat:energy to
+            tgt => cpu:requriedEnergy;        
+
+        interface : PowerInterface connect
+            src => bat:energy to
+            tgt => led:requriedEnergy;
+
+        interface : BatterySignalInterface connect
+            src => bat::batSig to
+            tgt => cpu::batSig;
+
+        interface : LEDSignalInterface connect
+            src => cpu::ledSig to
+            tgt => led::ledSig;
+
+
     }
     
 }
