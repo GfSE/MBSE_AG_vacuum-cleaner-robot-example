@@ -1,5 +1,7 @@
-package 'EnergySupply' {
-  import EnergySupplyTypes::*;
+package 'Energy Supply System' {
+  
+  import ScalarValues::*;
+  import RoboCleanRequirements::*;
 
   doc /*
     =======================================================================
@@ -8,15 +10,64 @@ package 'EnergySupply' {
     =======================================================================
     */  
 
-	part def Battery {
-	  // ports
-	  port energy : PowerInOutPort;
+  part def Battery {
+    // ports
+    port energy : PowerInOutPort;
 
-	  // data flows
+    // data flows
     port batteryLevel : RelativeBatteryLevelPort;
     
     // TOOD: Decompose in individual cells
     
     // TODO: Add battery management such as overcharging protection
-	}
+  }
+
+  // The Energy supply system provides the electical energy for the robot vacuum cleaner
+
+  attribute def essStatus {
+    statusLED : Integer;
+    SOC       : Real; 
+  }
+  
+  comment about essStatus 
+  /* SOC = State of Charge */
+  
+  part def Accumulator {
+    item def Energy;
+    attribute mass : Real;
+    // attribute TotCapacity : ActiveEnergyValue;
+    attribute TotCapacity;
+    
+    part def cell {
+      Capacity  : Real;
+      Voltage   : Real;
+    }
+    
+    part def cellConnector;
+    
+    attribute def layout {
+      numOfParCells : Integer;
+      numOfSerCells : Integer;
+    }
+  }
+      
+  part def BMS {
+    part def volSensor;
+    part def curSensor;
+    part def tempSensor;
+    part def microController;
+    part def Balancer;
+  }
+  
+  comment about BMS 
+  /* BMS = Battery Management System */
+  
+  part def Charger {
+    attribute power : Real;
+    attribute voltage : Real;
+    
+    part def Plug;
+    part def Converter; // ACDC Converter
+    part def batConector;
+  }
 }

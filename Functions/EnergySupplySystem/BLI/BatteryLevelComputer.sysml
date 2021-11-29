@@ -4,7 +4,7 @@ package 'BLI' {
 	part def BatteryLevelComputer {
 	
     // physical flows
-    port energy          : PowerInOutPort; // Singal interface anstelle von Energy
+    port energy          : PowerInOutPort; // Signal interface anstelle von Energy
   
     // data flows
     port batteryLevel      : RelativeBatteryLevelPort;

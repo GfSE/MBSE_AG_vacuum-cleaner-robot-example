@@ -14,8 +14,7 @@ package DockingStation {
     }
     
     part def Charger {
-        port energy : PowerInOutPort;
-        
+        port energy        : PowerInOutPort;
         port emergencyStop : ~BooleanSignal;
         port powerSignal   : ~PowerSignal;
     }

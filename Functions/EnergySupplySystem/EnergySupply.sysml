@@ -22,7 +22,7 @@ package EnergySupply {
     part def Battery {
         port energy     : PowerInOutPort;
         port current    : VoltageSignal;
-        port tmp        : Temperature;
+        port temp       : Temperature;
     }
     
     part def CPU {
@@ -32,10 +32,10 @@ package EnergySupply {
     
     part def BatteryLevelComputer {
         port current    : ~VoltageSignal;
-        port tmp        : ~Temperature;
+        port temp       : ~Temperature;
         
-        port emergencyStop : BooleanSignal;
-        port powerSignal   : PowerSignal;
+        port stop       : BooleanSignal;
+        port powerSig   : PowerSignal;
 
         port motorConsumption : ~AmpereHourConsumption;
         port fanConsumption   : ~AmpereHourConsumption;
