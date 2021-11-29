@@ -15,12 +15,6 @@ package 'EnergySupplyTypes' {
   /// DATA TYPES ///////////////////////////////////////////////////////////////
   
   item def ElectricalEnergy;
-  
-  enum def COLOR {
-    RED;
-    YELLOW;
-    GREEN;
-  }
 
 	/// PORTS ////////////////////////////////////////////////////////////////////
 	
@@ -48,11 +42,6 @@ package 'EnergySupplyTypes' {
   connection def EnergyToEnergy {
     end : ElectricalEnergy;
     end : ElectricalEnergy;
-  }
-  
-  connection def ColorToColor {
-    end : COLOR;
-    end : COLOR;
   }
 
 }

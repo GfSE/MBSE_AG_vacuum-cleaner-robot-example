@@ -9,6 +9,7 @@ package EnergySupply {
     import PortDef::*;
     import Signals::*;
     import DockingStation::*;
+    import BatteryLevelComputer:*;
 
     
     /* Part definitions */
@@ -25,25 +26,19 @@ package EnergySupply {
         port temp       : Temperature;
     }
     
+    /**
+     * The CPU performs computations of the EnergySupplySystem. To this end
+     * it has two parts taking care of battery management and indicating the
+     * current battery level to the user.
+     */
     part def CPU {
+        // Parts
         part blc        : BatteryLevelComputer;
-        port energy     : PowerInOutPort;
-    }
-    
-    part def BatteryLevelComputer {
-        port current    : ~VoltageSignal;
-        port temp       : ~Temperature;
-        
-        port stop       : BooleanSignal;
-        port powerSig   : PowerSignal;
+        part bms        : BatteryMangementSystem;
 
-        port motorConsumption : ~AmpereHourConsumption;
-        port fanConsumption   : ~AmpereHourConsumption;
-        
-        port batteryLevel : NumericSignal;
-        port led : LEDSignal;
-        
-        // Behavior goes here ...
+        // Ports
+        port energy     : PowerInOutPort;
+        port batSig     : BatterySignal;
     }
     
     part def LED {

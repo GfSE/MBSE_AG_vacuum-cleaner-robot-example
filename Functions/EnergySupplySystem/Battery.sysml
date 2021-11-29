@@ -15,7 +15,9 @@ package 'Energy Supply System' {
     port energy : PowerInOutPort;
 
     // data flows
-    port batteryLevel : RelativeBatteryLevelPort;
+    // OLD: port batterySignal : RelativeBatteryLevelPort;
+    port batSig : BatterySignal;
+
     
     // TOOD: Decompose in individual cells
     
@@ -51,7 +53,8 @@ package 'Energy Supply System' {
     }
   }
       
-  part def BMS {
+  part def BMS {  // @Ralf: now instantiated by CPU? 
+                  // Maybe move to EnergySupply.sysml
     part def volSensor;
     part def curSensor;
     part def tempSensor;

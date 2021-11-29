@@ -1,18 +1,18 @@
-package 'BLI' {
+package 'BatteryLevelComputer' {
 	import EnergySupplyTypes::*;
 
+  /**
+   * This part takes a BatterySignal as input and translates it into a 
+   * color to be shown by the LED of EnergySupplySystem
+   */
 	part def BatteryLevelComputer {
-	
-    // physical flows
-    port energy          : PowerInOutPort; // Signal interface anstelle von Energy
-  
-    // data flows
-    port batteryLevel      : RelativeBatteryLevelPort;
-    port batteryLevelColor : BatteryLevelColorPort;
+     // Ports
+     port batSig     : BatterySignal;
   
     // attributes  
     attribute capacity     : ScalarValues::Real = 1000;
     
+    // Behavior
     exhibit BatteryLevelComputerStates {
       in  ref en                             = energy::power;
       in  ref cn                             = capactiy; // 'this' wäre praktisch
