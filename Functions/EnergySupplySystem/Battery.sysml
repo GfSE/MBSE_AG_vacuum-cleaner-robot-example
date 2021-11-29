@@ -55,11 +55,16 @@ package 'Energy Supply System' {
       
   part def BMS {  // @Ralf: now instantiated by CPU? 
                   // Maybe move to EnergySupply.sysml
+    // Parts
     part def volSensor;
     part def curSensor;
     part def tempSensor;
     part def microController;
     part def Balancer;
+
+    // Ports
+    port batSig : BatterySignal;
+
   }
   
   comment about BMS 

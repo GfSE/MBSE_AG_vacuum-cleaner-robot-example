@@ -25,25 +25,7 @@ package EnergySupply {
         port current    : VoltageSignal;
         port temp       : Temperature;
     }
-    
-    /**
-     * The CPU performs computations of the EnergySupplySystem. To this end
-     * it has two parts taking care of battery management and indicating the
-     * current battery level to the user.
-     */
-    part def CPU {
-        // Parts
-        part blc        : BatteryLevelComputer;
-        part bms        : BatteryMangementSystem; // TODO: Needs to be imported
 
-        // Ports
-        port energy     : PowerInOutPort;
-        port batSig     : BatterySignal;
-    }
-    
-    part def LED {
-        port cmd : LEDSignal;
-    }
     
     
     /* Part instances */

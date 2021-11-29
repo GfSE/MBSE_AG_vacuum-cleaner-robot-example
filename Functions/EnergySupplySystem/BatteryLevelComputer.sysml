@@ -50,7 +50,7 @@ package 'BatteryLevelComputer' {
     batteryColor = CalcBatteryLevel(batteryCapacity, maxBatteryCapacity)
 	}
 	
-	calc def CalcBatteryLevel(energy   : Real, capacity : Real) {
+	calc def CalcBatteryLevel(energy : Real, capacity : Real) {
    return energy / capacity
   }
 
