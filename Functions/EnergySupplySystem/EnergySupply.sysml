@@ -34,7 +34,7 @@ package EnergySupply {
     part def CPU {
         // Parts
         part blc        : BatteryLevelComputer;
-        part bms        : BatteryMangementSystem;
+        part bms        : BatteryMangementSystem; // TODO: Needs to be imported
 
         // Ports
         port energy     : PowerInOutPort;
