@@ -1,14 +1,18 @@
 package 'BLI' {
-  import EnergySupplyTypes::*;
+  import PortDef::*;
+  import Signals::*;
 
-  part def LED {
-	  // physical flows
-    port energy            : PowerInOutPort;
-    
+  part def LED {   
     // data flows
-    port batteryLevelColor : BatteryLevelColorInPort; 
+    port ledSignal : LEDSignal; 
 	}
-	
-	// TODO: Wie interagiert dieses Modell mit Code? 
-	// opaque actions
+
+	action def setColor(in color : LED_COLOR) {
+	 language "Java"
+	 /* 
+	  * Here, we could pollute our model with actual Java code for a 
+	  * robot-specific middleware / implementation. With this being out of 
+	  * scope of this example, the body of this opaque method is empty.
+	  */
+	}
 }
