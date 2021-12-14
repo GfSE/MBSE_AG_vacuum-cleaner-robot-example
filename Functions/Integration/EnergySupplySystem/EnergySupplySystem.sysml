@@ -1,7 +1,7 @@
 package EnergySupplySystem{
 	import Ports::*;
 	
-	part def energySupply{
+	part def energySupplySystem{
 		port powerSignal : PowerSignal;
 	}
 }
