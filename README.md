@@ -9,17 +9,17 @@
 # Abbildungen
 Transparentansicht ([Quelle](https://domotique.jeanlepine.com/index.php?post/2017/06/24/Course-d-aspirateurs))
 
-![TransparentVacuumCleaner](doc/Transparent_VacuumCleanerRobot.jpg)
+![TransparentVacuumCleaner](Doc/Transparent_VacuumCleanerRobot.jpg)
 
 Beispielhafte Bodenansicht ([Quelle](https://de.roborock.com/pages/roborock-s5-max))
 
-![Beispiel](doc/Staubsaugerroboter_RoborockS5Max.png)
+![Beispiel](Doc/Staubsaugerroboter_RoborockS5Max.png)
 
 BeispielZubehör
 
-![Beispiel](doc/Staubsaugroboter.jpg)
+![Beispiel](Doc/Staubsaugroboter.jpg)
 
 Beispiel Architektur
 
-![Architektur](doc/TI-Architektur.png)
+![Architektur](Doc/TI-Architektur.png)
 
