@@ -21,20 +21,14 @@ package Parts{
 
     part def Bumber {
         attribute isContact : Boolean;
-
         port Contact : contact;
     }
 
-    part def InfrarotController{
-        // berechnet Abbstand
-        //sendet signal
-    }
-
-    part def TimeOfFlightSensor{
+	part def TimeOfFlightSensor{
         port i2cSlave : i2c;
     }
     
-    part def TimeofFlightController{
+    part def InfrarotController{
         part timeOfFlightSensor;
         port psu : powerSupplyPort;
         port i2cMaster : i2c;

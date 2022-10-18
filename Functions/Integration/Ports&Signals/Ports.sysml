@@ -4,9 +4,9 @@ package Ports {
 	import ISQ::*;
 
 	port def DriverUnitControlSignal {
-            in forward : Boolean;
-            in left : Boolean;
-            in right : Boolean;
+            in forward :> Boolean;
+            in left :> Boolean;
+            in right :> Boolean;
     }
         
     	interface def DriverUnitControlSignalInterface{
