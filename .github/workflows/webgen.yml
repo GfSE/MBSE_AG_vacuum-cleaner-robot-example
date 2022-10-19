@@ -1,0 +1,67 @@
+name: CI
+
+on: push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: generate website
+        run: |
+          default_content="<p>The MBSE working group has a subgroup \"Application example\" that deals with the pilot implementation of SysML V2, which is provided by the OMG. The main goal is to develop a first feeling for the possibilities but also the pitfalls of the new version SysML v2. Therefore the focus is on getting to know the syntax and semantics of the new version, the differences to v1, and just playing around with the language.</p><p>On the basis of an application example, the following aspects will be put through their paces:</p><ul><li>Modeling of requirements, behavior, and structure</li><li>Collaboration and modularization of SysML v2 models</li><li>Collecting feedback for the SST SysML v2 working group</li><li>Evaluation of the existing implementation in Eclipse and Jupyter Notebook</li></ul><p>Since there is currently not much literature available on the topic of SysML v2, we try to get a picture ourselves and make our findings and our example model available on this page.</p><p> </p> <h4>An extensive SysML Example</h4> <p>Under construction ...</p>"
+          additional_content=""
+          html_pre="<div class=\"language-plaintext highlighter-rouge\"><div class=\"highlight\"><pre class=\"highlight\"><code>"
+          html_post="</code></pre></div></div>"
+          input="webpage.txt"
+          while read -r line
+          do
+            echo "$line"
+            if [[ $line == !!* ]] 
+            then
+              echo "true"
+              additional_content="$additional_content"
+              fp="${line:2:1000}"
+              echo "$fp"
+              model_content=$(<$fp)
+              additional_content="$additional_content $html_pre $model_content $html_post"
+              echo "o $(<$fp)"
+            else
+              echo "false"
+              additional_content="$additional_content $line"
+            fi
+          done < "$input"
+          html_out="$default_content $additional_content"
+          echo "$html_out" > "output.txt"
+          echo "html printed"
+          sed -i 's/part /<span style="color: #7f0055">part<\/span> /g' output.txt
+          sed -i 's/def /<span style="color: #7f0055">def<\/span> /g' output.txt
+          sed -i 's/package /<span style="color: #7f0055">package<\/span> /g' output.txt
+          sed -i 's/attribute /<span style="color: #7f0055">attribute<\/span> /g' output.txt
+          sed -i 's/import /<span style="color: #7f0055">import<\/span> /g' output.txt
+          sed -i 's/alias/<span style="color: #7f0055">alias<\/span> /g' output.txt
+          sed -i 's/public /<span style="color: #7f0055">public<\/span> /g' output.txt
+          sed -i 's/private /<span style="color: #7f0055">private<\/span> /g' output.txt
+          sed -i 's/comment /<span style="color: #7f0055">comment<\/span> /g' output.txt
+          sed -i 's/specializes /<span style="color: #7f0055">specializes<\/span> /g' output.txt
+          sed -i 's/subsets /<span style="color: #7f0055">subsets<\/span> /g' output.txt
+          sed -i 's/redefines /<span style="color: #7f0055">redefines<\/span> /g' output.txt
+          sed -i 's/enum /<span style="color: #7f0055">enum<\/span> /g' output.txt
+          sed -i 's/item /<span style="color: #7f0055">item<\/span> /g' output.txt
+          sed -i 's/connection /<span style="color: #7f0055">connection<\/span> /g' output.txt
+          sed -i 's/connect /<span style="color: #7f0055">connect<\/span> /g' output.txt
+          sed -i 's/port /<span style="color: #7f0055">port<\/span> /g' output.txt
+          sed -i 's/bind /<span style="color: #7f0055">bind<\/span> /g' output.txt
+          sed -i 's/flow /<span style="color: #7f0055">flow<\/span> /g' output.txt
+          sed -i 's/interface /<span style="color: #7f0055">interface<\/span> /g' output.txt
+          sed -i 's/action /<span style="color: #7f0055">action<\/span> /g' output.txt
+          sed -i 's/succession /<span style="color: #7f0055">succession<\/span> /g' output.txt
+          sed -i 's/state /<span style="color: #7f0055">state<\/span> /g' output.txt
+          sed -i 's/transition /<span style="color: #7f0055">transition<\/span> /g' output.txt
+          echo "syntax highlighting"
+          cp output.txt outtest.html
+      - name: store generated website
+        uses: actions/upload-artifact@v3
+        with:
+          name: website.txt
+          path: output.txt
