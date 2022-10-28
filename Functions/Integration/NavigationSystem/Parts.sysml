@@ -6,14 +6,14 @@ package Parts{
     }
     
     part def dcMotor {
-        attribute maxTorque :> ISQ::torque; // maximales Drehmoment
-        attribute rpm0 : Real; // Nenndrehzahl
-        attribute voltage :> ISQ::voltage; // Voltage;
+        attribute maxTorque :> ISQ::torque;
+        attribute rpm0 : Real;
+        attribute voltage :> ISQ::voltage;
         }
     
     part def Lasertower {
-        attribute distance : LengthValue; // abstand in meter
-        attribute distanceAngle : Real; // winkel der zum abstand gemessen wurden
+        attribute distance : LengthValue;
+        attribute distanceAngle : Real;
         attribute motor; // für das rotieren
         port position : LaserTowerPosition;
         port psu : powerSupplyPort;
