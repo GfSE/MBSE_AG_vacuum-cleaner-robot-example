@@ -8,5 +8,9 @@ package Navigation{
 		part laserTower : Lasertower;
 		part bumber : Bumber;
 		part infrarotController : InfrarotController;
+		
+		port driverUnitControlSignal : DriverUnitControlSignal;
+		port powerSignal : PowerSignal;
+		
 	}
 }

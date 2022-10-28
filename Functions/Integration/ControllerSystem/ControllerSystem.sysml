@@ -3,5 +3,6 @@ package Controller{
 	
 	part def controller{
 		port driverSignal : ~DriverUnitControlSignal;
+		port powerSignal : ~PowerSignal;
 	}
 }
