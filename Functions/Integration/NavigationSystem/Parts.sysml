@@ -14,7 +14,7 @@ package Parts{
     part def Lasertower {
         attribute distance : LengthValue;
         attribute distanceAngle : Real;
-        attribute motor; // für das rotieren
+        attribute motor;
         port position : LaserTowerPosition;
         port psu : powerSupplyPort;
     }
