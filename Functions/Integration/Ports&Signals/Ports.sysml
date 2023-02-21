@@ -28,12 +28,12 @@ package Ports {
 	}
 	
 	port def Debris {
-		in debrisVolume :> SI::'m³';
-		in debrisMass :> SI::kg;
+		out debrisVolume :> SI::'m³';
+		out debrisMass :> SI::kg;
 	}
 	
     port def FillState {
-		out fillState :> NumericSignal;
+		out fillState :> Real;
 	}
 	
 	port SuctionLevel {

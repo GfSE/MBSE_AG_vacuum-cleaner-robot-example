@@ -58,7 +58,7 @@ package 'Robotic Vacuum Cleaner'{
 		
 		interface: fillStatePorts connect
 			supplierPort ::> VacuumingSystem.fillState;
-			consumerPort ::> fillState;
+			consumerPort ::> ControllerSystem.fillState;
 		
 		// Dirty air flow
 		interface def dirtyAirPorts {

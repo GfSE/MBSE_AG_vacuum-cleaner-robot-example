@@ -43,7 +43,7 @@ package VacuumingSystem{
 		
 		interface: internalDirtyAirPorts connect
 			supplierPort ::> sd.dirtyAirFlowOut;
-			consumerPort ::> sd.dirtyAirFlow;	
+			consumerPort ::> fs.dirtyAirFlow;	
 			
 		interface def cleanAirPorts {
 			end supplierPort : CleanAirFlow;
@@ -60,7 +60,16 @@ package VacuumingSystem{
 		}
 		
 		interface: suctionLevelPorts connect
-			supplierPort ::> sm.suction;
+			supplierPort ::> suctionLevel;
 			consumerPort ::> sd.suctionlevel;
+			
+		interface def fillStatePorts {
+			end supplierPort : FillState;
+			end consumerPort : FillState;
+		}
+		
+		interface: fillStatePorts connect
+			supplierPort ::> fs.fillState;
+			consumerPort ::> fillState;
 	}
 }
