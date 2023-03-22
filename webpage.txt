@@ -25,6 +25,14 @@ ToDo: add description.
 !!Functions/Integration/VacuumingSystem/VaccuumingSystem.png
 !!Functions/Integration/VacuumingSystem/VacuumingSystem.sysml
 
+ToDo: add description.
 !!Functions/Integration/VacuumingSystem/BrushSystem.png
+!!Functions/Integration/VacuumingSystem/BrushSystem.sysml
+
+ToDo: add description.
 !!Functions/Integration/VacuumingSystem/FilterSystem.png
+!!Functions/Integration/VacuumingSystem/FilterSystem.sysml
+
+ToDo: add description.
 !!Functions/Integration/VacuumingSystem/SuctionDevice.png
+!!Functions/Integration/VacuumingSystem/SuctionDevice.sysml
