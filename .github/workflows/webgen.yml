@@ -19,13 +19,16 @@ jobs:
             echo "$line"
             if [[ $line == !!* ]] 
             then
-              echo "textual model"
-              additional_content="$additional_content"
-              fp="${line:2:1000}"
-              echo "$fp"
-              model_content=$(<$fp)
-              additional_content="$additional_content $html_pre $model_content $html_post"
-              echo "o $(<$fp)"
+              if [[ "$line" == *.sysml* ]]
+              then
+                echo "textual model"
+                additional_content="$additional_content"
+                fp="${line:2:1000}"
+                echo "$fp"
+                model_content=$(<$fp)
+                additional_content="$additional_content $html_pre $model_content $html_post"
+                echo "o $(<$fp)"
+              fi
             else
               echo "ordinary content"
               additional_content="$additional_content $line"
