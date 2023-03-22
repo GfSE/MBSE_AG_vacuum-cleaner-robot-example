@@ -1,7 +1,10 @@
+!!Functions/Integration/VaccuumRobot_view_tree.png
+
 ToDo: add description.
 !!Functions/Integration/Staubsaugerroboter.sysml
 
 ToDo: add description.
+!!Functions/Integration/ControllerSystem/Controller.png
 !!Functions/Integration/ControllerSystem/ControllerSystem.sysml
 
 ToDo: add description.
@@ -11,11 +14,17 @@ ToDo: add description.
 !!Functions/Integration/NavigationSystem/NavigationSystem.sysml
 
 ToDo: add description.
+!!Functions/Integration/NavigationSystem/Parts_View_Interconnection.jpg
 !!Functions/Integration/NavigationSystem/Parts.sysml
 
 ToDo: add description.
+!!Functions/Integration/Ports&Signals/Port.png
 !!Functions/Integration/Ports&Signals/Ports.sysml
 
 ToDo: add description.
+!!Functions/Integration/VacuumingSystem/VaccuumingSystem.png
 !!Functions/Integration/VacuumingSystem/VacuumingSystem.sysml
 
+!!Functions/Integration/VacuumingSystem/BrushSystem.png
+!!Functions/Integration/VacuumingSystem/FilterSystem.png
+!!Functions/Integration/VacuumingSystem/SuctionDevice.png
