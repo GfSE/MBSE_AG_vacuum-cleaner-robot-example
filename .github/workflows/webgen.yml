@@ -30,7 +30,7 @@ jobs:
                 echo "o $(<$fp)"
               else
                 echo "is img"
-                pic="${line:2:-1}"
+                pic="${line:2:1000}"
                 additional_content="$additional_content <p><img src=\"https://raw.githubusercontent.com/GfSE/MBSE_AG_vacuum-cleaner-robot-example/master/$pic\" alt=\"\" /></p>"
               fi
             else
