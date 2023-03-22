@@ -19,15 +19,22 @@ jobs:
             echo "$line"
             if [[ $line == !!* ]] 
             then
-              echo "true"
-              additional_content="$additional_content"
-              fp="${line:2:1000}"
-              echo "$fp"
-              model_content=$(<$fp)
-              additional_content="$additional_content $html_pre $model_content $html_post"
-              echo "o $(<$fp)"
+              if [[ "$line" == *.sysml* ]]
+              then
+                echo "textual model"
+                additional_content="$additional_content"
+                fp="${line:2:1000}"
+                echo "$fp"
+                model_content=$(<$fp)
+                additional_content="$additional_content $html_pre $model_content $html_post"
+                echo "o $(<$fp)"
+              else
+                echo "is img"
+                pic="${line:2:-1}"
+                additional_content="$additional_content <p><img src=\"https://raw.githubusercontent.com/GfSE/MBSE_AG_vacuum-cleaner-robot-example/master/$pic\" alt=\"\" /></p>"
+              fi
             else
-              echo "false"
+              echo "ordinary content"
               additional_content="$additional_content $line"
             fi
           done < "$input"
