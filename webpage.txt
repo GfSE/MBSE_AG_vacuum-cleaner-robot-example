@@ -1,23 +1,25 @@
 !!Functions/Integration/VaccuumRobot_view_tree.png
 
-ToDo: add description.
+This image depicts the high-level architecture of our robotic vacuum cleaner model.
+As shown, the modules within the architecture import pertinent information from other modules, facilitating the robot's operation.
 !!Functions/Integration/Staubsaugerroboter.sysml
 
-ToDo: add description.
+The depicted image shows the controller, which assumes responsibility for interfacing with external systems and relaying information to the various sub-systems.
 !!Functions/Integration/ControllerSystem/Controller.png
 !!Functions/Integration/ControllerSystem/ControllerSystem.sysml
 
 ToDo: add description.
 !!Functions/Integration/EnergySupplySystem/EnergySupplySystem.sysml
 
-ToDo: add description.
+This image portrays the high-level architecture of our navigation system.
+Similarly to the previous module, the architecture imports data from other modules to enable proper functionality
 !!Functions/Integration/NavigationSystem/NavigationSystem.sysml
 
-ToDo: add description.
+The image illustrates the discrete components utilized in the navigation system.
 !!Functions/Integration/NavigationSystem/Parts_View_Interconnection.jpg
 !!Functions/Integration/NavigationSystem/Parts.sysml
 
-ToDo: add description.
+This image showcases the public ports utilized in the system's operation.
 !!Functions/Integration/Ports&Signals/Port.png
 !!Functions/Integration/Ports&Signals/Ports.sysml
 
