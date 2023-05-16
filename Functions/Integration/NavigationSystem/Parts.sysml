@@ -1,5 +1,10 @@
 package Parts{
 	
+	import ScalarValues::Real;
+	import NavigationPorts::*;
+	import ISQ::*;
+	import Ports::*;
+	
 	part def driveController {
         part stearingController;
         part orientationController;
@@ -10,7 +15,7 @@ package Parts{
         attribute rpm0 : Real;
         attribute voltage :> ISQ::voltage;
         
-                part motorTire : tire [1..2];
+        part motorTire : tire [1..2];
         
         state def motorDirection {
             entry; then idle;
@@ -45,7 +50,7 @@ package Parts{
         attribute distanceAngle : Real;
         attribute motor;
         port position : LaserTowerPosition;
-        port psu : powerSupplyPort;
+        port psu : PowerSignal;
     }
 
     part def Bumber {
@@ -53,14 +58,9 @@ package Parts{
         port Contact : contact;
     }
 
-	part def TimeOfFlightSensor{
-        port i2cSlave : i2c;
-    }
     
     part def InfrarotController{
         part timeOfFlightSensor;
-        port psu : powerSupplyPort;
         port i2cMaster : i2c;
-        
     }  
 }
