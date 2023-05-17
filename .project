@@ -489,7 +489,7 @@
 		<link>
 			<name>Functions/Integration/NavigationSystem/NavigationSystem.sysml</name>
 			<type>1</type>
-			<location>/home/hendrik/Documents/MBSE AG/MBSE_AG_vacuum-cleaner-robot-example/Functions/Integration/NavigationSystem/NavigationSystem.sysml</location>
+			<locationURI>PARENT-2-PROJECT_LOC/Documents/MBSE%20AG/MBSE_AG_vacuum-cleaner-robot-example/Functions/Integration/NavigationSystem/NavigationSystem.sysml</locationURI>
 		</link>
 		<link>
 			<name>Functions/Integration/NavigationSystem/Parts.sysml</name>
