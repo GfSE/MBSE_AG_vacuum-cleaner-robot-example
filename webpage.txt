@@ -19,6 +19,11 @@ The image illustrates the discrete components utilized in the navigation system.
 !!Functions/Integration/NavigationSystem/Parts_View_Interconnection.jpg
 !!Functions/Integration/NavigationSystem/Parts.sysml
 
+The image illustrates the ports components utilized in the navigation system.
+!!Functions/Integration/NavigationSystem/NavigationPorts.jpg
+!!Functions/Integration/NavigationSystem/NavigationPorts.sysml
+
+
 This image showcases the public ports utilized in the system's operation.
 !!Functions/Integration/Ports&Signals/Port.png
 !!Functions/Integration/Ports&Signals/Ports.sysml
