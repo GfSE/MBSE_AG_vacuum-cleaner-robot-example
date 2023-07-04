@@ -29,7 +29,7 @@ This image showcases the Engine implementation.
 !!Functions/Integration/NavigationSystem/Engine/BDD compartments.jpg
 
 This image showcases the LaserTower implementation.
-!!Functions/Integration/NavigationSystem/LaserTower/Engine.sysml
+!!Functions/Integration/NavigationSystem/LaserTower/LaserTower.sysml
 !!Functions/Integration/NavigationSystem/LaserTower/BDD compartments.jpg
 
 This image showcases the InfraredController implementation.
