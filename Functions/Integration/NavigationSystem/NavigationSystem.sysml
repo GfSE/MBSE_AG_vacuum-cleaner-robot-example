@@ -1,16 +1,42 @@
 package Navigation{
+/*This module implements the Navigation-System
+ * The Navigation-System is used for navigating the system
+ */
 	import Ports::*;
-	import Parts::*;
 	
+	private import Bumber::*;
+	private import Engine::*;
+	private import LaserTower::*;
+	private import DriveController::*;
+	private import InfraredController::*;
+
+
 	part def navigation{
 		part DriveController : driveController;
-		part Motor[2] : dcMotor;
-		part laserTower : Lasertower;
-		part bumber : Bumber;
-		part infrarotController : InfrarotController;
+		part Engine[2] : engine;
+		part LaserTower : laserTower;
+		part Bumber : bumber;
+		part InfraredController : infraredController;
 
 		port driverUnitControlSignal : DriverUnitControlSignal;
 		port powerSignal : PowerSignal;
 
+
+
+    	interface : bumberInterface connect
+			suppliertPort ::> Bumber.CollisionOutputPort to
+			consumerPort ::> DriveController.CollisionInputPort;	    	
+
+	    interface : laserTowerInterface connect
+	    	supplierPort ::> LaserTower.LaserTowerPositionOutputPort to
+	    	consumerPort ::> DriveController.LaserTowerInputPort;
+
+    	interface : infraredControllerInterface connect
+	    	supplierPort ::> InfraredController.IsAllignedPort to
+	    	consumerPort ::> DriveController.ContactChargerInputPort;    	
+
+	    interface : pwmControllInterface connect
+			suppliertPort ::> Engine.PwmInputPort to
+			consumerPort ::> DriveController.PwmOutputPort;    
 	}
 }
