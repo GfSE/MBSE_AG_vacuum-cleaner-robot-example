@@ -14,15 +14,27 @@ ToDo: add description.
 This image portrays the high-level architecture of our navigation system.
 Similarly to the previous module, the architecture imports data from other modules to enable proper functionality
 !!Functions/Integration/NavigationSystem/NavigationSystem.sysml
+!!Functions/Integration/NavigationSystem/Navigation BDD Compartments.jpg
 
-The image illustrates the discrete components utilized in the navigation system.
-!!Functions/Integration/NavigationSystem/Parts_View_Interconnection.jpg
-!!Functions/Integration/NavigationSystem/Parts.sysml
+This image showcases the Bumber implementation.
+!!Functions/Integration/NavigationSystem/Bumber/Bumber.sysml
+!!Functions/Integration/NavigationSystem/Bumber/BDD compartments.jpg
 
-The image illustrates the ports components utilized in the navigation system.
-!!Functions/Integration/NavigationSystem/NavigationPorts.jpg
-!!Functions/Integration/NavigationSystem/NavigationPorts.sysml
+This image showcases the DriveController implementation.
+!!Functions/Integration/NavigationSystem/DriveController/DriveController.sysml
+!!Functions/Integration/NavigationSystem/DriveController/BDD compartments.jpg
 
+This image showcases the Engine implementation.
+!!Functions/Integration/NavigationSystem/Engine/Engine.sysml
+!!Functions/Integration/NavigationSystem/Engine/BDD compartments.jpg
+
+This image showcases the LaserTower implementation.
+!!Functions/Integration/NavigationSystem/LaserTower/Engine.sysml
+!!Functions/Integration/NavigationSystem/LaserTower/BDD compartments.jpg
+
+This image showcases the InfraredController implementation.
+!!Functions/Integration/NavigationSystem/InfraredController/InfraredController.sysml
+!!Functions/Integration/NavigationSystem/InfraredController/BDD compartments.jpg
 
 This image showcases the public ports utilized in the system's operation.
 !!Functions/Integration/Ports&Signals/Port.png
