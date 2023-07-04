@@ -17,15 +17,9 @@ package 'Robotic Vacuum Cleaner'{
 		port dirtyAirFlow : DirtyAirFlow;
 		port cleanAirFlow : CleanAirFlow;
 
-		connect ControllerSystem to NavigationSystem;	
-
-		interface def ports {
-			end supliertPort : DriverUnitControlSignal;
-			end consumertPort: DriverUnitControlSignal;
-		}
-		interface: ports connect
-			supliertPort ::> driverUnitControlSignal to
-			consumerPort ::> NavigationSystem.driverUnitControlSignal;
+		interface : DriverUnitControlInterface connect
+			supliertPort ::> ControllerSystem.driverSignalOutputPort to
+			consumerPort ::> NavigationSystem.driverUnitControlSignalInputPort;
 		
 		// Interfaces to/from Vaccuming System
 		connect ControllerSystem to VacuumingSystem;

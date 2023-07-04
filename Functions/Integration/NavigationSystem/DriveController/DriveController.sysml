@@ -2,16 +2,17 @@ package DriveController{
 /* This package implements the DriveContoller-System 
  * The DriveController drives the system*/
 
+	private import Controller::*;
 	private import Bumber::*;
 	private import Engine::*;
 	private import LaserTower::*;
 	private import InfraredController::*;
-	private import DriveController::driveController;
 	private import InfraredController::infraredController;
 
 
     part def stearingController{
 		port PwmOutputPort : ~pwmPort;
+    	port driverUnitControlSignalInputPort : ~DriverUnitControlSignal;
     }
 
     part def orienttationController{
@@ -25,7 +26,8 @@ package DriveController{
     	port LaserTowerInputPort : ~laserTowerPosition;
     	port PwmOutputPort : ~pwmPort;
     	port ContactChargerInputPort : ~contactCharger;
-    	
+    	port driverUnitControlSignalInputPort : ~DriverUnitControlSignal;
+		
         part StearingController : stearingController;
         part OrientationController : orienttationController;
         
@@ -44,5 +46,9 @@ package DriveController{
         interface : laserTowerPassThroughInterface connect
         	supplierPort ::> LaserTowerInputPort to
         	consumerPort ::> OrientationController.LaserTowerInputPort;
-    }
+
+		interface : DriverUnitControlPassThroughInterface connect
+			suppliertPort ::> driverUnitControlSignalInputPort to
+			consumerPort ::> StearingController.PwmOutputPort;
+	}
 }

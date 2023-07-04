@@ -1,8 +1,32 @@
 package Controller{
 	import Ports::*;
 	
+	port def DriverUnitControlSignal {
+            out attribute forward : Boolean;
+            out attribute left : Boolean;
+            out attribute right : Boolean;
+    }
+    
+    interface def DriverUnitControlInterface{
+    	end supplierPort : DriverUnitControlSignal;
+    	end consumerPort : ~DriverUnitControlSignal;
+    	
+    	flow supplierPort.forward to consumerPort.forward;
+    	flow supplierPort.left to consumerPort.left;
+    	flow supplierPort.right to consumerPort.right;
+    }
+    
+    interface def DriverUnitControlPassThroughInterface{
+    	end supplierPort : ~DriverUnitControlSignal;
+    	end consumerPort : ~DriverUnitControlSignal;
+    	
+    	flow supplierPort.forward to consumerPort.forward;
+    	flow supplierPort.left to consumerPort.left;
+    	flow supplierPort.right to consumerPort.right;
+    }
+	
 	part def controller{
-		port driverSignal : ~DriverUnitControlSignal;
+		port driverSignalOutputPort : DriverUnitControlSignal;
 		port powerSignal : ~PowerSignal;
 		
 		// To Vacuuming System

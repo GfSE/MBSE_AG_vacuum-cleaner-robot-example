@@ -4,6 +4,7 @@ package Navigation{
  */
 	import Ports::*;
 	
+	private import Controller::*;
 	private import Bumber::*;
 	private import Engine::*;
 	private import LaserTower::*;
@@ -18,7 +19,7 @@ package Navigation{
 		part Bumber : bumber;
 		part InfraredController : infraredController;
 
-		port driverUnitControlSignal : DriverUnitControlSignal;
+		port driverUnitControlSignalInputPort : ~DriverUnitControlSignal;
 		port powerSignal : PowerSignal;
 
 
@@ -37,6 +38,10 @@ package Navigation{
 
 	    interface : pwmControllInterface connect
 			suppliertPort ::> Engine.PwmInputPort to
-			consumerPort ::> DriveController.PwmOutputPort;    
+			consumerPort ::> DriveController.PwmOutputPort;
+
+		interface : DriverUnitControlPassThroughInterface connect
+			suppliertPort ::> driverUnitControlSignalInputPort to
+			consumerPort ::> DriveController.driverUnitControlSignalInputPort;
 	}
 }

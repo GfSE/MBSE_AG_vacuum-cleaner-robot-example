@@ -6,11 +6,8 @@ package Ports {
 	import ISQSpaceTime::*;
 	import ISQMechanics::*;
 
-	port def DriverUnitControlSignal {
-            in forward :> Boolean;
-            in left :> Boolean;
-            in right :> Boolean;
-    }
+// Ports for Navigation System
+
          
     port def PowerSignal{
     	out constantCurrent :> totalCurrent;
