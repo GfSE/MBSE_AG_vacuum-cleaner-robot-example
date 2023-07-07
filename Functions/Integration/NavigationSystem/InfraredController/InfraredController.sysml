@@ -23,6 +23,6 @@ package InfraredController{
     }
 
 	part def infraredController{
-		port IsAllignedPort : contactCharger;
+		port ContactChargerOutputPort : contactCharger;
     } 
 }

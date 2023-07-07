@@ -33,7 +33,7 @@ package Navigation{
 	    	consumerPort ::> DriveController.LaserTowerInputPort;
 
     	interface : infraredControllerInterface connect
-	    	supplierPort ::> InfraredController.IsAllignedPort to
+    		supplierPort ::> InfraredController.ContactChargerOutputPort to
 	    	consumerPort ::> DriveController.ContactChargerInputPort;    	
 
 	    interface : pwmControllInterface connect
