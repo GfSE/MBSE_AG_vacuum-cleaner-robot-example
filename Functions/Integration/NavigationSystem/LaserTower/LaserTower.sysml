@@ -17,14 +17,7 @@ package LaserTower{
 		flow supplierPort.Angle to consumerPort.Angle;
 		flow supplierPort.Distance to consumerPort.Distance;
 	    }
-	    
-    interface def laserTowerPassThroughInterface {
-		end supplierPort : ~laserTowerPosition;
-		end consumerPort : ~laserTowerPosition;
 
-		flow supplierPort.Angle to consumerPort.Angle;
-		flow supplierPort.Distance to consumerPort.Distance;
-	    }
 
     part def laserTower {
         port LaserTowerPositionOutputPort : laserTowerPosition;

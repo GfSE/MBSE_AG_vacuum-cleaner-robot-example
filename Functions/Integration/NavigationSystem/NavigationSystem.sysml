@@ -22,9 +22,9 @@ package Navigation{
 		port driverUnitControlSignalInputPort : ~DriverUnitControlSignal;
 		port powerSignal : PowerSignal;
 
+		bind driverUnitControlSignalInputPort = DriveController.driverUnitControlSignalInputPort;
 
-
-    	interface : bumberInterface connect
+     	interface : bumberInterface connect
 			suppliertPort ::> Bumber.CollisionOutputPort to
 			consumerPort ::> DriveController.CollisionInputPort;	    	
 
@@ -40,8 +40,5 @@ package Navigation{
 			suppliertPort ::> Engine.PwmInputPort to
 			consumerPort ::> DriveController.PwmOutputPort;
 
-		interface : DriverUnitControlPassThroughInterface connect
-			suppliertPort ::> driverUnitControlSignalInputPort to
-			consumerPort ::> DriveController.driverUnitControlSignalInputPort;
 	}
 }

@@ -31,24 +31,10 @@ package DriveController{
         part StearingController : stearingController;
         part OrientationController : orienttationController;
         
-        interface : bumberPassThroughInterface connect
-	        supplierPort ::> CollisionInputPort to
-	        consumerPort ::> OrientationController.CollisionInputPort;
-        
-        interface : pwmPassThroughInterface connect
-        	supplierPort ::> PwmOutputPort to
-        	consumeport ::> StearingController.PwmOutputPort;
-        
-        interface : infraredControllerPassThroughInterface connect
-        	supplierPort ::> ContactChargerInputPort to
-        	consumerPort ::> OrientationController.ContactChargerInputPort;
-        
-        interface : laserTowerPassThroughInterface connect
-        	supplierPort ::> LaserTowerInputPort to
-        	consumerPort ::> OrientationController.LaserTowerInputPort;
+        bind CollisionInputPort = OrientationController.CollisionInputPort;
+        bind PwmOutputPort = StearingController.PwmOutputPort;
+        bind LaserTowerInputPort = OrientationController.LaserTowerInputPort;
+        bind driverUnitControlSignalInputPort = StearingController.driverUnitControlSignalInputPort;
 
-		interface : DriverUnitControlPassThroughInterface connect
-			suppliertPort ::> driverUnitControlSignalInputPort to
-			consumerPort ::> StearingController.PwmOutputPort;
 	}
 }

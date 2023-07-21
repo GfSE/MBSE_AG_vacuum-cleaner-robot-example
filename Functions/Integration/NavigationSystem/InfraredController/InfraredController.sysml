@@ -14,13 +14,6 @@ package InfraredController{
     	
     	flow supplierPort.Contact to consumerPort.Contact;
 	}
-	
-    interface def infraredControllerPassThroughInterface{
-    	end supplierPort : ~contactCharger;
-    	end consumerPort : ~contactCharger;
-    	
-    	flow supplierPort.Contact to consumerPort.Contact;
-    }
 
 	part def infraredController{
 		port ContactChargerOutputPort : contactCharger;

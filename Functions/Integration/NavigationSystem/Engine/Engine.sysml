@@ -15,13 +15,7 @@ package Engine{
     	
     	flow supplierPort.PWM to consumerPort.PWM;
     }
-    interface def pwmPassThroughInterface{
-    	end supplierPort : ~pwmPort;
-    	end consumerPort : ~pwmPort;
-    	
-    	flow supplierPort.PWM to consumerPort.PWM;
-    }
- 
+
     part def engine {
         
         part motorTire : Tire [2];

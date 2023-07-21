@@ -15,15 +15,6 @@ package Controller{
     	flow supplierPort.left to consumerPort.left;
     	flow supplierPort.right to consumerPort.right;
     }
-    
-    interface def DriverUnitControlPassThroughInterface{
-    	end supplierPort : ~DriverUnitControlSignal;
-    	end consumerPort : ~DriverUnitControlSignal;
-    	
-    	flow supplierPort.forward to consumerPort.forward;
-    	flow supplierPort.left to consumerPort.left;
-    	flow supplierPort.right to consumerPort.right;
-    }
 	
 	part def controller{
 		port driverSignalOutputPort : DriverUnitControlSignal;
