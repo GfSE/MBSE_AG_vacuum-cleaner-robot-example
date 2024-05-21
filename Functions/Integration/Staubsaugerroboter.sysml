@@ -10,7 +10,7 @@ package 'Robotic Vacuum Cleaner'{
 		part ControllerSystem : controller;
 		part NavigationSystem : navigation;
 		part EnergySystem : energySupplySystem;
-		part VaccumingSystem : vacuumingSystem;
+		part VaccumingSystem : vacuumingSystem;  // Typo: should be VacuumingSystem
 
 		port driverUnitControlSignal : DriverUnitControlSignal;
 		port powerSignal : PowerSignal;
@@ -18,13 +18,14 @@ package 'Robotic Vacuum Cleaner'{
 		port cleanAirFlow : CleanAirFlow;
 
 		interface : DriverUnitControlInterface connect
-			supliertPort ::> ControllerSystem.driverSignalOutputPort to
+			supliertPort ::> ControllerSystem.driverSignalOutputPort to  // Typo: supliertPort should be supplierPort
 			consumerPort ::> NavigationSystem.driverUnitControlSignalInputPort;
 		
-		// Interfaces to/from Vaccuming System
+		// Interfaces to/from Vaccuming System  // Typo: should be Vacuuming System
 		connect ControllerSystem to VacuumingSystem;
 				
-		// Control signal for level of suction intesity
+		// Control signal for level of suction intesity  // Typo: intensity
+
 		interface def suctionLevelPorts {
 			end supplierPort : SuctionLevel;
 			end consumerPort : SuctionLevel;
