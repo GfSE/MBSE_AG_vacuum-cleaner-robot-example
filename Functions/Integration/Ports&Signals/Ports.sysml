@@ -7,7 +7,6 @@ package Ports {
 	import ISQMechanics::*;
 
 // Ports for Navigation System
-
          
     port def PowerSignal{
     	out constantCurrent :> totalCurrent;
