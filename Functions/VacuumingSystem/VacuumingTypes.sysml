@@ -17,7 +17,7 @@ package VacuumingTypes {
         port def RotationLevelPort :> BatterySignals::VacuumSystemPowerOutPort {
         		out attribute redefines brushPower :> ISQMechanics::power; 	
         	}
-		//port def PowerInOutVac :> Signals::BatterySignals::PowerInOutPort;
+		port def PowerInOutVac :> Signals::BatterySignals::PowerInOutPort;
 		
 		
 		// Suction Device
@@ -27,8 +27,12 @@ package VacuumingTypes {
 		//		attribute suctionLevel : Real; // :% (from control -> needs to be moved there)
 		//	}
 		//}
+
+		port def AirPort {
+			out volume :> ISQSpaceTime::volume;
+		}
 		
-		port def ExternalAirPort {
+	/*	port def ExternalAirPort {
 			in item externalAir{
 				attribute volume :> ISQSpaceTime::volume;
 			} 
@@ -38,7 +42,7 @@ package VacuumingTypes {
 			out item internalAir{
 				attribute volume :> ISQSpaceTime::volume;
 			} 
-		}
+		}*/
 		
 		// Brush System	
 		//port def RotationLevelPort :> NumericSignal {
@@ -63,8 +67,8 @@ package VacuumingTypes {
 	package InterfaceDefinitions {
 		
 		interface def ExternalAir {
-			end supplierPort : PortDefinitions::ExternalAirPort;
-            end consumerPort : PortDefinitions::ExternalAirPort;
+			end supplierPort : ~PortDefinitions::AirPort;
+            end consumerPort : PortDefinitions::AirPort;
 		}
 		
 
@@ -89,8 +93,8 @@ package VacuumingTypes {
 		}
 		
 		interface def InternalAir {
-			end supplierPort : PortDefinitions::InternalAirPort;
-			end consumerPort : PortDefinitions::InternalAirPort;
+			end supplierPort : ~PortDefinitions::AirPort;
+			end consumerPort : PortDefinitions::AirPort;
 		} 
 	}
 }

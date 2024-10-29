@@ -11,7 +11,7 @@ package EnergySupplyProcessor {
     part def CPU {
         // Parts
         part blc        : BatteryLevelComputer;
-        // part bms        : BatteryMangementSystem; // TODO: Needs to be defined and imported
+        part bms        : BatteryMangementSystem; // TODO: Needs to be defined and imported properly
 
         // Ports
         port requriedEnergy : PowerInOutPort; // in
@@ -19,15 +19,21 @@ package EnergySupplyProcessor {
         port ledSig         : LEDSignal; // out
 
         interface : BatterySignalInterface connect
-            src => batSig to
-            tgt => bms::batSig;
+            src ::> batSig to
+            tgt ::> bms::batSig;
 
         interface : BatterySignalInterface connect
-            src => batSig to
-            tgt => blc::batSig;
+            src ::> batSig to
+            tgt ::> blc::batSig;
 
         interface : LEDSignalInterface connect
-            src => batSig to
-            tgt => bms::ledSig;
+            src ::> batSig to
+            tgt ::> bms::ledSig;
+    }
+
+    // just a surrogate
+    part def BatteryMangementSystem {
+        port batSig         : BatterySignal; 
+        port ledSig         : LEDSignal; 
     }
 }    

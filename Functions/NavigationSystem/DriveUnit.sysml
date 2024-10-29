@@ -5,7 +5,7 @@ package DriveUnit{
     import SI::*;
     import ISQElectromagnetism::*;
 	import partDef::*;
-	
+	import PortDef::*;	
     
 	    
 	part def logicalDriveUnit {
@@ -27,9 +27,9 @@ package DriveUnit{
 	    port controlSignal : DriverUnitControlSignal;
 
 	}
-	    interface : PowerInterface connect supplierPort => logicalDriveUnit::powerSupply to consumerPort => logicalDriveUnit::motor1::psu;
-	    interface : PowerInterface connect supplierPort => logicalDriveUnit::powerSupply to consumerPort => logicalDriveUnit::motor2::psu;
-	    interface : PowerInterface connect supplierPort => logicalDriveUnit::powerSupply to consumerPort => logicalDriveUnit::orientation::psu;
+	    interface : PowerInterface connect supplierPort ::> logicalDriveUnit::powerSupply to consumerPort ::> logicalDriveUnit::motor1::psu;
+	    interface : PowerInterface connect supplierPort ::> logicalDriveUnit::powerSupply to consumerPort ::> logicalDriveUnit::motor2::psu;
+	    interface : PowerInterface connect supplierPort ::> logicalDriveUnit::powerSupply to consumerPort ::> logicalDriveUnit::orientation::psu;
 
 	//satisfy Beschleunigen by driveUnit; // Funktioniert noch nicht
 	}

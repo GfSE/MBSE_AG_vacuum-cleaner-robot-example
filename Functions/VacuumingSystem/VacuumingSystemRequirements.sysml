@@ -6,7 +6,7 @@ package VacuumingSystemRequirements {
 	
 	// Local import
 	import VacuumingSystem::*;
-	import SystemRequirements::*;
+	
 	/*
 	package SuctionDeviceRequirements {
 	// Requirements for suction device

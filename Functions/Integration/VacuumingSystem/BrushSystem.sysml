@@ -1,5 +1,6 @@
 package BrushSystem {
-	import Ports::*;
+	import ScalarValues::*;
+	import RobotPortDefs::*;
 	import ISQSpaceTime::*;
 	
 	calc def calcSetpointRPM {
@@ -49,8 +50,8 @@ package BrushSystem {
 		}
 		
 		interface: rotationSetPointMainPorts connect
-			supplierPort ::> bc.brushRotationSpeed;
-			consumerPort ::> mb.brushRotationSpeed;
+			supplierPort ::> bc.rotationSpeed to
+			consumerPort ::> mb.rotationSpeed;
 		
 		connect bc to sb;
 		
@@ -60,8 +61,8 @@ package BrushSystem {
 		}
 		
 		interface: rotationSetPointSmallPorts connect
-			supplierPort ::> bc.brushRotationSpeed;
-			consumerPort ::> sb.brushRotationSpeed;
+			supplierPort ::> bc.rotationSpeed to
+			consumerPort ::> sb.rotationSpeed;
 	
     }
 }

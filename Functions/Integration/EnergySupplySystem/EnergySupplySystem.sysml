@@ -1,5 +1,5 @@
 package EnergySupplySystem{
-	import Ports::*;
+	import RobotPortDefs::*;
 	
 	part def energySupplySystem{
 		port powerSignal : PowerSignal;

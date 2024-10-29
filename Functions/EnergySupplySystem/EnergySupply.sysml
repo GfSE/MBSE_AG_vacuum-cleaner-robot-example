@@ -27,25 +27,25 @@ package EnergySupply {
         port requiredEnergy : PowerInOutPort; // in
 
         // Connections
-        interface : RequiredEnergyInterface connect
-            src => requiredEnergy to
-            tgt => bat::requiredEnergy;
+      /*  interface : RequiredEnergyInterface connect
+            src ::> requiredEnergy to
+            tgt ::> bat::requiredEnergy;*/
 
         interface : PowerInterface connect
-            src => bat:energy to
-            tgt => cpu:requriedEnergy;        
+            src ::> bat::providedEnergy to
+            tgt ::> cpu::requriedEnergy;        
 
         interface : PowerInterface connect
-            src => bat:energy to
-            tgt => led:requriedEnergy;
+            src ::> bat::providedEnergy to
+            tgt ::> led::requriedEnergy;
 
         interface : BatterySignalInterface connect
-            src => bat::batSig to
-            tgt => cpu::batSig;
+            src ::> bat::batSig to
+            tgt ::> cpu::batSig;
 
         interface : LEDSignalInterface connect
-            src => cpu::ledSig to
-            tgt => led::ledSig;
+            src ::> cpu::ledSig to
+            tgt ::> led::ledSignal;
 
 
     }

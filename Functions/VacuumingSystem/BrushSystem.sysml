@@ -18,7 +18,6 @@ package BrushSystem {
 		import PortDefinitions::*;
 		import InterfaceDefinitions::*;
 		import InterfaceDefinitions::*;
-		import PartDefinitions::*;
 		import CalculationDefinitions::*;
 		
 		// Definition of internal ports
@@ -54,7 +53,10 @@ package BrushSystem {
 		
 		package CalculationDefinitions {
 		// Definition of calculations for BrushMotor
-			calc def calcActualRPM (rotationLevel : Real, maxRPM :> ISQSpaceTime::rotationalFrequency) :> ISQSpaceTime::rotationalFrequency {
+			calc def calcActualRPM {
+				in rotationLevel : Real;
+				in maxRPM :> ISQSpaceTime::rotationalFrequency;
+				return :> ISQSpaceTime::rotationalFrequency;
             	rotationLevel * maxRPM 
         	}
         }
@@ -68,10 +70,11 @@ package BrushSystem {
 				
 				attribute par_maximumRPM :> ISQSpaceTime::rotationalFrequency;
 				
-				calc actualRPM : calcActualRPM (
-					rotationLevel = rotationLevelIn::brushPower,
-					maxRPM = par_maximumRPM
-				) return pOut = rotationSpeedOut::rotationSpeed::rotationSpeed;
+				calc actualRPM : calcActualRPM {
+					in rotationLevel = rotationLevelIn::brushPower;
+					in maxRPM = par_maximumRPM;
+				 return pOut = rotationSpeedOut::rotationSpeed::rotationSpeed;
+				}
 			}
 			
 			part def MainBrush {
@@ -90,6 +93,9 @@ package BrushSystem {
 	}
 	
 	package PartsTree {
+        
+		import PartDefinitions::*;
+
 		part brushSystem : BrushSystem {
 			part mainBrush : MainBrush {
 				port redefines rotationSpeedIn;
@@ -111,9 +117,9 @@ package BrushSystem {
 			//port redefines energyIn; 
 
 			//interface : Signals::BatterySignals::PowerInterface connect supplierPort => energyIn to consumerPort => brushMotor::energyIn;
-			interface : RotationSpeed connect supplierPort => brushMotor::rotationSpeedOut to consumerPort => mainBrush::rotationSpeedIn;
-			interface : RotationSpeed connect supplierPort => brushMotor::rotationSpeedOut to consumerPort => rotatingBrush::rotationSpeedIn;
-			interface : RotationLevel connect supplierPort => rotationLevelIn to consumerPort => brushMotor::rotationLevelIn;
+			interface : RotationSpeed connect supplierPort ::> brushMotor::rotationSpeedOut to consumerPort ::> mainBrush::rotationSpeedIn;
+			interface : RotationSpeed connect supplierPort ::> brushMotor::rotationSpeedOut to consumerPort ::> rotatingBrush::rotationSpeedIn;
+			interface : RotationLevel connect supplierPort ::> rotationLevelIn to consumerPort ::> brushMotor::rotationLevelIn;
 		}
 	}
 }

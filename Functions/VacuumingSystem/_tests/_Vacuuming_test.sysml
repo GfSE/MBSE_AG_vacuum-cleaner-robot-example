@@ -1,6 +1,6 @@
 package 'Vacuuming' {
-	import VacuumCleanerSystem::*;
-	import DriveUnit::systemsEngineeringDomain::*; 
+	//import VacuumCleanerSystem::*;
+	//import DriveUnit::systemsEngineeringDomain::*; 
 	
 	package 'Structure' {
 		part def Filter;
@@ -10,8 +10,8 @@ package 'Vacuuming' {
 			attribute def TankFullSignal;
 			attribute def EmptyingTankSignal;
 			//States
-			state def TankLevelChanges (usedTank : Tank);
-			state def TankLevel (usedTank : Tank);
+			state def TankLevelChanges {in usedTank : Tank;}
+			state def TankLevel {in usedTank : Tank;}
 		}		
 	}
 	
@@ -20,7 +20,8 @@ package 'Vacuuming' {
 		import Structure::Tank::*;
 		
 		//using Signals from Tank
-		state def TankLevelChanges (usedTank : Tank) {
+		state def TankLevelChanges {
+			in usedTank : Tank;
 			entry; then empty;
 			 
 			state empty : TankLevel;
@@ -39,7 +40,8 @@ package 'Vacuuming' {
 				then empty;
 		}
 		// Potentieller Bug (siehe DriveUnit): Status müssen aktuell bei ihrem auftreten definiert werden --> Am Anfang alle States zu definiert führt zu einer Schleife
-		state def TankLevelChangesTrans (usedTank : Tank) {
+		state def TankLevelChangesTrans {
+			in usedTank : Tank;
 			entry; then empty;
 			 
 			state empty : TankLevel;
@@ -66,13 +68,13 @@ package 'Vacuuming' {
 		item def AirWithDirt;
 		item def CleanAir;
 		
-		action def SuctionProcess(in debris : Debris, out airwithDirt : AirWithDirt);
-		action def Filter(in airWithDirt : AirWithDirt, out cleanAir : CleanAir);	
+		action def SuctionProcess{in debris : Debris; out airwithDirt : AirWithDirt;}
+		action def Filter{in airWithDirt : AirWithDirt; out cleanAir : CleanAir;}	
 		
-		action def Vacuuming(in debris : Debris, out cleanAir : CleanAir){ 
+		action def Vacuuming{in debris : Debris; out cleanAir : CleanAir; 
 					
-			action suctionProcess : SuctionProcess (in debris, out airWithDirt);
-			action filterAct : Filter(in airWithDirt, out cleanAir);
+			action suctionProcess : SuctionProcess {in debris; out airWithDirt;}
+			action filterAct : Filter{in airWithDirt; out cleanAir;}
 			
 			bind suctionProcess::debris = debris;
 			bind filterAct::cleanAir = cleanAir;

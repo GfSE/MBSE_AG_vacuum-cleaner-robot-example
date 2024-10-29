@@ -1,6 +1,6 @@
 package SuctionDevice {
 
-	import Ports::*;
+	import RobotPortDefs::*;
 	import ISQ::*;
 	import ISQMechanics::*;
 	import ISQSpaceTime::*;

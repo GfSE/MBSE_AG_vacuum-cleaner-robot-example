@@ -56,7 +56,7 @@ package Signals {
         }
         
         port def LEDSignal {
-            out attribute color : LED_COLOR;
+            out color : LED_COLOR;
         }
 
         interface def LEDInterface {

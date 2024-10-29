@@ -20,10 +20,10 @@ package 'BatteryLevelComputer' {
     // Behavior
     // Realized through a StateChart which takes inputs from the incoming port 
     // and part attribute. Produces a return value to outgoing port ledSig.
-    exhibit BatteryLevelComputerStates {
+    exhibit state BatteryLevelComputerStates {
       in  ref batCap        = batSig::curBatCapacity;
       in  ref maxBatCap     = batteryCapacity; // 'this' would be nice
-      out ref ledSig::color = computedColor;
+      //out ref ledSig {color = computedColor;}
     }
     
 	}
@@ -33,26 +33,29 @@ package 'BatteryLevelComputer' {
 	 * statechart to perform the actual computations.
 	 */
 	state def BatteryLevelComputerStates {
-	  entry: then x;  // Initial state x
+	  entry; then x;  // Initial state x
 	  
 	  // Definition of state x instantiates action 
 	  state x { 
-	    entry act : ComputeBatteryInfo(batCap, maxBatCap, computedColor);
+	    entry act {batCap; maxBatCap; computedColor;}
 	  }  
 	}
+
+	action act : ComputeBatteryInfo{batCap; maxBatCap; computedColor;}
 	
 	/**
 	 * The action ComputeBatteryInfo delegates to the calculation CalcBatteryLevel
 	 */
-	action def ComputeBatteryInfo(in  batteryCapacity    : Real,
-	                              in  maxBatteryCapacity : Real,
-	                              out batteryColor       : LED_COLOR) {
-	                             
-    batteryColor = CalcBatteryLevel(batteryCapacity, maxBatteryCapacity)
+	action def ComputeBatteryInfo{in  batteryCapacity    : Real;
+	                              in  maxBatteryCapacity : Real;
+	                              out batteryColor       : LED_COLOR = CalcBatteryLevel(batteryCapacity, maxBatteryCapacity);
 	}
 	
-	calc def CalcBatteryLevel(energy : Real, capacity : Real) {
-   return energy / capacity
-  }
+	calc def CalcBatteryLevel{
+		in energy : Real; 
+		in capacity : Real; 
+        
+		energy / capacity
+    }
 
 }

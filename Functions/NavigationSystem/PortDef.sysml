@@ -58,8 +58,8 @@ package portDef{
 	            out item energyOut;
 	        }
 	        
-	        stream supplierPort::energyOut to consumerPort::energyIn;
-	        stream consumerPort::energyOut to supplierPort::energyIn;
+	        flow supplierPort::energyOut to consumerPort::energyIn;
+	        flow consumerPort::energyOut to supplierPort::energyIn;
 	    }
 	    
 	    interface def PowerInterface{
@@ -69,7 +69,7 @@ package portDef{
 	        end consumerPort{
 	            inout item PowerInOut;
 	        }
-	        stream supplierPort::PowerInOut to consumerPort::PowerInOut;
+	        flow supplierPort::PowerInOut to consumerPort::PowerInOut;
 	    }
 	}   
 }

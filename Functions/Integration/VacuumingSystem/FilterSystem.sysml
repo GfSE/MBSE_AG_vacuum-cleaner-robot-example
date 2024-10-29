@@ -1,6 +1,6 @@
 package FilterSystem {
 
-	import Ports::*;
+	import RobotPortDefs::*;
 	
 	part def Tank {
 		port debris : ~Debris;
@@ -53,8 +53,8 @@ package FilterSystem {
 			consumerPort ::> tank.debris;
 			
 		interface def fillStatePorts {
-			end supplierPort : fillState;
-			end consumerPort : fillState;
+			end supplierPort : FillState;
+			end consumerPort : FillState;
 		}
 		
 		interface: fillStatePorts connect

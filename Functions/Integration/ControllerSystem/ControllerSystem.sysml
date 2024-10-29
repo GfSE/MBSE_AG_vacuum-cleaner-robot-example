@@ -1,5 +1,5 @@
 package Controller{
-	import Ports::*;
+	import RobotPortDefs::*;
 	import Signals::ControllerSignals::*;
 	
 	port def DriverUnitControlSignal {

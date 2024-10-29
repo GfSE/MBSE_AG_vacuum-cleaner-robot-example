@@ -34,8 +34,8 @@ package FilterSystem {
 		package PartDefinitions {
 			part def Filter {
 				port usageLevel : Signals::NumericSignal; 
-				port dirtyAir: InternalAirPort;
-				port cleanAir : ExternalAirPort;
+				port dirtyAir: ~AirPort;
+				port cleanAir : AirPort;
 				port debrisOut : DebrisPort;
 			}
 			part def Tank {
@@ -51,8 +51,8 @@ package FilterSystem {
 			
 			part def FilterSystem{
 				perform action filterSys;
-				port airIn : InternalAirPort;
-				port airOut : ExternalAirPort;
+				port airIn : ~AirPort;
+				port airOut : AirPort;
 				port debrisOut : DebrisPort;
 				exhibit state filterState;
 				port fillState : FillStatePort;
@@ -72,8 +72,8 @@ package FilterSystem {
 				port redefines debrisOut;
 			}
 			
-			interface : VacuumingTypes::InterfaceDefinitions::Debris connect supplierPort => fil::debrisOut to consumerPort => tank::debrisIn;
-			interface : VacuumingTypes::InterfaceDefinitions::FillStateLevel connect src => tank::fillState to tgt => fillState;
+			interface : VacuumingTypes::InterfaceDefinitions::Debris connect supplierPort ::> fil::debrisOut to consumerPort ::> tank::debrisIn;
+			interface : VacuumingTypes::InterfaceDefinitions::FillStateLevel connect src ::> tank::fillState to tgt ::> fillState;
 		}
 	}
 }

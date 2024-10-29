@@ -4,7 +4,7 @@ package Bumber{
 
 	item def collisionDetection;
 	
-	port def collision{
+	port def collision {
 		out item CollisionDetection : collisionDetection;
 	}
     
