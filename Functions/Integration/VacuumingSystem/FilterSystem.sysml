@@ -20,7 +20,7 @@ package FilterSystem {
 		port cleanAirFlow : CleanAirFlow;
 		port fillState : FillState;
 		
-		part filter : Filter;
+		part filterCmp : Filter;
 		part tank : Tank;
 		
 		interface def dirtyAirFlowPorts {
@@ -29,8 +29,8 @@ package FilterSystem {
 		}
 		
 		interface: dirtyAirFlowPorts connect
-			supplierPort ::> dirtyAirFlow;
-			consumerPort ::> filter.dirtyAirFlow;
+			supplierPort ::> dirtyAirFlow to
+			consumerPort ::> filterCmp.dirtyAirFlow;
 			
 		interface def cleanAirFlowPorts {
 			end supplierPort : CleanAirFlow;
@@ -38,10 +38,10 @@ package FilterSystem {
 		}
 		
 		interface: cleanAirFlowPorts connect
-			supplierPort ::> filter.cleanAirFlow;
+			supplierPort ::> filterCmp.cleanAirFlow to
 			consumerPort ::> cleanAirFlow;
 			
-		connect filter to tank;
+		connect filterCmp to tank;
 		
 		interface def debrisPorts {
 			end supplierPort : Debris;
@@ -49,7 +49,7 @@ package FilterSystem {
 		}
 		
 		interface: dirtyAirFlowPorts connect
-			supplierPort ::> filter.debris;
+			supplierPort ::> filterCmp.debris to
 			consumerPort ::> tank.debris;
 			
 		interface def fillStatePorts {
@@ -58,7 +58,7 @@ package FilterSystem {
 		}
 		
 		interface: fillStatePorts connect
-			supplierPort ::> tank.fillState;
+			supplierPort ::> tank.fillState to
 			consumerPort ::> fillState;
 	}
 }

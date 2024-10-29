@@ -30,19 +30,19 @@ package Ports {
 	}
 	
     port def FillState {
-		out fillState :> Real;
+		out fillState : Real;
 	}
 	
-	port SuctionLevel {
-		out suctionLevel :> Real;
+	port def SuctionLevel {
+		out suctionLevel : Real;
 	}
 	
-	port SuctionPower {
+	port def SuctionPower {
 		out suctionPower :> ISQ::power;
 	}
 	
-	port BrushRotationLevel {
-		out brushRotationLevel :> Real;
+	port def BrushRotationLevel {
+		out brushRotationLevel : Real;
 	}
 	
 	port def BrushRotationSpeed {

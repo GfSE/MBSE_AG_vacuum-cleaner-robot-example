@@ -2,7 +2,8 @@ package 'BatteryLevelComputer' {
 
 	import Signals::*;
 	import ScalarValues::*;
-	import ControllerSignals:*;
+	import ControllerSignals::*;
+	import Signals::BatterySignals::BatterySignal;
 
   /**
    * This part takes a BatterySignal as input and translates it into a 

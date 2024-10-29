@@ -1,6 +1,7 @@
 package 'EnergySupplyTypes' {
 
 	import ScalarValues::*;
+  import Signals::ControllerSignals::*;
 
   doc /*
     =======================================================================
@@ -29,7 +30,7 @@ package 'EnergySupplyTypes' {
   }
   
   port def BatteryLevelColorPort {
-    attribute color : COLOR;
+    attribute color : LED_COLOR;
   }
 
  /// CONNECTIONS ///////////////////////////////////////////////////////////////

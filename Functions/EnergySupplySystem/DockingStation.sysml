@@ -8,6 +8,7 @@ package DockingStation {
     
     import PortDef::*;
     import Signals::*;
+    import Signals::ControllerSignals::PowerSignal;
     
     part def Station {
         part charger : Charger;

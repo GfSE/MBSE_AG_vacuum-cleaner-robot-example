@@ -1,4 +1,8 @@
-package EnergySupply {    
+package EnergySupplyProcessor {  
+
+    import BatteryLevelComputer::BatteryLevelComputer;
+    import Signals::BatterySignals::*;
+
     /**
      * The CPU performs computations of the EnergySupplySystem. To this end
      * it has two parts taking care of battery management and indicating the
@@ -7,7 +11,7 @@ package EnergySupply {
     part def CPU {
         // Parts
         part blc        : BatteryLevelComputer;
-        part bms        : BatteryMangementSystem; // TODO: Needs to be imported
+        // part bms        : BatteryMangementSystem; // TODO: Needs to be defined and imported
 
         // Ports
         port requriedEnergy : PowerInOutPort; // in

@@ -10,7 +10,7 @@ package 'Robotic Vacuum Cleaner'{
 		part ControllerSystem : controller;
 		part NavigationSystem : navigation;
 		part EnergySystem : energySupplySystem;
-		part VaccumingSystem : vacuumingSystem;
+		part VacuumingSystem : vacuumingSystem;
 
 		port driverUnitControlSignal : DriverUnitControlSignal;
 		port powerSignal : PowerSignal;
@@ -31,7 +31,7 @@ package 'Robotic Vacuum Cleaner'{
 		}
 		
 		interface: suctionLevelPorts connect
-			supplierPort ::> ControllerSystem.suctionLevel;
+			supplierPort ::> ControllerSystem.suctionLevel to
 			consumerPort ::> VacuumingSystem.suctionLevel;
 			
 		// Control signal for brush rotation level
@@ -41,7 +41,7 @@ package 'Robotic Vacuum Cleaner'{
 		}
 		
 		interface: brushRotationLevelPorts connect
-			supplierPort ::> ControllerSystem.brushRotationLevel;
+			supplierPort ::> ControllerSystem.brushRotationLevel to
 			consumerPort ::> VacuumingSystem.brushRotationLevel;
 		
 		// Current fill state of debris container
@@ -51,7 +51,7 @@ package 'Robotic Vacuum Cleaner'{
 		}
 		
 		interface: fillStatePorts connect
-			supplierPort ::> VacuumingSystem.fillState;
+			supplierPort ::> VacuumingSystem.fillState to
 			consumerPort ::> ControllerSystem.fillState;
 		
 		// Dirty air flow
@@ -61,7 +61,7 @@ package 'Robotic Vacuum Cleaner'{
 		}
 		
 		interface: dirtyAirPorts connect
-			supplierPort ::> dirtyAirFlow;
+			supplierPort ::> dirtyAirFlow to
 			consumerPort ::> VacuumingSystem.dirtyAirFlow;
 			
 		// Clean air flow
@@ -71,7 +71,7 @@ package 'Robotic Vacuum Cleaner'{
 		}
 		
 		interface: cleanAirPorts connect
-			supplierPort ::> VacuumingSystem.cleanAirFlow;
+			supplierPort ::> VacuumingSystem.cleanAirFlow to
 			consumerPort ::> cleanAirFlow;
 		
 	}

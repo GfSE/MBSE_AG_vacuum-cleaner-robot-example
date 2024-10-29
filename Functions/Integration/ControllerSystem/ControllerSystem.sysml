@@ -1,5 +1,6 @@
 package Controller{
 	import Ports::*;
+	import Signals::ControllerSignals::*;
 	
 	port def DriverUnitControlSignal {
             out attribute forward : Boolean;

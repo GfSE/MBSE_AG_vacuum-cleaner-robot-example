@@ -25,17 +25,26 @@ package partDef
         attribute rpm0 : Real; // Nenndrehzahl
         attribute voltage :> ISQ::voltage; // Voltage;
         
-        action def ConvertEletricalToMechanicalEnergy (in current, in voltage, in rpm0, out mechanicalEnergy) {
+        action def ConvertEletricalToMechanicalEnergy {
+            in current; 
+            in voltage; 
+            in rpm0; 
+            out mechanicalEnergy;
+
             calc Torque;
         }
         
-        action def ProvideTorque (in current, in voltage, in rpm0, out torque:>ISQ::torque) {
+        action def ProvideTorque {
+            in current; 
+            in voltage; 
+            in rpm0; 
+            out torque:>ISQ::torque;
             
             bind convertEnergy::current = current;
             bind convertEnergy::voltage = voltage;
             bind convertEnergy::rpm0 = rpm0;
             
-            action convertEnergy:ConvertEletricalToMechanicalEnergy (in current, in voltage, in rpm0, out mechanicalEnergy);
+            action convertEnergy:ConvertEletricalToMechanicalEnergy {in current; in voltage; in rpm0; out mechanicalEnergy;}
             
             bind convertEnergy::mechanicalEnergy = torque;
             

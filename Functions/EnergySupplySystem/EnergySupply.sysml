@@ -9,7 +9,10 @@ package EnergySupply {
     import PortDef::*;
     import Signals::*;
     import DockingStation::*;
-    import BatteryLevelComputer:*;
+    import BatteryLevelComputer::*;
+    import 'Energy Supply System'::*;
+    import EnergySupplyProcessor::*;
+    import BLI::LED;
 
     
     /* Part definitions */

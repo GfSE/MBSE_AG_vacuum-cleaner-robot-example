@@ -6,48 +6,59 @@ package SuctionDevice {
 	import ISQSpaceTime::*;
 	import ScalarValues::*;
 
-	calc def calcActualPower (powerLevel :> Real, maxPower :> ISQ::power) :> ISQ::power {
-            	powerLevel * maxPower 
-        	}
+	calc def calcActualPower {
+      	in powerLevel : Real;
+		in maxPower : PowerValue;
+		
+		return PowerValue = powerLevel * maxPower;
+  	}
         
-    calc def calcVolFlow (setpointPower :> ISQ::power, diffPressure :> ISQ::pressure) :> ISQMechanics::volumeFlowRate {
-				actPower / diffPressure
-			}
+    calc def calcVolFlow {
+		in setpointPower :> ISQ::power;
+		in diffPressure :> ISQ::pressure;
+
+		return : ISQMechanics::volumeFlowRate = setpointPower / diffPressure;
+	}
 			
-	calc def calcFlowRate (inFlow :> ISQSpaceTime::volume, volFlow :> ISQMechanics::volumeFlowRate) :> ISQSpaceTime::volume {
-				// not sure how to model without time steps
-			}
-		}
+	calc def calcFlowRate {
+		in inFlow :> ISQSpaceTime::volume;
+		in volFlow :> ISQMechanics::volumeFlowRate;
+
+		return : ISQSpaceTime::volume;
+		// not sure how to model without time steps
+		
+	}
 
 	part def SuctionMotor {
-		port suctionLevel = ~SuctionLevel;
-		port suctionPower = SuctionPower;
+		port suctionLevel : ~SuctionLevel;
+		port suctionPower : SuctionPower {
+			suctionPower = powerOut.res;
+		}
 			
 		attribute parMaxPower :> ISQ::power;
 			
-		calc powerOut : calcActualPower (
-			powerLevel = suctionLevel::suctionLevel,
-			maxPower = parMaxPower
-		) return pOut = suctionPower::suctionPower;
+		calc powerOut : calcActualPower {
+			in powerLevel = suctionLevel::suctionLevel;
+			in maxPower = parMaxPower;
+		    return res;
+		}
 			
 	}
 			
 	part def SuctionChamber {
-		port dirtyAirFlowIn = DirtyAirFlow;
-		port dirtyAirFlowOut = ~DirtyAirFlow;
+		port dirtyAirFlowIn : DirtyAirFlow;
+		port dirtyAirFlowOut : ~DirtyAirFlow {
+			dirtyAirFlow = flowRate.currentFlowRate;
+		}
 		port suctionPower : ~SuctionPower;
 				
 		attribute parDiffPressure :> ISQ::pressure;
 				
-		calc volFlow : calcVolFlow (
-			actPower = suctionPower::suctionPower,
-			diffPressure = parDiffPressure
-		) return currentFlow
-		
-		calc flowRate : calcFlowRate (
-			inFlow = dirtyAirFlowIn::dirtyAirFlow;
-			volFlow = currentFlow
-		) return currentFlowRate = dirtyAirFlowOut::dirtyAirFlow;
+		calc flowRate : calcFlowRate {
+			in inFlow = dirtyAirFlowIn::dirtyAirFlow;
+			in volFlow = calcVolFlow(suctionPower::suctionPower, parDiffPressure);
+		    return currentFlowRate;
+		}
 	}
 		
 	part def suctionDevice { 
@@ -66,7 +77,7 @@ package SuctionDevice {
 		}
 		
 		interface: dirtyAirFlowInPorts connect
-			supplierPort ::> dirtyAirFlowIn;
+			supplierPort ::> dirtyAirFlowIn to
 			consumerPort ::> sc.dirtyAirFlowIn;
 		
 		interface def dirtyAirFlowOutPorts {
@@ -75,7 +86,7 @@ package SuctionDevice {
 		}
 		
 		interface: dirtyAirFlowOutPorts connect
-			supplierPort ::> sc.dirtyAirFlowOut;
+			supplierPort ::> sc.dirtyAirFlowOut to
 			consumerPort ::> dirtyAirFlowOut;
 			
 		interface def suctionLevelPorts {
@@ -84,8 +95,8 @@ package SuctionDevice {
 		}
 		
 		interface: suctionLevelPorts connect
-			supplierPort ::> suctionLevel;
-			consumerPort ::> sm.suctionlevel;
+			supplierPort ::> suctionLevel to
+			consumerPort ::> sm.suctionLevel;
 
 		connect sm to sc;
 
@@ -95,7 +106,7 @@ package SuctionDevice {
 		}
 		
 		interface: suctionPowerPorts connect
-			supplierPort ::> sm.suctionPower;
+			supplierPort ::> sm.suctionPower to
 			consumerPort ::> sc.suctionPower;	
 	}
 }

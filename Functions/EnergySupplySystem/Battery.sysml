@@ -2,6 +2,9 @@ package 'Energy Supply System' {
   
   import ScalarValues::*;
   import RoboCleanRequirements::*;
+  import PortDef::*;
+  import Signals::*;
+  import Signals::BatterySignals::BatterySignal;
 
   doc /*
     =======================================================================
