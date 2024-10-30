@@ -38,7 +38,7 @@ This image showcases the InfraredController implementation.
 
 This image showcases the public ports utilized in the system's operation.
 !!Functions/Integration/Ports&Signals/Port.png
-!!Functions/Integration/Ports&Signals/Ports.sysml
+!!Functions/Integration/Ports&Signals/RobotPortDefs.sysml
 
 ToDo: add description.
 !!Functions/Integration/VacuumingSystem/VaccuumingSystem.png
