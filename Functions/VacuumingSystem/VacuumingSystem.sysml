@@ -20,11 +20,10 @@ package VacuumingSystem {
 	
 	part vacSys : vacuumingSystem{
 */
-        import BrushSystem::Definitions::PartDefinitions::*;
-		import FilterSystem::Definitions::PartDefinitions::*;
 
-		part bs : BrushSystem {
-			port redefines rotationLevelIn; 
+
+		part bs : brushSystem {
+			port redefines brushRotationLevel; 
 			//port redefines energyIn;
 		}
 		part sd : suctionDevice {
@@ -33,7 +32,7 @@ package VacuumingSystem {
 			//port redefines energyIn;
 			port redefines suctionLevel;
 		}
-		part fs : FilterSystem {
+		part fs : filterSystem {
 			port redefines airIn;
 			port redefines airOut;
 			port redefines debrisOut;
@@ -44,7 +43,7 @@ package VacuumingSystem {
 		//interface : Signals::BatterySignals::VacuumSystemPowerInterface connect supplierPort ::> energyIn to consumerPort ::> sd::energyIn;
 		//interface : Signals::BatterySignals::VacuumSystemPowerInterface connect supplierPort ::> energyIn to consumerPort ::> bs::energyIn;
 		interface : VacuumingTypes::InterfaceDefinitions::SuctionLevel connect supplierPort ::> suctionLevel to consumerPort ::> sd::suctionLevel;
-		interface : VacuumingTypes::InterfaceDefinitions::RotationLevel connect supplierPort ::> rotationLevel to consumerPort ::> bs::rotationLevelIn;
+		interface : VacuumingTypes::InterfaceDefinitions::RotationLevel connect supplierPort ::> rotationLevel to consumerPort ::> bs::brushRotationLevel;
 		 
 		// Needs to be aligned with filter system
 		interface : VacuumingTypes::InterfaceDefinitions::InternalAir connect supplierPort ::> sd::airOut to consumerPort ::> fs::airIn;

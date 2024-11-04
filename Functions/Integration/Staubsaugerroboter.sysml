@@ -42,7 +42,7 @@ package 'Robotic Vacuum Cleaner'{
 		
 		interface: brushRotationLevelPorts connect
 			supplierPort ::> ControllerSystem.brushRotationLevel to
-			consumerPort ::> VacuumingSystem.bs.rotationLevelIn;
+			consumerPort ::> VacuumingSystem.bs.brushRotationLevel;
 		
 		// Current fill state of debris container
 		interface def fillStatePorts {
@@ -62,7 +62,7 @@ package 'Robotic Vacuum Cleaner'{
 		
 		interface: dirtyAirPorts connect
 			supplierPort ::> dirtyAirFlow to
-			consumerPort ::> VacuumingSystem.airIn;
+			consumerPort ::> VacuumingSystem.dirtyAirFlow;
 			
 		// Clean air flow
 		interface def cleanAirPorts {
@@ -71,7 +71,7 @@ package 'Robotic Vacuum Cleaner'{
 		}
 		
 		interface: cleanAirPorts connect
-			supplierPort ::> VacuumingSystem.airOut to
+			supplierPort ::> VacuumingSystem.cleanAirFlow to
 			consumerPort ::> cleanAirFlow;
 		
 	}
