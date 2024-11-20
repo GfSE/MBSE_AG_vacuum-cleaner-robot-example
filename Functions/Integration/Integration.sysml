@@ -1,10 +1,10 @@
 package 'Robotic Vacuum Cleaner'{
 	
-	import Controller::*;
-	import Navigation::*;
-	import EnergySupplySystem::*;
-	import VacuumingSystem::*;
-	import RobotPortDefs::*;
+	private import Controller::*;
+	private import Navigation::*;
+	private import EnergySupplySystem::*;
+	private import VacuumingSystem::*;
+	private import RobotPortDefs::*;
 	
 	part def RoboticVacuumCleaner{
 		part ControllerSystem : controller;
@@ -17,10 +17,10 @@ package 'Robotic Vacuum Cleaner'{
 		port dirtyAirFlow : DirtyAirFlow;
 		port cleanAirFlow : CleanAirFlow;
 
-		interface : DriverUnitControlInterface connect
+		/*interface : DriverUnitControlInterface connect
 			supliertPort ::> ControllerSystem.driverSignalOutputPort to
 			consumerPort ::> NavigationSystem.driverUnitControlSignalInputPort;
-		
+		*/
 		// Interfaces to/from Vaccuming System
 		connect ControllerSystem to VacuumingSystem;
 				
@@ -76,424 +76,677 @@ package 'Robotic Vacuum Cleaner'{
 		
 	}
 }
-package 'Energy Supply System' {
-  
-  import ScalarValues::*;
-  import RoboCleanRequirements::*;
-  import PortDef::*;
-  import Signals::*;
-  import Signals::BatterySignals::BatterySignal;
-
-  doc /*
+package PortDef {
+    doc /*
     =======================================================================
-    The following SysML v2 package specifies the battery 
-    of the vacuum cleaner robot in a black-box fashion
+    The following SysML v2 package DEFINES
+    a power port
+    R. Schuler, June 2021 
+    =======================================================================
+    */    
+    
+    private import ISQ::*;
+    
+    port def PowerInOutPort{
+        inout attribute power :> ISQElectromagnetism::instantaneousPower;
+    }
+
+  	interface def PowerInterface {
+  	    end supplierPort : PowerInOutPort;
+  	    end consumerPort : PowerInOutPort;
+  	}
+}package Signals {
+    doc /*
+    =======================================================================
+    The following SysML v2 package DEFINES
+    multiple signal ports and interfaces
     =======================================================================
     */  
-
-  part def Battery {
-    // Ports
-    port requriedEnergy : PowerInOutPort; // in
-    port providedEnergy : PowerInOutPort; // out
-    port batSig         : BatterySignal; // out
-
     
-    // TOOD: Decompose in individual cells
+    private import ScalarValues::*;
+    private import ISQ::*;
     
-    // TODO: Add battery management such as overcharging protection
-  }
-
-  // The Energy supply system provides the electical energy for the robot vacuum cleaner
-
-  attribute def essStatus {
-    statusLED : Integer;
-    SOC       : Real; 
-  }
-  
-  comment about essStatus 
-  /* SOC = State of Charge */
-  
-  part def Accumulator {
-    item def Energy;
-    attribute mass : Real;
-    // attribute TotCapacity : ActiveEnergyValue;
-    attribute TotCapacity;
+    /* Primitive and basic signals */
     
-    part def cell {
-      Capacity  : Real;
-      Voltage   : Real;
+    port def BooleanSignal {
+        out attribute val : Boolean;
     }
     
-    part def cellConnector;
-    
-    attribute def layout {
-      numOfParCells : Integer;
-      numOfSerCells : Integer;
-    }
-  }
-      
-  part def BMS {  // @Ralf: now instantiated by CPU? 
-                  // Maybe move to EnergySupply.sysml
-    // Parts
-    part def volSensor;
-    part def curSensor;
-    part def tempSensor;
-    part def microController;
-    part def Balancer;
-
-    // Ports
-    port batSig : BatterySignal;
-
-  }
-  
-  comment about BMS 
-  /* BMS = Battery Management System */
-  
-  part def Charger {
-    attribute power : Real;
-    attribute voltage : Real;
-    
-    part def Plug;
-    part def Converter; // ACDC Converter
-    part def batConector;
-  }
-}package 'BatteryLevelComputer' {
-
-	import Signals::*;
-	import ScalarValues::*;
-	import ControllerSignals::*;
-	import Signals::BatterySignals::BatterySignal;
-
-  /**
-   * This part takes a BatterySignal as input and translates it into a 
-   * color to be shown by the LED of EnergySupplySystem
-   */
-	part def BatteryLevelComputer {
-     // Ports
-     port batSig : BatterySignal; // in
-     port ledSig : LEDSignal; // out
-  
-    // Attributes  
-    attribute batteryCapacity : Real = 1000; 
-    
-    // Behavior
-    // Realized through a StateChart which takes inputs from the incoming port 
-    // and part attribute. Produces a return value to outgoing port ledSig.
-    exhibit state BatteryLevelComputerStates {
-      in  ref batCap        = batSig::curBatCapacity;
-      in  ref maxBatCap     = batteryCapacity; // 'this' would be nice
-      //out ref ledSig {color = computedColor;}
+    interface def BooleanSignalInterface {
+        end src : BooleanSignal;
+        end tgt : ~BooleanSignal;
     }
     
-	}
-	
-	/**
-	 * As actions need to be instnatiated somewhere, we leverage a very small
-	 * statechart to perform the actual computations.
-	 */
-	state def BatteryLevelComputerStates {
-	  entry; then x;  // Initial state x
-	  
-	  // Definition of state x instantiates action 
-	  state x { 
-	    entry act {batCap; maxBatCap; computedColor;}
-	  }  
-	}
+    port def NumericSignal {
+        out attribute val : Real;
+    }
+    
+    interface def NumericSignalInterface {
+        end src : NumericSignal;
+        end tgt : ~NumericSignal;
+    }
+    
+    
+    /* Customized and advanced signals of the different sub-systems */
+    
+    package ControllerSignals {
 
-	action act : ComputeBatteryInfo{batCap; maxBatCap; computedColor;}
-	
-	/**
-	 * The action ComputeBatteryInfo delegates to the calculation CalcBatteryLevel
-	 */
-	action def ComputeBatteryInfo{in  batteryCapacity    : Real;
-	                              in  maxBatteryCapacity : Real;
-	                              out batteryColor       : LED_COLOR = CalcBatteryLevel(batteryCapacity, maxBatteryCapacity);
-	}
-	
-	calc def CalcBatteryLevel{
-		in energy : Real; 
-		in capacity : Real; 
+        port def PowerSignal {
+            out attribute constantCurrent :> totalCurrent;
+            out attribute constantVoltage :> voltage;
+        }
+
+        interface def PowerSignalInterface {
+            end src : PowerSignal;
+            end tgt : ~PowerSignal;
+        }
+
+        port def DriverUnitControlSignal {
+            out attribute forwards : Boolean;
+            out attribute left : Boolean;
+            out attribute right : Boolean;
+        }
+    
+        interface def DriverUnitControlInterface {
+            end src : DriverUnitControlSignal;
+            end tgt : ~DriverUnitControlSignal;
+        }
         
-		energy / capacity
-    }
+        port def LEDSignal {
+            out color : LED_COLOR;
+        }
 
-}package EnergySupplyProcessor {  
+        interface def LEDInterface {
+            end src : LEDSignal;
+            end tgt : ~LEDSignal;
+        }
 
-    import BatteryLevelComputer::BatteryLevelComputer;
-    import Signals::BatterySignals::*;
-
-    /**
-     * The CPU performs computations of the EnergySupplySystem. To this end
-     * it has two parts taking care of battery management and indicating the
-     * current battery level to the user.
-     */
-    part def CPU {
-        // Parts
-        part blc        : BatteryLevelComputer;
-        part bms        : BatteryMangementSystem; // TODO: Needs to be defined and imported properly
-
-        // Ports
-        port requriedEnergy : PowerInOutPort; // in
-        port batSig         : BatterySignal; // in
-        port ledSig         : LEDSignal; // out
-
-        interface : BatterySignalInterface connect
-            src ::> batSig to
-            tgt ::> bms::batSig;
-
-        interface : BatterySignalInterface connect
-            src ::> batSig to
-            tgt ::> blc::batSig;
-
-        interface : LEDSignalInterface connect
-            src ::> batSig to
-            tgt ::> bms::ledSig;
-    }
-
-    // just a surrogate
-    part def BatteryMangementSystem {
-        port batSig         : BatterySignal; 
-        port ledSig         : LEDSignal; 
-    }
-}    package DockingStation {
-    doc /*
-    =======================================================================
-    The following SysML v2 package specifies the charging
-    station of the vacuum cleaner robot
-    =======================================================================
-    */    
-    
-    import PortDef::*;
-    import Signals::*;
-    import Signals::ControllerSignals::PowerSignal;
-    
-    part def Station {
-        part charger : Charger;
-    }
-    
-    part def Charger {
-        port energy        : PowerInOutPort;
-        port emergencyStop : ~BooleanSignal;
-        port powerSignal   : ~PowerSignal;
-    }
-    
-    part charger : Charger;
-    
-}
-package EnergySupply {
-    doc /*
-    =======================================================================
-    The following SysML v2 package specifies the energy
-    supply system of the vacuum cleaner robot
-    =======================================================================
-    */    
-    
-    import PortDef::*;
-    import Signals::*;
-    import DockingStation::*;
-    import BatteryLevelComputer::*;
-    import 'Energy Supply System'::*;
-    import EnergySupplyProcessor::*;
-    import BLI::LED;
-
-    
-    /* Part definitions */
-    
-    part def EnergySupplySystem {
-        // Parts
-        part bat : Battery;
-        part cpu : CPU;
-        part led : LED;
-
-        // Ports
-        port requiredEnergy : PowerInOutPort; // in
-
-        // Connections
-      /*  interface : RequiredEnergyInterface connect
-            src ::> requiredEnergy to
-            tgt ::> bat::requiredEnergy;*/
-
-        interface : PowerInterface connect
-            src ::> bat::providedEnergy to
-            tgt ::> cpu::requriedEnergy;        
-
-        interface : PowerInterface connect
-            src ::> bat::providedEnergy to
-            tgt ::> led::requriedEnergy;
-
-        interface : BatterySignalInterface connect
-            src ::> bat::batSig to
-            tgt ::> cpu::batSig;
-
-        interface : LEDSignalInterface connect
-            src ::> cpu::ledSig to
-            tgt ::> led::ledSignal;
-
+        enum def LED_COLOR {
+            RED;
+            YELLOW;
+            GREEN;
+        }
 
     }
     
-}
-package 'EnergySupplyTypes' {
+    package BatterySignals {
 
-	import ScalarValues::*;
-  import Signals::ControllerSignals::*;
+        private import Signals::ControllerSignals::*;
+        
+        port def PowerInOutPort{
+            inout attribute :> ISQMechanics::power; 
+        }
 
-  doc /*
-    =======================================================================
-    This package defines basic datatypes used throughout the EnergySupply
-    and related components
-    =======================================================================
-    */  
+        interface def PowerInterface {
+            end supplierPort : PowerInOutPort;
+            end consumerPort : PowerInOutPort;
+        }
+        
+        /* wurde in "out" umbenannt, da konjugation sinnvoller ist*/
+        port def VacuumSystemPowerOutPort {
+            out attribute suctionPower :> ISQMechanics::power;
+            out attribute brushPower :> ISQMechanics::power; 
+        }
+        
+        interface def VacuumSystemPowerInterface {
+            end supplierPort : VacuumSystemPowerOutPort;
+            end consumerPort : VacuumSystemPowerOutPort;
+        }
+
+        port def LEDSignal {
+            inout attribute color : LED_COLOR;
+        }
+
+        interface def LEDSignalInterface {
+            end supplierPort : LEDSignal;
+            end consumerPort : LEDSignal;
+        }
+
+        port def BatterySignal { // @Ralf: hier bitte ergänzen
+            // current capactity of battery
+            inout attribute curBatCapacity : Real; 
+
+        }
+
+        interface def BatterySignalInterface {
+            end supplierPort : BatterySignal;
+            end consumerPort : BatterySignal;
+        }
+    }
+    
+    
+    
+
+}package RobotPortDefs {
+
+    private import ScalarValues::*;
+    private import ISQ::*;
+
+    // Ports for Navigation System
+    
+    port def PowerSignal {
+        out constantCurrent :> totalCurrent;
+        out constantVoltage :> voltage;
+    }
+
+    // Ports for Vacuuming System
+
+    port def DirtyAirFlow {
+        out dirtyAirFlow :> ISQSpaceTime::volume;
+    }
+
+    port def CleanAirFlow {
+        out cleanAirFlow :> ISQSpaceTime::volume;
+    }
+
+    port def Debris {
+        out debrisVolume :> SI::'m³';
+        out debrisMass :> SI::kg;
+    }
+
+    port def FillState {
+        out fillState : Real;
+    }
+
+    port def SuctionLevel {
+        out suctionLevel : Real;
+    }
+
+    port def SuctionPower {
+        out suctionPower :> ISQ::power;
+    }
+
+    port def BrushRotationLevel {
+        out brushRotationLevel : Real;
+    }
+
+    port def BrushRotationSpeed {
+        out brushRotationSpeed :> ISQSpaceTime::rotationalFrequency;
+    }
 
 
-  // TODO: Should we use SI units?
-
-  /// DATA TYPES ///////////////////////////////////////////////////////////////
-  
-  item def ElectricalEnergy;
-
-	/// PORTS ////////////////////////////////////////////////////////////////////
+}package EnergySupplySystem{
+	private import RobotPortDefs::*;
 	
-	port def EnergyInOutPort {
-	  inout item e : ElectricalEnergy; // TODO: units?
+	part def energySupplySystem{
+		port powerSignal : PowerSignal;
 	}
-  
-  port def RelativeBatteryLevelPort {
-    attribute voltageInPercent : ScalarValues::Real;
-    // TODO: Muss es hier ein flow feature geben
-    // in ??? wert : Real; 
-  }
-  
-  port def BatteryLevelColorPort {
-    attribute color : LED_COLOR;
-  }
+}package Navigation{
+/*This module implements the Navigation-System
+ * The Navigation-System is used for navigating the system
+ */
+	private import RobotPortDefs::*;
+	
+	private import Controller::*;
+	private import Bumber::*;
+	private import Engine::*;
+	private import LaserTower::*;
+	private import DriveController::*;
+	private import InfraredController::*;
 
- /// CONNECTIONS ///////////////////////////////////////////////////////////////
-  
-  connection def WhySoComplicated {
-    end : ScalarValues::Real;
-    end : ScalarValues::Real;
-  }
-    
-  connection def EnergyToEnergy {
-    end : ElectricalEnergy;
-    end : ElectricalEnergy;
-  }
 
-}
-package 'BLI' {
-  import PortDef::*;
-  import Signals::*;
-  import Signals::ControllerSignals::*;
-  import EnergySupplyTypes::*;
+	part def navigation{
+		part DriveController : driveController;
+		part Engine[2] : engine;
+		part LaserTower : laserTower;
+		part Bumber : bumber;
+		part InfraredController : infraredController;
 
-  part def LED {   
-    // Ports
-    port ledSignal 			: LEDSignal; 
-    port requriedEnergy : EnergyInOutPort;
-  }
+		port driverUnitControlSignalInputPort : ~DriverUnitControlSignal;
+		port powerSignal : PowerSignal;
 
-	action def setColor{
-    in color : LED_COLOR; 
- 	  language "Java"
-	  /* 
-	   * Here, we could pollute our model with actual Java code for a 
-	   * robot-specific middleware / implementation. With this being out of 
-	   * scope of this example, the body of this opaque method is empty.
-	   */
-	}
-}package DriveUnit{
-	// global imports
-    import ScalarValues::*;
-    import ISQ::*;
-    import SI::*;
-    import ISQElectromagnetism::*;
-	import partDef::*;
-	import PortDef::*;	
-    
-	    
-	part def logicalDriveUnit {
+		bind driverUnitControlSignalInputPort = DriveController.driverUnitControlSignalInputPort;
 
-	    part motor1 : dcMotor {
-	        part tire1 redefines motorTire[1];
-	    }
-	    part motor2 : dcMotor {
-	        part tire2 redefines motorTire[1];
-	    }
-	    part drvController : driveController{ 
-	        attribute redefines architecture = EeArchitecture::arm; //man muss bei "redefine" keinen neuen Namen vergeben.
-	    }
-	    part orientation : Lasertower;
-	    part collision : Bumber;
-	    part psuDetection : timeofFlightController;
-	    
-	    port powerSupply : DriveUnitPowerSupply;
-	    port controlSignal : DriverUnitControlSignal;
+     	interface : bumberInterface connect
+			suppliertPort ::> Bumber.CollisionOutputPort to
+			consumerPort ::> DriveController.CollisionInputPort;	    	
+
+	    interface : laserTowerInterface connect
+	    	supplierPort ::> LaserTower.LaserTowerPositionOutputPort to
+	    	consumerPort ::> DriveController.LaserTowerInputPort;
+
+    	interface : infraredControllerInterface connect
+    		supplierPort ::> InfraredController.ContactChargerOutputPort to
+	    	consumerPort ::> DriveController.ContactChargerInputPort;    	
+
+	    interface : pwmControllInterface connect
+			suppliertPort ::> Engine.PwmInputPort to
+			consumerPort ::> DriveController.PwmOutputPort;
 
 	}
-	    interface : PowerInterface connect supplierPort ::> logicalDriveUnit::powerSupply to consumerPort ::> logicalDriveUnit::motor1::psu;
-	    interface : PowerInterface connect supplierPort ::> logicalDriveUnit::powerSupply to consumerPort ::> logicalDriveUnit::motor2::psu;
-	    interface : PowerInterface connect supplierPort ::> logicalDriveUnit::powerSupply to consumerPort ::> logicalDriveUnit::orientation::psu;
-
-	//satisfy Beschleunigen by driveUnit; // Funktioniert noch nicht
-	}
-
-    package partDef
-{
-    import portDef::*;
-
-    part def tire {
-        attribute diameter : LengthValue; //LengthValue kommt aus dem ISQ-Paket und beinhaltet ein Real und eine Einheit
+}package Controller{
+	private import RobotPortDefs::*;
+	private import Signals::ControllerSignals::*;
+	
+	port def DriverUnitControlSignal {
+            out attribute forward;
+            out attribute left;
+            out attribute right;
     }
     
-    enum def EeArchitecture {
-        enum arm;
-        enum arm64;
-        enum i386;
-        enum amd64;
+    interface def DriverUnitControlInterface{
+    	end supplierPort : DriverUnitControlSignal;
+    	end consumerPort : ~DriverUnitControlSignal;
+    	
+    	flow supplierPort.forward to consumerPort.forward;
+    	flow supplierPort.left to consumerPort.left;
+    	flow supplierPort.right to consumerPort.right;
+    }
+	
+	part def controller{
+		port driverSignalOutputPort : DriverUnitControlSignal;
+		port powerSignal : ~PowerSignal;
+		
+		// To Vacuuming System
+		port suctionLevel : SuctionLevel;
+		port brushRotationLevel : BrushRotationLevel;
+		
+		// From Vacuuming System
+		port fillState : ~FillState;
+	}
+}
+package BrushSystem {
+	private import ScalarValues::*;
+	private import RobotPortDefs::*;
+	private import ISQSpaceTime::*;
+	/*
+	calc def calcSetpointRPM {
+		in rotationLevel : Real;
+        in maxRPM :> ISQSpaceTime::rotationalFrequency;
+		return : ISQSpaceTime::rotationalFrequency;
+
+        rotationLevel * maxRPM 
+    }
+	*/
+	part def MainBrush {
+		port rotationSpeed : ~BrushRotationSpeed;
+	}
+	
+	part def SmallBrush {
+		port rotationSpeed : ~BrushRotationSpeed;
+	}
+	
+	part def BrushController {
+		//port rotationSpeed : BrushRotationSpeed = setpointRPM.rotSpeed;
+		port brushRotationLevel : ~BrushRotationLevel;
+		
+		attribute parMaxRPM :> ISQSpaceTime::rotationalFrequency;
+	/*
+		calc setpointRPM : calcSetpointRPM {
+			in rotationLevel = brushRotationLevel::brushRotationLevel;
+			in maxRPM = parMaxRPM;
+    		return rotSpeed;
+		}
+	*/	
+	}
+	
+	part def brushSystem{
+		part mb : MainBrush;
+		part sb : SmallBrush[2];
+		part bc : BrushController{
+			attribute redefines parMaxRPM = 167; // 10000 rpm is a common rotational speed of the brushes, recalculation because rotationalFrequency is [1/s]
+		}
+		
+		port brushRotationLevel : ~BrushRotationLevel;
+		
+		connect bc to mb;
+		
+		interface def rotationSetPointMainPorts {
+			end supplierPort : BrushRotationSpeed;
+			end consumerPort : BrushRotationSpeed;
+		}
+		/*
+		interface: rotationSetPointMainPorts connect
+			supplierPort ::> bc.rotationSpeed to
+			consumerPort ::> mb.rotationSpeed;
+		
+		connect bc to sb;
+		*/
+		interface def rotationSetPointSmallPorts {
+			end supplierPort : BrushRotationSpeed;
+			end consumerPort : BrushRotationSpeed;
+		}
+		/*
+		interface: rotationSetPointSmallPorts connect
+			supplierPort ::> bc.rotationSpeed to
+			consumerPort ::> sb.rotationSpeed;
+	*/
+    }
+}
+		
+	package FilterSystem {
+
+	private import RobotPortDefs::*;
+	
+	part def Tank {
+		port debris : ~Debris;
+		port fillState : FillState;
+		
+		// Missing State Machine
+	}
+	
+	part def Filter {
+		port dirtyAirFlow : DirtyAirFlow;
+		port cleanAirFlow : CleanAirFlow;
+		port debris : Debris;
+	}
+
+	part def filterSystem {
+		port dirtyAirFlow : DirtyAirFlow;
+		port cleanAirFlow : CleanAirFlow;
+		port fillState : FillState;
+		
+		part filterCmp : Filter;
+		part tank : Tank;
+		
+		interface def dirtyAirFlowPorts {
+			end supplierPort : DirtyAirFlow;
+			end consumerPort : DirtyAirFlow;
+		}
+		
+		interface: dirtyAirFlowPorts connect
+			supplierPort ::> dirtyAirFlow to
+			consumerPort ::> filterCmp.dirtyAirFlow;
+			
+		interface def cleanAirFlowPorts {
+			end supplierPort : CleanAirFlow;
+			end consumerPort : CleanAirFlow;
+		}
+		
+		interface: cleanAirFlowPorts connect
+			supplierPort ::> filterCmp.cleanAirFlow to
+			consumerPort ::> cleanAirFlow;
+			
+		connect filterCmp to tank;
+		
+		interface def debrisPorts {
+			end supplierPort : Debris;
+			end consumerPort : Debris;
+		}
+		
+		interface: dirtyAirFlowPorts connect
+			supplierPort ::> filterCmp.debris to
+			consumerPort ::> tank.debris;
+			
+		interface def fillStatePorts {
+			end supplierPort : FillState;
+			end consumerPort : FillState;
+		}
+		
+		interface: fillStatePorts connect
+			supplierPort ::> tank.fillState to
+			consumerPort ::> fillState;
+	}
+}package SuctionDevice {
+
+	private import RobotPortDefs::*;
+	private import Ports::*;
+	private import ISQ::*;
+	private import ISQMechanics::*;
+	private import ISQSpaceTime::*;
+	private import ScalarValues::*;
+/*
+	calc def calcActualPower {
+      	in powerLevel : Real;
+		in maxPower : PowerValue;
+		
+		return PowerValue = powerLevel * maxPower;
+  	}
+        
+    calc def calcVolFlow {
+		in setpointPower :> ISQ::power;
+		in diffPressure :> ISQ::pressure;
+
+		return : ISQMechanics::volumeFlowRate = setpointPower / diffPressure;
+	}
+			
+	calc def calcFlowRate {
+		in inFlow :> ISQSpaceTime::volume;
+		in volFlow :> ISQMechanics::volumeFlowRate;
+
+		return : ISQSpaceTime::volume;
+		// not sure how to model without time steps
+		
+	}*/
+
+	part def SuctionMotor {
+		port suctionLevel : ~SuctionLevel;
+		port suctionPower : SuctionPower {
+			//suctionPower = powerOut.res;
+		}
+			
+		attribute parMaxPower :> ISQ::power;
+		/*	
+		calc powerOut : calcActualPower {
+			in powerLevel = suctionLevel::suctionLevel;
+			in maxPower = parMaxPower;
+		    return res;
+		
+		}*/
+			
+	}
+			
+	part def SuctionChamber {
+		port dirtyAirFlowIn : DirtyAirFlow;
+		port dirtyAirFlowOut : ~DirtyAirFlow {
+			//dirtyAirFlow = flowRate.currentFlowRate;
+		}
+		port suctionPower : ~SuctionPower;
+				
+		attribute parDiffPressure :> ISQ::pressure;
+		/*		
+		calc flowRate : calcFlowRate {
+			in inFlow = dirtyAirFlowIn::dirtyAirFlow;
+			in volFlow = calcVolFlow(suctionPower::suctionPower, parDiffPressure);
+		    return currentFlowRate;
+		}*/
+	}
+		
+	part def suctionDevice { 
+		part sm : SuctionMotor;
+		part sc : SuctionChamber {
+			attribute redefines parDiffPressure = 25000; // 25kPa is a common pressure difference for suction devices
+		}
+		
+		port dirtyAirFlowIn : DirtyAirFlow;
+		port dirtyAirFlowOut : ~DirtyAirFlow;
+		port suctionLevel : ~SuctionLevel;
+
+		interface def dirtyAirFlowInPorts {
+			end supplierPort : DirtyAirFlow;
+			end consumerPort : DirtyAirFlow;
+		}
+		
+		interface: dirtyAirFlowInPorts connect
+			supplierPort ::> dirtyAirFlowIn to
+			consumerPort ::> sc.dirtyAirFlowIn;
+		
+		interface def dirtyAirFlowOutPorts {
+			end supplierPort : DirtyAirFlow;
+			end consumerPort : DirtyAirFlow;
+		}
+		
+		interface: dirtyAirFlowOutPorts connect
+			supplierPort ::> sc.dirtyAirFlowOut to
+			consumerPort ::> dirtyAirFlowOut;
+			
+		interface def suctionLevelPorts {
+			end supplierPort : SuctionLevel;
+			end consumerPort : SuctionLevel;
+		}
+		
+		interface: suctionLevelPorts connect
+			supplierPort ::> suctionLevel to
+			consumerPort ::> sm.suctionLevel;
+
+		connect sm to sc;
+
+		interface def suctionPowerPorts {
+			end supplierPort : SuctionPower;
+			end consumerPort : SuctionPower;
+		}
+		
+		interface: suctionPowerPorts connect
+			supplierPort ::> sm.suctionPower to
+			consumerPort ::> sc.suctionPower;	
+	}
+}package VacuumingSystem{
+	private import BrushSystem::*;
+	private import SuctionDevice::*;
+	private import FilterSystem::*;
+	private import Ports::*;
+	private import RobotPortDefs::*;
+
+	part def vacuumingSystem{
+		part bs : brushSystem;
+		part sd : suctionDevice;
+		part fs : filterSystem;
+		
+		port dirtyAirFlow : DirtyAirFlow;
+		port cleanAirFlow : CleanAirFlow;
+		port debris : Debris;
+		port fillState : FillState;
+		port suctionLevel : ~SuctionLevel;
+		port brushRotationLevel : ~BrushRotationLevel;
+		
+		interface def rotationLevelPorts {
+			end supplierPort : BrushRotationLevel;
+			end consumerPort : BrushRotationLevel;
+		}
+		
+		interface: rotationLevelPorts connect
+			supplierPort ::> brushRotationLevel to
+			consumerPort ::> bs.brushRotationLevel;	
+			
+		interface def externalDirtyAirPorts {
+			end supplierPort : DirtyAirFlow;
+			end consumerPort : DirtyAirFlow;
+		}
+		
+		interface: externalDirtyAirPorts connect
+			supplierPort ::> dirtyAirFlow to
+			consumerPort ::> sd.dirtyAirFlowIn;	
+			
+		connect sd to fs;
+		
+		interface def internalDirtyAirPorts {
+			end supplierPort : DirtyAirFlow;
+			end consumerPort : DirtyAirFlow;
+		}
+		
+		interface: internalDirtyAirPorts connect
+			supplierPort ::> sd.dirtyAirFlowOut to
+			consumerPort ::> fs.dirtyAirFlow;	
+			
+		interface def cleanAirPorts {
+			end supplierPort : CleanAirFlow;
+			end consumerPort : CleanAirFlow;
+		}
+		
+		interface: cleanAirPorts connect
+			supplierPort ::> fs.cleanAirFlow to
+			consumerPort ::> cleanAirFlow;
+			
+		interface def suctionLevelPorts {
+			end supplierPort : SuctionLevel;
+			end consumerPort : SuctionLevel;
+		}
+		
+		interface: suctionLevelPorts connect
+			supplierPort ::> suctionLevel to
+			consumerPort ::> sd.suctionLevel;
+			
+		interface def fillStatePorts {
+			end supplierPort : FillState;
+			end consumerPort : FillState;
+		}
+		
+		interface: fillStatePorts connect
+			supplierPort ::> fs.fillState to
+			consumerPort ::> fillState;
+	}
+}package Bumber{
+	/* This package implements the Bumber-System 
+	 * The Bumber detects collision*/
+
+	item def collisionDetection;
+	
+	port def collision {
+		out item CollisionDetection : collisionDetection;
+	}
+    
+    interface def bumberInterface{
+    	end supplierPort : collision;
+    	end consumerPort : ~collision;
+    	
+    	flow supplierPort.CollisionDetection to consumerPort.CollisionDetection;
+    }
+   
+	part def bumber {
+        port CollisionOutputPort : collision;
+    }
+}package DriveController{
+/* This package implements the DriveContoller-System 
+ * The DriveController drives the system*/
+
+	private import Controller::*;
+	private import Bumber::*;
+	private import Engine::*;
+	private import LaserTower::*;
+	private import InfraredController::*;
+	private import InfraredController::infraredController;
+
+
+    part def stearingController{
+		port PwmOutputPort : ~pwmPort;
+    	port driverUnitControlSignalInputPort : ~DriverUnitControlSignal;
+    }
+
+    part def orienttationController{
+    	port CollisionInputPort : ~collision;
+    	port LaserTowerInputPort : ~laserTowerPosition;
+    	port ContactChargerInputPort : ~contactCharger;
     }
 
     part def driveController {
-        attribute architecture : EeArchitecture;
+    	port CollisionInputPort : ~collision;
+    	port LaserTowerInputPort : ~laserTowerPosition;
+    	port PwmOutputPort : ~pwmPort;
+    	port ContactChargerInputPort : ~contactCharger;
+    	port driverUnitControlSignalInputPort : ~DriverUnitControlSignal;
+		
+        part StearingController : stearingController;
+        part OrientationController : orienttationController;
         
-        part stearingController;
-        part orientationController;
-    }
-    
-    part def dcMotor {
-        attribute maxTorque :> ISQ::torque; // maximales Drehmoment
-        attribute rpm0 : Real; // Nenndrehzahl
-        attribute voltage :> ISQ::voltage; // Voltage;
-        
-        action def ConvertEletricalToMechanicalEnergy {
-            in current; 
-            in voltage; 
-            in rpm0; 
-            out mechanicalEnergy;
+        bind CollisionInputPort = OrientationController.CollisionInputPort;
+        bind PwmOutputPort = StearingController.PwmOutputPort;
+        bind LaserTowerInputPort = OrientationController.LaserTowerInputPort;
+        bind driverUnitControlSignalInputPort = StearingController.driverUnitControlSignalInputPort;
 
-            calc Torque;
-        }
+	}
+}package Engine{
+	/* This package implements the Engine-System 
+	 * The engine drives the system*/
+
+    part def Tire;
+    item def pwm;
+    
+    port def pwmPort{
+    	in item PWM : pwm;
+    	}
+    
+    interface def pwmControllInterface{
+    	end supplierPort : pwmPort;
+    	end consumerPort : ~pwmPort;
+    	
+    	flow supplierPort.PWM to consumerPort.PWM;
+    }
+
+    part def engine {
         
-        action def ProvideTorque {
-            in current; 
-            in voltage; 
-            in rpm0; 
-            out torque:>ISQ::torque;
-            
-            bind convertEnergy::current = current;
-            bind convertEnergy::voltage = voltage;
-            bind convertEnergy::rpm0 = rpm0;
-            
-            action convertEnergy:ConvertEletricalToMechanicalEnergy {in current; in voltage; in rpm0; out mechanicalEnergy;}
-            
-            bind convertEnergy::mechanicalEnergy = torque;
-            
-        }
-            
-        port psu :powerSupplyPort;
-        port Torque : torque;
+        part motorTire : Tire [2];
         
-        part motorTire : tire [1..2];
+        port PwmInputPort : pwmPort;
         
         state def motorDirection {
             entry; then idle;
@@ -507,7 +760,7 @@ package 'BLI' {
             transition idle_to_right
                 first idle
                 then right;
-            
+             
             state left;               
             
             transition left_to_idle
@@ -519,109 +772,50 @@ package 'BLI' {
             transition right_to_idle
                 first right
                 then idle;               
+            }
         }
-    }
+}package InfraredController{
+/*This module implements the InfrarotControler subsystem
+ * The InfrarotControler is to ensure the position to charging point */
 
-    part def Lasertower {
-        attribute distance : LengthValue; // abstand in meter
-        attribute distanceAngle : Real; // winkel der zum abstand gemessen wurden
-        attribute motor; // für das rotieren
-        port position : LaserTowerPosition;
-        port psu : powerSupplyPort;
-    }
+	item def contact;
 
-    part def Bumber {
-        attribute isContact : Boolean;
-
-        port Contact : contact;
-    }
-
-    part def infrarotController{
-            // berechnet Abbstand
-        //sendet signal
-    }
-    part def timeOfFlightSensor{
-        port i2cSlave : i2c;
-    }
-    
-    part def timeofFlightController{
-        part timeOfFlightSensor;
-        port psu : powerSupplyPort;
-        port i2cMaster : i2c;
-        
-    }  
-}package portDef{
-	// global import
-    import ScalarValues::*;
-    import ISQ::*;
-    import SI::*;
-    import ISQElectromagnetism::*;
+	port def contactCharger{
+		out item Contact : contact;
+	}
+	
+	interface def infraredControllerInterface{
+		end supplierPort : contactCharger;
+    	end consumerPort : ~contactCharger;
     	
-    port def powerSupplyPort{
-        inout attribute power :> ISQElectromagnetism::instantaneousPower; // alias of electricPower
-    }
-    
-    port def mountingPort;
-    
-    port def externalPowerSupplyPort {
-        in attribute power :> ISQ::voltage;
-        in attribute ground :> ISQ::voltage;
-    }
+    	flow supplierPort.Contact to consumerPort.Contact;
+	}
 
-    port def LaserTowerPosition{
-        out attribute angle : Real;
-        out attribute distance: Real;
-    }
+	part def infraredController{
+		port ContactChargerOutputPort : contactCharger;
+    } 
+}package LaserTower{
+	/* This package implements the LaserTower-System 
+	 * The LaserTower finds the relative position to other objects*/
+	
+	item def angle;
+	item def distance;
+	
+    port def laserTowerPosition{
+        out item Angle : angle;
+        out item Distance : distance;
+        }
 
-    port def contact;
-    port def torque;
-    
-    port def i2c{
-        attribute SDA;
-        attribute SCL;
-        attribute vin;
-        attribute ground;
-    }
-    
-    port def psuSignal{
-        attribute isChargingPositioN : Boolean;
-    }
-    
-    port def DriveUnitPowerSupply{
-        inout attribute power :> ISQElectromagnetism::instantaneousPower; // alias of electricPower
-    }
-    
-    port def DriverUnitControlSignal{
-        // this is an example port, there are other possibilities
-        in attribute forwards : Boolean;
-        in attribute left : Boolean;
-        in attribute right: Boolean;
-    }
-    	package interfaceDef{
-	    import portDef::*;
-	    
-	    interface def EnergyInterface{
-	        end supplierPort {
-	            in item energyIn;
-	            out item energyOut;
-	        }
-	        end consumerPort{
-	            in item energyIn;
-	            out item energyOut;
-	        }
-	        
-	        flow supplierPort::energyOut to consumerPort::energyIn;
-	        flow consumerPort::energyOut to supplierPort::energyIn;
+    interface def laserTowerInterface {
+		end supplierPort : laserTowerPosition;
+		end consumerPort : ~laserTowerPosition;
+
+		flow supplierPort.Angle to consumerPort.Angle;
+		flow supplierPort.Distance to consumerPort.Distance;
 	    }
-	    
-	    interface def PowerInterface{
-	        end supplierPort{
-	            inout item PowerInOut;
-	        }
-	        end consumerPort{
-	            inout item PowerInOut;
-	        }
-	        flow supplierPort::PowerInOut to consumerPort::PowerInOut;
-	    }
-	}   
+
+
+    part def laserTower {
+        port LaserTowerPositionOutputPort : laserTowerPosition;
+        }
 }
