@@ -1,11 +1,12 @@
 package SuctionDevice {
 
-	import RobotPortDefs::*;
-	import ISQ::*;
-	import ISQMechanics::*;
-	import ISQSpaceTime::*;
-	import ScalarValues::*;
-
+	private import RobotPortDefs::*;
+	private import Ports::*;
+	private import ISQ::*;
+	private import ISQMechanics::*;
+	private import ISQSpaceTime::*;
+	private import ScalarValues::*;
+/*
 	calc def calcActualPower {
       	in powerLevel : Real;
 		in maxPower : PowerValue;
@@ -27,38 +28,39 @@ package SuctionDevice {
 		return : ISQSpaceTime::volume;
 		// not sure how to model without time steps
 		
-	}
+	}*/
 
 	part def SuctionMotor {
 		port suctionLevel : ~SuctionLevel;
 		port suctionPower : SuctionPower {
-			suctionPower = powerOut.res;
+			//suctionPower = powerOut.res;
 		}
 			
 		attribute parMaxPower :> ISQ::power;
-			
+		/*	
 		calc powerOut : calcActualPower {
 			in powerLevel = suctionLevel::suctionLevel;
 			in maxPower = parMaxPower;
 		    return res;
-		}
+		
+		}*/
 			
 	}
 			
 	part def SuctionChamber {
 		port dirtyAirFlowIn : DirtyAirFlow;
 		port dirtyAirFlowOut : ~DirtyAirFlow {
-			dirtyAirFlow = flowRate.currentFlowRate;
+			//dirtyAirFlow = flowRate.currentFlowRate;
 		}
 		port suctionPower : ~SuctionPower;
 				
 		attribute parDiffPressure :> ISQ::pressure;
-				
+		/*		
 		calc flowRate : calcFlowRate {
 			in inFlow = dirtyAirFlowIn::dirtyAirFlow;
 			in volFlow = calcVolFlow(suctionPower::suctionPower, parDiffPressure);
 		    return currentFlowRate;
-		}
+		}*/
 	}
 		
 	part def suctionDevice { 

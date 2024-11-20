@@ -1,6 +1,6 @@
 package FilterSystem {
 
-	import RobotPortDefs::*;
+	private import RobotPortDefs::*;
 	
 	part def Tank {
 		port debris : ~Debris;

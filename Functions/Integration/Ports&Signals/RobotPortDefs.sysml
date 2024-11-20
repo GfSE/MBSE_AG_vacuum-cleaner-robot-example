@@ -1,7 +1,7 @@
 package RobotPortDefs {
 
-    import ScalarValues::*;
-    import ISQ::*;
+    private import ScalarValues::*;
+    private import ISQ::*;
 
     // Ports for Navigation System
     

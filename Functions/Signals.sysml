@@ -6,8 +6,8 @@ package Signals {
     =======================================================================
     */  
     
-    import ScalarValues::*;
-    import ISQ::*;
+    private import ScalarValues::*;
+    private import ISQ::*;
     
     /* Primitive and basic signals */
     
@@ -74,7 +74,7 @@ package Signals {
     
     package BatterySignals {
 
-        import Signals::ControllerSignals::*;
+        private import Signals::ControllerSignals::*;
         
         port def PowerInOutPort{
             inout attribute :> ISQMechanics::power; 

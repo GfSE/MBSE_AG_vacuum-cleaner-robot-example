@@ -2,7 +2,7 @@ package Navigation{
 /*This module implements the Navigation-System
  * The Navigation-System is used for navigating the system
  */
-	import Ports::*;
+	private import RobotPortDefs::*;
 	
 	private import Controller::*;
 	private import Bumber::*;
