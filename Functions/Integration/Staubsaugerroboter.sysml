@@ -1,10 +1,10 @@
 package 'Robotic Vacuum Cleaner'{
 	
-	import Controller::*;
-	import Navigation::*;
-	import EnergySupplySystem::*;
-	import VacuumingSystem::*;
-	import RobotPortDefs::*;
+	private import Controller::*;
+	private import Navigation::*;
+	private import EnergySupplySystem::*;
+	private import VacuumingSystem::*;
+	private import RobotPortDefs::*;
 	
 	part def RoboticVacuumCleaner{
 		part ControllerSystem : controller;
@@ -17,10 +17,10 @@ package 'Robotic Vacuum Cleaner'{
 		port dirtyAirFlow : DirtyAirFlow;
 		port cleanAirFlow : CleanAirFlow;
 
-		interface : DriverUnitControlInterface connect
+		/*interface : DriverUnitControlInterface connect
 			supliertPort ::> ControllerSystem.driverSignalOutputPort to
 			consumerPort ::> NavigationSystem.driverUnitControlSignalInputPort;
-		
+		*/
 		// Interfaces to/from Vaccuming System
 		connect ControllerSystem to VacuumingSystem;
 				

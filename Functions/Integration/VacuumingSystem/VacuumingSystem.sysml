@@ -1,8 +1,9 @@
 package VacuumingSystem{
-	import BrushSystem::*;
-	import SuctionDevice::*;
-	import FilterSystem::*;
-	import Ports::*;
+	private import BrushSystem::*;
+	private import SuctionDevice::*;
+	private import FilterSystem::*;
+	private import Ports::*;
+	private import RobotPortDefs::*;
 
 	part def vacuumingSystem{
 		part bs : brushSystem;

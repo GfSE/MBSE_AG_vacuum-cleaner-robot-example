@@ -1,11 +1,11 @@
 package Controller{
-	import RobotPortDefs::*;
-	import Signals::ControllerSignals::*;
+	private import RobotPortDefs::*;
+	private import Signals::ControllerSignals::*;
 	
 	port def DriverUnitControlSignal {
-            out attribute forward : Boolean;
-            out attribute left : Boolean;
-            out attribute right : Boolean;
+            out attribute forward;
+            out attribute left;
+            out attribute right;
     }
     
     interface def DriverUnitControlInterface{

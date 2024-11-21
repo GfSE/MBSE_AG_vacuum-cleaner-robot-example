@@ -1,8 +1,8 @@
 package BrushSystem {
-	import ScalarValues::*;
-	import RobotPortDefs::*;
-	import ISQSpaceTime::*;
-	
+	private import ScalarValues::*;
+	private import RobotPortDefs::*;
+	private import ISQSpaceTime::*;
+	/*
 	calc def calcSetpointRPM {
 		in rotationLevel : Real;
         in maxRPM :> ISQSpaceTime::rotationalFrequency;
@@ -10,7 +10,7 @@ package BrushSystem {
 
         rotationLevel * maxRPM 
     }
-	
+	*/
 	part def MainBrush {
 		port rotationSpeed : ~BrushRotationSpeed;
 	}
@@ -20,17 +20,17 @@ package BrushSystem {
 	}
 	
 	part def BrushController {
-		port rotationSpeed : BrushRotationSpeed = setpointRPM.rotSpeed;
+		//port rotationSpeed : BrushRotationSpeed = setpointRPM.rotSpeed;
 		port brushRotationLevel : ~BrushRotationLevel;
 		
 		attribute parMaxRPM :> ISQSpaceTime::rotationalFrequency;
-	
+	/*
 		calc setpointRPM : calcSetpointRPM {
 			in rotationLevel = brushRotationLevel::brushRotationLevel;
 			in maxRPM = parMaxRPM;
     		return rotSpeed;
 		}
-		
+	*/	
 	}
 	
 	part def brushSystem{
@@ -48,22 +48,22 @@ package BrushSystem {
 			end supplierPort : BrushRotationSpeed;
 			end consumerPort : BrushRotationSpeed;
 		}
-		
+		/*
 		interface: rotationSetPointMainPorts connect
 			supplierPort ::> bc.rotationSpeed to
 			consumerPort ::> mb.rotationSpeed;
 		
 		connect bc to sb;
-		
+		*/
 		interface def rotationSetPointSmallPorts {
 			end supplierPort : BrushRotationSpeed;
 			end consumerPort : BrushRotationSpeed;
 		}
-		
+		/*
 		interface: rotationSetPointSmallPorts connect
 			supplierPort ::> bc.rotationSpeed to
 			consumerPort ::> sb.rotationSpeed;
-	
+	*/
     }
 }
 		
