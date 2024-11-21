@@ -14,26 +14,18 @@ package 'Energy Supply System' {
     */  
 
   part def Battery {
-    // Ports
-    port requriedEnergy : PowerInOutPort; // in
-    port providedEnergy : PowerInOutPort; // out
-    port batSig         : BatterySignal; // out
+    
+    // current charge
+    attribute capacity :> activeEnergy; 
+    attribute totCapacity :> activeEnergy;
 
-    
-    // TOOD: Decompose in individual cells
-    
-    // TODO: Add battery management such as overcharging protection
+    // Ports
+    port requriedEnergy : PowerInOutPort; // input from charging station
+    port providedEnergy : PowerInOutPort; // output to other robot components
   }
 
   // The Energy supply system provides the electical energy for the robot vacuum cleaner
 
-  attribute def essStatus {
-    statusLED : Integer;
-    SOC       : Real; 
-  }
-  
-  comment about essStatus 
-  /* SOC = State of Charge */
   
   part def Accumulator {
     item def Energy;

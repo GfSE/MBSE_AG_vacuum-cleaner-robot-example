@@ -6,17 +6,17 @@ package EnergySupply {
     =======================================================================
     */    
     
-    import PortDef::*;
-    import Signals::*;
-    import DockingStation::*;
-    import BatteryLevelComputer::*;
-    import 'Energy Supply System'::*;
-    import EnergySupplyProcessor::*;
-    import BLI::LED;
+    private import PortDef::*;
+    private import Signals::*;
+    private import DockingStation::*;
+    private import BatteryLevelComputer::*;
+    private import 'Energy Supply System'::*;
+    private import EnergySupplyProcessor::*;
+    private import BLI::LED;
 
     
     /* Part definitions */
-    
+    // The Energy supply system provides the electical energy for the robot vacuum cleaner
     part def EnergySupplySystem {
         // Parts
         part bat : Battery;
@@ -38,15 +38,6 @@ package EnergySupply {
         interface : PowerInterface connect
             src ::> bat::providedEnergy to
             tgt ::> led::requriedEnergy;
-
-        interface : BatterySignalInterface connect
-            src ::> bat::batSig to
-            tgt ::> cpu::batSig;
-
-        interface : LEDSignalInterface connect
-            src ::> cpu::ledSig to
-            tgt ::> led::ledSignal;
-
 
     }
     
