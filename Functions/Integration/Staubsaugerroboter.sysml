@@ -2,14 +2,14 @@ package 'Robotic Vacuum Cleaner'{
 	
 	private import Controller::*;
 	private import Navigation::*;
-	private import EnergySupplySystem::*;
+	private import EnergySupply::*;
 	private import VacuumingSystem::*;
 	private import RobotPortDefs::*;
 	
 	part def RoboticVacuumCleaner{
 		part ControllerSystem : controller;
 		part NavigationSystem : navigation;
-		part EnergySystem : energySupplySystem;
+		part EnergySystem : EnergySupplySystem;
 		part VacuumingSystem : vacuumingSystem;
 
 		port driverUnitControlSignal : DriverUnitControlSignal;
