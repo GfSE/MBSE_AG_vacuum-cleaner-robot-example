@@ -1,4 +1,4 @@
-package 'ESS::Bat' {
+package ESS_Bat {
   
   private import ScalarValues::*;
   private import RoboCleanRequirements::*;
