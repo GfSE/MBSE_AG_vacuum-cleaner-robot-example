@@ -1,19 +1,22 @@
-package 'BatteryLevelComputer' {
+package ESS_Processor {
 
-	import Signals::*;
-	import ScalarValues::*;
-	import ControllerSignals::*;
-	import Signals::BatterySignals::BatterySignal;
+	private import Signals::*;
+	private import ScalarValues::*;
+	private import ControllerSignals::*;
+	private import Signals::BatterySignals::BatterySignal;
+	private import RobotPortDefs::*;
 
   /**
    * This part takes a BatterySignal as input and translates it into a 
    * color to be shown by the LED of EnergySupplySystem
    */
 	part def BatteryLevelComputer {
-     // Ports
-     port batSig : BatterySignal; // in
-     port ledSig : LEDSignal; // out
-  
+     
+	  // Ports
+      port energyDemand : ~EnergyDistributionCommand; // in
+      port chargeCmd : ChargeCommand; // out
+	  port energyLevel : EnergyRegulation; // out
+
     // Attributes  
     attribute batteryCapacity : Real = 1000; 
     
@@ -21,7 +24,6 @@ package 'BatteryLevelComputer' {
     // Realized through a StateChart which takes inputs from the incoming port 
     // and part attribute. Produces a return value to outgoing port ledSig.
     exhibit state BatteryLevelComputerStates {
-      in  ref batCap        = batSig::curBatCapacity;
       in  ref maxBatCap     = batteryCapacity; // 'this' would be nice
       //out ref ledSig {color = computedColor;}
     }

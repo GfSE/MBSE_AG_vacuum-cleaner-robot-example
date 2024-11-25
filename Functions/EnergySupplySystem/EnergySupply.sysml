@@ -8,36 +8,60 @@ package EnergySupply {
     
     private import PortDef::*;
     private import Signals::*;
-    private import DockingStation::*;
-    private import BatteryLevelComputer::*;
-    private import 'Energy Supply System'::*;
-    private import EnergySupplyProcessor::*;
-    private import BLI::LED;
+
+    private import ESS_Processor::*;
+    private import ESS_Bat::Battery;
+    private import ESS_Reg::*;
+    private import ESS_Charge::*;
+  	private import Signals::BatterySignals::BatterySignal;
+    private import RobotPortDefs::*;
 
     
     /* Part definitions */
     // The Energy supply system provides the electical energy for the robot vacuum cleaner
     part def EnergySupplySystem {
         // Parts
+        part chr : Charger;
         part bat : Battery;
-        part cpu : CPU;
-        part led : LED;
+        part cpu : BatteryLevelComputer;
+        part reg : VoltageRegulator;
 
         // Ports
+        port sig : ~EnergyDistributionCommand; // in
         port requiredEnergy : PowerInOutPort; // in
+        port providedEnergy : PowerInOutPort; // out
+        
+       
 
         // Connections
-      /*  interface : RequiredEnergyInterface connect
+        interface connect
             src ::> requiredEnergy to
-            tgt ::> bat::requiredEnergy;*/
+            tgt ::> bat.requriedEnergy;   
 
-        interface : PowerInterface connect
-            src ::> bat::providedEnergy to
-            tgt ::> cpu::requriedEnergy;        
+        interface connect
+            src ::> sig to
+            tgt ::> cpu.energyDemand;   
 
-        interface : PowerInterface connect
-            src ::> bat::providedEnergy to
-            tgt ::> led::requriedEnergy;
+        interface connect
+            src ::> reg.providedEnergy to
+            tgt ::> providedEnergy;   
+
+        // connect sub-components
+        interface connect
+            src ::> cpu.chargeCmd to
+            tgt ::> chr.chargeCmd;   
+
+        interface connect
+            src ::> cpu.energyLevel to
+            tgt ::> reg.tgtVoltage;   
+
+        interface connect
+            src ::> chr.batPlug to  
+            tgt ::> bat.requriedEnergy;   
+
+        interface connect
+            src ::> bat.providedEnergy to 
+            tgt ::> reg.batEnergy;   
 
     }
     

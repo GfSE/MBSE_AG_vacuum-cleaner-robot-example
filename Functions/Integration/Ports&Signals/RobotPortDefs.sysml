@@ -46,4 +46,24 @@ package RobotPortDefs {
     }
 
 
+    // Ports for Energy Supply System
+
+    port def ChargeCommand {
+        out cmd : ChargeCmdLiterals;
+    }
+
+    enum def ChargeCmdLiterals {
+        START_CHARGING; 
+        STOP_CHARGING;
+    }
+
+    port def EnergyRegulation {
+        out attribute volt : Real;
+    }
+
+    port def EnergyDistributionCommand {
+        // ToDo
+    }
+
+
 }

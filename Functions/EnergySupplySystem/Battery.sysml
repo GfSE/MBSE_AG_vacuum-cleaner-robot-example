@@ -1,10 +1,10 @@
-package 'Energy Supply System' {
+package 'ESS::Bat' {
   
-  import ScalarValues::*;
-  import RoboCleanRequirements::*;
-  import PortDef::*;
-  import Signals::*;
-  import Signals::BatterySignals::BatterySignal;
+  private import ScalarValues::*;
+  private import RoboCleanRequirements::*;
+  private import PortDef::*;
+  private import Signals::*;
+  private import Signals::BatterySignals::BatterySignal;
 
   doc /*
     =======================================================================
@@ -22,9 +22,10 @@ package 'Energy Supply System' {
     // Ports
     port requriedEnergy : PowerInOutPort; // input from charging station
     port providedEnergy : PowerInOutPort; // output to other robot components
+
   }
 
-  // The Energy supply system provides the electical energy for the robot vacuum cleaner
+
 
   
   part def Accumulator {
@@ -63,12 +64,5 @@ package 'Energy Supply System' {
   comment about BMS 
   /* BMS = Battery Management System */
   
-  part def Charger {
-    attribute power : Real;
-    attribute voltage : Real;
-    
-    part def Plug;
-    part def Converter; // ACDC Converter
-    part def batConector;
-  }
+
 }
