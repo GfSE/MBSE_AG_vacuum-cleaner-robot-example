@@ -39,6 +39,8 @@ package Navigation{
 	    interface : pwmControllInterface connect
 			suppliertPort ::> Engine.PwmInputPort to
 			consumerPort ::> DriveController.PwmOutputPort;
+		
+		action def DoNavigate;
 
 	}
 }

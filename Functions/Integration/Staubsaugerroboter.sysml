@@ -73,6 +73,37 @@ package 'Robotic Vacuum Cleaner'{
 		interface: cleanAirPorts connect
 			supplierPort ::> VacuumingSystem.cleanAirFlow to
 			consumerPort ::> cleanAirFlow;
+
+
+		state def VacuumCleanerBehavior{
+		entry; then Idle;
 		
+		// States
+		state Idle{
+		}
+			
+
+		state Vaccuming {
+			// Controller: IstTeppich()
+			// Energy: DoEnergy()
+			// Navigation: DoNavigate()
+			// Vacuum: DoVacuum()
+			do NavigationSystem::DoNavigate;
+		}
+
+		state Finish{
+		}
+
+		state LowBattery{
+		}
+
+		state Charging {
+			// Energy: DoCharge()
+			// Navigation: FindHome()
+			// Vacuum: EmptyVacuum()
+		}
+		
+		//Transition
+		}
 	}
 }
