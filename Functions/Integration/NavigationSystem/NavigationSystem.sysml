@@ -13,6 +13,9 @@ package Navigation{
 
 
 	part def navigation{
+		action def DoNavigate;
+		action def FindHome;
+
 		part DriveController : driveController;
 		part Engine[2] : engine;
 		part LaserTower : laserTower;
@@ -40,7 +43,5 @@ package Navigation{
 			suppliertPort ::> Engine.PwmInputPort to
 			consumerPort ::> DriveController.PwmOutputPort;
 		
-		action def DoNavigate;
-
 	}
 }

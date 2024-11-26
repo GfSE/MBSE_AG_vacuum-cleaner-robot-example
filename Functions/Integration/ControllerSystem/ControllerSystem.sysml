@@ -1,7 +1,7 @@
 package Controller{
 	private import RobotPortDefs::*;
 	private import Signals::ControllerSignals::*;
-	
+
 	port def DriverUnitControlSignal {
             out attribute forward;
             out attribute left;
@@ -18,9 +18,12 @@ package Controller{
     }
 	
 	part def controller{
+		action def IsCarpet;
+		attribute def StartVacuumingSignal;
+
 		port driverSignalOutputPort : DriverUnitControlSignal;
 		port powerSignal : ~PowerSignal;
-		
+
 		// To Vacuuming System
 		port suctionLevel : SuctionLevel;
 		port brushRotationLevel : BrushRotationLevel;
