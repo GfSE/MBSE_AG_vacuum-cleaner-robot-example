@@ -20,6 +20,11 @@ package EnergySupply {
     /* Part definitions */
     // The Energy supply system provides the electical energy for the robot vacuum cleaner
     part def EnergySupplySystem {
+        //signals
+        attribute def LowBatterySignal;
+        attribute def CharingSignal;
+        attribute def ContinueVacuumingSingal;
+        
         // Parts
         part chr : Charger;
         part bat : Battery;

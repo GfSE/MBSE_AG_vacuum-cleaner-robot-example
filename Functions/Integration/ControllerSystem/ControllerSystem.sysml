@@ -20,6 +20,9 @@ package Controller{
 	part def controller{
 		action def IsCarpet;
 		attribute def StartVacuumingSignal;
+		attribute def StopVacuumingSignal;
+		attribute def IdleVacuumingSignal;
+
 
 		port driverSignalOutputPort : DriverUnitControlSignal;
 		port powerSignal : ~PowerSignal;
