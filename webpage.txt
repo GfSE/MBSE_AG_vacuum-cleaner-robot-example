@@ -8,8 +8,13 @@ The depicted image shows the controller, which assumes responsibility for interf
 !!Functions/Integration/ControllerSystem/Controller.png
 !!Functions/Integration/ControllerSystem/ControllerSystem.sysml
 
-ToDo: add description.
-!!Functions/Integration/EnergySupplySystem/EnergySupplySystem.sysml
+The energy supply sub-system controls electrical energy storage and management.
+!!Functions/Integration/EnergySupplySystem/EnergySupply.sysml
+!!Functions/Integration/EnergySupplySystem/Battery.sysml
+!!Functions/Integration/EnergySupplySystem/BatteryLevelComputer.sysml
+!!Functions/Integration/EnergySupplySystem/Charger.sysml
+!!Functions/Integration/EnergySupplySystem/EnergySupplyTypes.sysml
+!!Functions/Integration/EnergySupplySystem/VoltageRegulator.sysml
 
 This image portrays the high-level architecture of our navigation system.
 Similarly to the previous module, the architecture imports data from other modules to enable proper functionality
