@@ -5,6 +5,7 @@ package 'Robotic Vacuum Cleaner'{
 	private import EnergySupply::*;
 	private import VacuumingSystem::*;
 	private import RobotPortDefs::*;
+	private import Requirement::*;
 	
 	part def RoboticVacuumCleaner{
 		part ControllerSystem : controller;
@@ -16,6 +17,22 @@ package 'Robotic Vacuum Cleaner'{
 		port powerSignal : PowerSignal;
 		port dirtyAirFlow : DirtyAirFlow;
 		port cleanAirFlow : CleanAirFlow;
+
+		requirement lowBattery : Requirement::LowBattery{
+			subject roboticVacuumCleaner : RoboticVacuumCleaner;
+		}
+
+		requirement carpetDetected : Requirement::CarpetDetected{
+			subject roboticVacuumCleaner : RoboticVacuumCleaner;
+		}
+		
+		satisfy lowBattery by NavigationSystem;
+		satisfy lowBattery by EnergySystem;
+		satisfy lowBattery by VacuumingSystem;
+
+		satisfy carpetDetected by NavigationSystem;
+		satisfy carpetDetected by EnergySystem;
+		satisfy carpetDetected by VacuumingSystem;
 
 		/*interface : DriverUnitControlInterface connect
 			supliertPort ::> ControllerSystem.driverSignalOutputPort to
