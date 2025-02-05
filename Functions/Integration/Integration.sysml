@@ -5,6 +5,7 @@ package 'Robotic Vacuum Cleaner'{
 	private import EnergySupply::*;
 	private import VacuumingSystem::*;
 	private import RobotPortDefs::*;
+	private import Requirement::*;
 	
 	part def RoboticVacuumCleaner{
 		part ControllerSystem : controller;
@@ -12,25 +13,45 @@ package 'Robotic Vacuum Cleaner'{
 		part EnergySystem : EnergySupplySystem;
 		part VacuumingSystem : vacuumingSystem;
 
-		port driverUnitControlSignal : DriverUnitControlSignal;
-		port powerSignal : PowerSignal;
+		port powerSignal : ~PowerSignal;
 		port dirtyAirFlow : DirtyAirFlow;
 		port cleanAirFlow : CleanAirFlow;
 
-		/*interface : DriverUnitControlInterface connect
-			supliertPort ::> ControllerSystem.driverSignalOutputPort to
-			consumerPort ::> NavigationSystem.driverUnitControlSignalInputPort;
-		*/
-		// Interfaces to/from Vaccuming System
-		connect ControllerSystem to VacuumingSystem;
-				
-		// Control signal for level of suction intesity
-		interface def suctionLevelPorts {
-			end supplierPort : SuctionLevel;
-			end consumerPort : SuctionLevel;
+		requirement lowBattery : Requirement::LowBattery{
+			subject roboticVacuumCleaner : RoboticVacuumCleaner;
+		}
+
+		requirement carpetDetected : Requirement::CarpetDetected{
+			subject roboticVacuumCleaner : RoboticVacuumCleaner;
+		}
+		// Subsystem-specific requirement usages
+		requirement lowBatteryNavigation : Requirement::LowBattery_Navigation {
+			subject navigationSystem : NavigationSystem;
 		}
 		
-		interface: suctionLevelPorts connect
+		satisfy lowBattery by NavigationSystem;
+		satisfy lowBattery by EnergySystem;
+		satisfy lowBattery by VacuumingSystem;
+
+		satisfy carpetDetected by NavigationSystem;
+		satisfy carpetDetected by EnergySystem;
+		satisfy carpetDetected by VacuumingSystem;
+
+		satisfy lowBatteryNavigation by NavigationSystem;
+
+		interface : DriverUnitControlInterface connect
+			supplierPort ::> ControllerSystem.driverSignalOutputPort to
+			consumerPort ::> NavigationSystem.driverUnitControlSignalInputPort;
+
+		interface : DriverUnitControlInterface connect
+			supplierPort ::> NavigationSystem.driverUnitControlSignalInputPort to
+			consumerPort ::> NavigationSystem.DriveController.driverUnitControlSignalInputPort;
+
+		interface : DriverUnitControlInterface connect
+			supplierPort ::> NavigationSystem.DriveController.driverUnitControlSignalInputPort to
+			consumerPort ::> NavigationSystem.DriveController.StearingController.driverUnitControlSignalInputPort;
+		
+		interface : VacuumingSystem::suctionLevelPorts connect
 			supplierPort ::> ControllerSystem.suctionLevel to
 			consumerPort ::> VacuumingSystem.suctionLevel;
 			
@@ -73,10 +94,124 @@ package 'Robotic Vacuum Cleaner'{
 		interface: cleanAirPorts connect
 			supplierPort ::> VacuumingSystem.cleanAirFlow to
 			consumerPort ::> cleanAirFlow;
+
+
+		state def VacuumCleanerBehavior{
+		doc /* This is the Statemachine Diagram */
+		entry; then Idle;
+
+		/* It seems that we need to declare actions here and  */		
+		action doNavigate : RoboticVacuumCleaner::NavigationSystem::DoNavigate;
+		action findHome : RoboticVacuumCleaner::NavigationSystem::FindHome;
+		action isCarpet : RoboticVacuumCleaner::ControllerSystem::IsCarpet;
+
+		attribute startVacuumingSignal : RoboticVacuumCleaner::ControllerSystem::StartVacuumingSignal;
+		attribute stopVacuumingSignal : RoboticVacuumCleaner::ControllerSystem::StopVacuumingSignal;
+		attribute idleVacuumingSignal : RoboticVacuumCleaner::ControllerSystem::IdleVacuumingSignal;
+		attribute lowBatterySignal : RoboticVacuumCleaner::EnergySystem::LowBatterySignal;
+		attribute charingSignal : RoboticVacuumCleaner::EnergySystem::CharingSignal;
+		attribute continueVacuumingSingal : RoboticVacuumCleaner::EnergySystem::ContinueVacuumingSingal;
 		
+		/* It seems that we need to composite actions
+		We might need to consider race-conditions*/
+		action VaccumingDoActions {
+			perform doNavigate;
+			perform isCarpet;
+			// Energy: DoEnergy()
+			// Vacuum: DoVacuum()
+		}
+		
+		action ChargingDoActions{
+			// Energy: DoCharge()
+			perform findHome;
+			// Vacuum: EmptyVacuum()
+		}
+
+		// States
+		state Idle{
+		}
+
+		state Vaccuming {
+			do VaccumingDoActions;
+		}
+
+		state Finish{
+		}
+
+		state LowBattery{
+		}
+
+		state Charging {
+			do ChargingDoActions;
+		}
+		
+		//Transition
+
+		transition IdleToVaccuming
+			first Idle
+			accept startVacuumingSignal
+			then Vaccuming;
+
+		transition VaccumingToFinish
+			first Vaccuming
+			accept stopVacuumingSignal
+			then Finish;
+
+		transition FinishToIdle
+			first Finish
+			accept idleVacuumingSignal
+			then Idle;
+		
+		transition ChargingToVacuuming
+			first Charging
+			accept continueVacuumingSingal
+			then Vaccuming;
+
+		transition VaccumingToLowBattery
+			first Vaccuming
+			accept lowBatterySignal
+			then LowBattery;
+
+		transition LowBatteryToCharing
+			first LowBattery
+			accept charingSignal
+			then Charging;
+
+		}
+		
+
+
 	}
 }
-package PortDef {
+package 'Use Cases' {
+    private import 'Robotic Vacuum Cleaner'::*;
+
+    use case def 'Vacuming'{
+        subject roboticVacuumCleaner : RoboticVacuumCleaner;
+
+        actor controller : RoboticVacuumCleaner;
+    }
+}
+package Requirement {
+
+    // Top-level requirement
+    requirement def <'r1'> LowBattery{
+        doc /*When the robot's battery level falls below 10%,
+        it shall automatically navigate to the nearest charging station to recharge*/
+    }
+
+    // Subsystem-specific requirements
+    requirement def <'r1.1'> LowBattery_Navigation {
+        doc /* The Navigation System shall determine the nearest charging station
+               and generate a path to reach it. */
+    }
+
+    requirement def <'r2'> CarpetDetected{
+        doc /*•	When the robot detects a carpeted surface,
+        it shall automatically increase the vacuum speed to its maximum level
+         to ensure optimal cleaning performance.*/
+    }
+}package PortDef {
     doc /*
     =======================================================================
     The following SysML v2 package DEFINES
@@ -217,8 +352,355 @@ package PortDef {
     
     
 
+}package RobotPortDefs {
+
+    private import ScalarValues::*;
+    private import ISQ::*;
+
+    // Ports for Navigation System
+    
+    port def PowerSignal {
+        out constantCurrent :> totalCurrent;
+        out constantVoltage :> voltage;
+    }
+
+    // Ports for Vacuuming System
+
+    port def DirtyAirFlow {
+        out dirtyAirFlow :> ISQSpaceTime::volume;
+    }
+
+    port def CleanAirFlow {
+        out cleanAirFlow :> ISQSpaceTime::volume;
+    }
+
+    port def Debris {
+        out debrisVolume :> SI::'m³';
+        out debrisMass :> SI::kg;
+    }
+
+    port def FillState {
+        out fillState : Real;
+    }
+
+    port def SuctionLevel {
+        out suctionLevel : Real;
+    }
+
+    port def SuctionPower {
+        out suctionPower :> ISQ::power;
+    }
+
+    port def BrushRotationLevel {
+        out brushRotationLevel : Real;
+    }
+
+    port def BrushRotationSpeed {
+        out brushRotationSpeed :> ISQSpaceTime::rotationalFrequency;
+    }
+
+
+    // Ports for Energy Supply System
+
+    port def ChargeCommand {
+        out cmd : ChargeCmdLiterals;
+    }
+
+    enum def ChargeCmdLiterals {
+        START_CHARGING; 
+        STOP_CHARGING;
+    }
+
+    port def EnergyRegulation {
+        out attribute volt : Real;
+    }
+
+    port def EnergyDistributionCommand {
+        // ToDo
+    }
+
+
+}package ESS_Bat {
+  
+  private import ScalarValues::*;
+  private import RoboCleanRequirements::*;
+  private import PortDef::*;
+  private import Signals::*;
+  private import Signals::BatterySignals::BatterySignal;
+
+  doc /*
+    =======================================================================
+    The following SysML v2 package specifies the battery 
+    of the vacuum cleaner robot in a black-box fashion
+    =======================================================================
+    */  
+
+  part def Battery {
+    
+    // current charge
+    attribute capacity :> activeEnergy; 
+    attribute totCapacity :> activeEnergy;
+
+    // Ports
+    port requriedEnergy : PowerInOutPort; // input from charging station
+    port providedEnergy : PowerInOutPort; // output to other robot components
+
+  }
+
+
+
+  
+  part def Accumulator {
+    item def Energy;
+    attribute mass : Real;
+    // attribute TotCapacity : ActiveEnergyValue;
+    attribute TotCapacity;
+    
+    part def cell {
+      Capacity  : Real;
+      Voltage   : Real;
+    }
+    
+    part def cellConnector;
+    
+    attribute def layout {
+      numOfParCells : Integer;
+      numOfSerCells : Integer;
+    }
+  }
+      
+  part def BMS {  // @Ralf: now instantiated by CPU? 
+                  // Maybe move to EnergySupply.sysml
+    // Parts
+    part def volSensor;
+    part def curSensor;
+    part def tempSensor;
+    part def microController;
+    part def Balancer;
+
+    // Ports
+    port batSig : BatterySignal;
+
+  }
+  
+  comment about BMS 
+  /* BMS = Battery Management System */
+  
+
+}package ESS_Processor {
+
+	private import Signals::*;
+	private import ScalarValues::*;
+	private import ControllerSignals::*;
+	private import Signals::BatterySignals::BatterySignal;
+	private import RobotPortDefs::*;
+
+  /**
+   * This part takes a BatterySignal as input and translates it into a 
+   * color to be shown by the LED of EnergySupplySystem
+   */
+	part def BatteryLevelComputer {
+     
+	  // Ports
+      port energyDemand : ~EnergyDistributionCommand; // in
+      port chargeCmd : ChargeCommand; // out
+	  port energyLevel : EnergyRegulation; // out
+
+    // Attributes  
+    attribute batteryCapacity : Real = 1000; 
+    
+    // Behavior
+    // Realized through a StateChart which takes inputs from the incoming port 
+    // and part attribute. Produces a return value to outgoing port ledSig.
+    exhibit state BatteryLevelComputerStates {
+      in  ref maxBatCap     = batteryCapacity; // 'this' would be nice
+      //out ref ledSig {color = computedColor;}
+    }
+    
+	}
+	
+	/**
+	 * As actions need to be instnatiated somewhere, we leverage a very small
+	 * statechart to perform the actual computations.
+	 */
+	state def BatteryLevelComputerStates {
+	  entry; then x;  // Initial state x
+	  
+	  // Definition of state x instantiates action 
+	  state x { 
+	    entry act {batCap; maxBatCap; computedColor;}
+	  }  
+	}
+
+	action act : ComputeBatteryInfo{batCap; maxBatCap; computedColor;}
+	
+	/**
+	 * The action ComputeBatteryInfo delegates to the calculation CalcBatteryLevel
+	 */
+	action def ComputeBatteryInfo{in  batteryCapacity    : Real;
+	                              in  maxBatteryCapacity : Real;
+	                              out batteryColor       : LED_COLOR = CalcBatteryLevel(batteryCapacity, maxBatteryCapacity);
+	}
+	
+	calc def CalcBatteryLevel{
+		in energy : Real; 
+		in capacity : Real; 
+        
+		energy / capacity
+    }
+
+}package ESS_Charge {
+
+  private import ScalarValues::*;
+  private import PortDef::*;
+  private import RobotPortDefs::*;
+
+  part def Charger {
+
+    attribute doCharge : Boolean;
+
+    port chargeCmd : ~ChargeCommand;
+
+    port statPlug : PowerInOutPort;
+    port batPlug : PowerInOutPort;
+  }
+
+}package EnergySupply {
+    doc /*
+    =======================================================================
+    The following SysML v2 package specifies the energy
+    supply system of the vacuum cleaner robot
+    =======================================================================
+    */    
+    
+    private import PortDef::*;
+    private import Signals::*;
+
+    private import ESS_Processor::*;
+    private import ESS_Bat::Battery;
+    private import ESS_Reg::*;
+    private import ESS_Charge::*;
+  	private import Signals::BatterySignals::BatterySignal;
+    private import RobotPortDefs::*;
+
+    
+    /* Part definitions */
+    // The Energy supply system provides the electical energy for the robot vacuum cleaner
+    part def EnergySupplySystem {
+        //signals
+        attribute def LowBatterySignal;
+        attribute def CharingSignal;
+        attribute def ContinueVacuumingSingal;
+        
+        // Parts
+        part chr : Charger;
+        part bat : Battery;
+        part cpu : BatteryLevelComputer;
+        part reg : VoltageRegulator;
+
+        // Ports
+        port sig : ~EnergyDistributionCommand; // in
+        port requiredEnergy : PowerInOutPort; // in
+        port providedEnergy : PowerInOutPort; // out
+        
+       
+
+        // Connections
+        interface connect
+            src ::> requiredEnergy to
+            tgt ::> bat.requriedEnergy;   
+
+        interface connect
+            src ::> sig to
+            tgt ::> cpu.energyDemand;   
+
+        interface connect
+            src ::> reg.providedEnergy to
+            tgt ::> providedEnergy;   
+
+        // connect sub-components
+        interface connect
+            src ::> cpu.chargeCmd to
+            tgt ::> chr.chargeCmd;   
+
+        interface connect
+            src ::> cpu.energyLevel to
+            tgt ::> reg.tgtVoltage;   
+
+        interface connect
+            src ::> chr.batPlug to  
+            tgt ::> bat.requriedEnergy;   
+
+        interface connect
+            src ::> bat.providedEnergy to 
+            tgt ::> reg.batEnergy;   
+
+    }
+    
 }
-package Navigation{
+package 'EnergySupplyTypes' {
+
+	import ScalarValues::*;
+  import Signals::ControllerSignals::*;
+
+  doc /*
+    =======================================================================
+    This package defines basic datatypes used throughout the EnergySupply
+    and related components
+    =======================================================================
+    */  
+
+
+  // TODO: Should we use SI units?
+
+  /// DATA TYPES ///////////////////////////////////////////////////////////////
+  
+  item def ElectricalEnergy;
+
+	/// PORTS ////////////////////////////////////////////////////////////////////
+	
+	port def EnergyInOutPort {
+	  inout item e : ElectricalEnergy; // TODO: units?
+	}
+  
+  port def RelativeBatteryLevelPort {
+    attribute voltageInPercent : ScalarValues::Real;
+    // TODO: Muss es hier ein flow feature geben
+    // in ??? wert : Real; 
+  }
+  
+  port def BatteryLevelColorPort {
+    attribute color : LED_COLOR;
+  }
+
+ /// CONNECTIONS ///////////////////////////////////////////////////////////////
+  
+  connection def WhySoComplicated {
+    end : ScalarValues::Real;
+    end : ScalarValues::Real;
+  }
+    
+  connection def EnergyToEnergy {
+    end : ElectricalEnergy;
+    end : ElectricalEnergy;
+  }
+
+}
+package ESS_Reg {
+
+   private import PortDef::*;
+   private import RobotPortDefs::*;
+
+   part def VoltageRegulator {
+
+     // Ports
+     port tgtVoltage : ~EnergyRegulation;
+     port batEnergy : PowerInOutPort; // input from battery
+     port providedEnergy : PowerInOutPort; // output to other robot components
+
+   }
+
+}package Navigation{
 /*This module implements the Navigation-System
  * The Navigation-System is used for navigating the system
  */
@@ -230,9 +712,13 @@ package Navigation{
 	private import LaserTower::*;
 	private import DriveController::*;
 	private import InfraredController::*;
+	private import Requirement::*;
 
 
 	part def navigation{
+		action def DoNavigate;
+		action def FindHome;
+
 		part DriveController : driveController;
 		part Engine[2] : engine;
 		part LaserTower : laserTower;
@@ -241,8 +727,6 @@ package Navigation{
 
 		port driverUnitControlSignalInputPort : ~DriverUnitControlSignal;
 		port powerSignal : PowerSignal;
-
-		bind driverUnitControlSignalInputPort = DriveController.driverUnitControlSignalInputPort;
 
      	interface : bumberInterface connect
 			suppliertPort ::> Bumber.CollisionOutputPort to
@@ -259,12 +743,11 @@ package Navigation{
 	    interface : pwmControllInterface connect
 			suppliertPort ::> Engine.PwmInputPort to
 			consumerPort ::> DriveController.PwmOutputPort;
-
 	}
 }package Controller{
 	private import RobotPortDefs::*;
 	private import Signals::ControllerSignals::*;
-	
+
 	port def DriverUnitControlSignal {
             out attribute forward;
             out attribute left;
@@ -279,11 +762,18 @@ package Navigation{
     	flow supplierPort.left to consumerPort.left;
     	flow supplierPort.right to consumerPort.right;
     }
+
 	
 	part def controller{
+		action def IsCarpet;
+		attribute def StartVacuumingSignal;
+		attribute def StopVacuumingSignal;
+		attribute def IdleVacuumingSignal;
+
+
 		port driverSignalOutputPort : DriverUnitControlSignal;
 		port powerSignal : ~PowerSignal;
-		
+
 		// To Vacuuming System
 		port suctionLevel : SuctionLevel;
 		port brushRotationLevel : BrushRotationLevel;
@@ -556,6 +1046,11 @@ package BrushSystem {
 		port suctionLevel : ~SuctionLevel;
 		port brushRotationLevel : ~BrushRotationLevel;
 		
+		interface def suctionLevelPorts {
+			end supplierPort : SuctionLevel;
+			end consumerPort : SuctionLevel;
+		}
+		
 		interface def rotationLevelPorts {
 			end supplierPort : BrushRotationLevel;
 			end consumerPort : BrushRotationLevel;
@@ -574,7 +1069,7 @@ package BrushSystem {
 			supplierPort ::> dirtyAirFlow to
 			consumerPort ::> sd.dirtyAirFlowIn;	
 			
-		connect sd to fs;
+		//connect sd to fs;
 		
 		interface def internalDirtyAirPorts {
 			end supplierPort : DirtyAirFlow;
@@ -594,10 +1089,7 @@ package BrushSystem {
 			supplierPort ::> fs.cleanAirFlow to
 			consumerPort ::> cleanAirFlow;
 			
-		interface def suctionLevelPorts {
-			end supplierPort : SuctionLevel;
-			end consumerPort : SuctionLevel;
-		}
+		
 		
 		interface: suctionLevelPorts connect
 			supplierPort ::> suctionLevel to
@@ -664,13 +1156,8 @@ package BrushSystem {
 		
         part StearingController : stearingController;
         part OrientationController : orienttationController;
-        
-        bind CollisionInputPort = OrientationController.CollisionInputPort;
-        bind PwmOutputPort = StearingController.PwmOutputPort;
-        bind LaserTowerInputPort = OrientationController.LaserTowerInputPort;
-        bind driverUnitControlSignalInputPort = StearingController.driverUnitControlSignalInputPort;
 
-	}
+    }
 }package Engine{
 	/* This package implements the Engine-System 
 	 * The engine drives the system*/

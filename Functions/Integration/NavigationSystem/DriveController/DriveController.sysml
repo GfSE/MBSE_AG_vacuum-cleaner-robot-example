@@ -30,11 +30,6 @@ package DriveController{
 		
         part StearingController : stearingController;
         part OrientationController : orienttationController;
-        
-        bind CollisionInputPort = OrientationController.CollisionInputPort;
-        bind PwmOutputPort = StearingController.PwmOutputPort;
-        bind LaserTowerInputPort = OrientationController.LaserTowerInputPort;
-        bind driverUnitControlSignalInputPort = StearingController.driverUnitControlSignalInputPort;
 
-	}
+    }
 }

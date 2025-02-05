@@ -10,6 +10,7 @@ package Navigation{
 	private import LaserTower::*;
 	private import DriveController::*;
 	private import InfraredController::*;
+	private import Requirement::*;
 
 
 	part def navigation{
@@ -24,8 +25,6 @@ package Navigation{
 
 		port driverUnitControlSignalInputPort : ~DriverUnitControlSignal;
 		port powerSignal : PowerSignal;
-
-		bind driverUnitControlSignalInputPort = DriveController.driverUnitControlSignalInputPort;
 
      	interface : bumberInterface connect
 			suppliertPort ::> Bumber.CollisionOutputPort to
@@ -42,6 +41,5 @@ package Navigation{
 	    interface : pwmControllInterface connect
 			suppliertPort ::> Engine.PwmInputPort to
 			consumerPort ::> DriveController.PwmOutputPort;
-		
 	}
 }

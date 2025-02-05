@@ -13,8 +13,7 @@ package 'Robotic Vacuum Cleaner'{
 		part EnergySystem : EnergySupplySystem;
 		part VacuumingSystem : vacuumingSystem;
 
-		port driverUnitControlSignal : DriverUnitControlSignal;
-		port powerSignal : PowerSignal;
+		port powerSignal : ~PowerSignal;
 		port dirtyAirFlow : DirtyAirFlow;
 		port cleanAirFlow : CleanAirFlow;
 
@@ -25,29 +24,29 @@ package 'Robotic Vacuum Cleaner'{
 		requirement carpetDetected : Requirement::CarpetDetected{
 			subject roboticVacuumCleaner : RoboticVacuumCleaner;
 		}
-		
-		satisfy lowBattery by NavigationSystem;
-		satisfy lowBattery by EnergySystem;
-		satisfy lowBattery by VacuumingSystem;
-
-		satisfy carpetDetected by NavigationSystem;
-		satisfy carpetDetected by EnergySystem;
-		satisfy carpetDetected by VacuumingSystem;
-
-		/*interface : DriverUnitControlInterface connect
-			supliertPort ::> ControllerSystem.driverSignalOutputPort to
-			consumerPort ::> NavigationSystem.driverUnitControlSignalInputPort;
-		*/
-		// Interfaces to/from Vaccuming System
-		connect ControllerSystem to VacuumingSystem;
-				
-		// Control signal for level of suction intesity
-		interface def suctionLevelPorts {
-			end supplierPort : SuctionLevel;
-			end consumerPort : SuctionLevel;
+		// Subsystem-specific requirement usages
+		requirement lowBatteryNavigation : Requirement::LowBattery::LowBattery_Navigation {
+			subject navigationSystem : NavigationSystem;
 		}
 		
-		interface: suctionLevelPorts connect
+		satisfy lowBattery by roboticVacuumCleaner;
+
+
+		satisfy lowBatteryNavigation by NavigationSystem;
+
+		interface : DriverUnitControlInterface connect
+			supplierPort ::> ControllerSystem.driverSignalOutputPort to
+			consumerPort ::> NavigationSystem.driverUnitControlSignalInputPort;
+
+		interface : DriverUnitControlInterface connect
+			supplierPort ::> NavigationSystem.driverUnitControlSignalInputPort to
+			consumerPort ::> NavigationSystem.DriveController.driverUnitControlSignalInputPort;
+
+		interface : DriverUnitControlInterface connect
+			supplierPort ::> NavigationSystem.DriveController.driverUnitControlSignalInputPort to
+			consumerPort ::> NavigationSystem.DriveController.StearingController.driverUnitControlSignalInputPort;
+		
+		interface : VacuumingSystem::suctionLevelPorts connect
 			supplierPort ::> ControllerSystem.suctionLevel to
 			consumerPort ::> VacuumingSystem.suctionLevel;
 			
@@ -97,9 +96,6 @@ package 'Robotic Vacuum Cleaner'{
 		entry; then Idle;
 
 		/* It seems that we need to declare actions here and  */		
-		action doNavigate : RoboticVacuumCleaner::NavigationSystem::DoNavigate;
-		action findHome : RoboticVacuumCleaner::NavigationSystem::FindHome;
-		action isCarpet : RoboticVacuumCleaner::ControllerSystem::IsCarpet;
 
 		attribute startVacuumingSignal : RoboticVacuumCleaner::ControllerSystem::StartVacuumingSignal;
 		attribute stopVacuumingSignal : RoboticVacuumCleaner::ControllerSystem::StopVacuumingSignal;
@@ -111,15 +107,15 @@ package 'Robotic Vacuum Cleaner'{
 		/* It seems that we need to composite actions
 		We might need to consider race-conditions*/
 		action VaccumingDoActions {
-			perform doNavigate;
-			perform isCarpet;
+			action doNavigate : RoboticVacuumCleaner::NavigationSystem::DoNavigate;
+			action isCarpet : RoboticVacuumCleaner::ControllerSystem::IsCarpet;
 			// Energy: DoEnergy()
 			// Vacuum: DoVacuum()
 		}
 		
 		action ChargingDoActions{
 			// Energy: DoCharge()
-			perform findHome;
+			action findHome : RoboticVacuumCleaner::NavigationSystem::FindHome;
 			// Vacuum: EmptyVacuum()
 		}
 

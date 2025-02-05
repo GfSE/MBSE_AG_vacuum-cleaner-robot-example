@@ -17,6 +17,11 @@ package VacuumingSystem{
 		port suctionLevel : ~SuctionLevel;
 		port brushRotationLevel : ~BrushRotationLevel;
 		
+		interface def suctionLevelPorts {
+			end supplierPort : SuctionLevel;
+			end consumerPort : SuctionLevel;
+		}
+		
 		interface def rotationLevelPorts {
 			end supplierPort : BrushRotationLevel;
 			end consumerPort : BrushRotationLevel;
@@ -35,7 +40,7 @@ package VacuumingSystem{
 			supplierPort ::> dirtyAirFlow to
 			consumerPort ::> sd.dirtyAirFlowIn;	
 			
-		connect sd to fs;
+		//connect sd to fs;
 		
 		interface def internalDirtyAirPorts {
 			end supplierPort : DirtyAirFlow;
@@ -55,10 +60,7 @@ package VacuumingSystem{
 			supplierPort ::> fs.cleanAirFlow to
 			consumerPort ::> cleanAirFlow;
 			
-		interface def suctionLevelPorts {
-			end supplierPort : SuctionLevel;
-			end consumerPort : SuctionLevel;
-		}
+		
 		
 		interface: suctionLevelPorts connect
 			supplierPort ::> suctionLevel to
