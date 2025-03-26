@@ -5,50 +5,12 @@ package 'Robotic Vacuum Cleaner'{
 	private import EnergySupply::*;
 	private import VacuumingSystem::*;
 	private import RobotPortDefs::*;
-	private import Requirement::*;
 	
 	part def RoboticVacuumCleaner{
 		part ControllerSystem : controller;
 		part NavigationSystem : navigation;
 		part EnergySystem : EnergySupplySystem;
 		part VacuumingSystem : vacuumingSystem;
-
-		port powerSignal : ~PowerSignal;
-		port dirtyAirFlow : DirtyAirFlow;
-		port cleanAirFlow : CleanAirFlow;
-
-		requirement lowBattery : Requirement::LowBattery{
-			subject roboticVacuumCleaner : RoboticVacuumCleaner;
-		}
-
-		requirement carpetDetected : Requirement::CarpetDetected{
-			subject roboticVacuumCleaner : RoboticVacuumCleaner;
-		}
-		// Subsystem-specific requirement usages
-		requirement lowBatteryNavigation : Requirement::LowBattery::LowBattery_Navigation {
-			subject navigationSystem : NavigationSystem;
-		}
-		
-		satisfy lowBattery by roboticVacuumCleaner;
-
-
-		satisfy lowBatteryNavigation by NavigationSystem;
-
-		interface : DriverUnitControlInterface connect
-			supplierPort ::> ControllerSystem.driverSignalOutputPort to
-			consumerPort ::> NavigationSystem.driverUnitControlSignalInputPort;
-
-		interface : DriverUnitControlInterface connect
-			supplierPort ::> NavigationSystem.driverUnitControlSignalInputPort to
-			consumerPort ::> NavigationSystem.DriveController.driverUnitControlSignalInputPort;
-
-		interface : DriverUnitControlInterface connect
-			supplierPort ::> NavigationSystem.DriveController.driverUnitControlSignalInputPort to
-			consumerPort ::> NavigationSystem.DriveController.StearingController.driverUnitControlSignalInputPort;
-		
-		interface : VacuumingSystem::suctionLevelPorts connect
-			supplierPort ::> ControllerSystem.suctionLevel to
-			consumerPort ::> VacuumingSystem.suctionLevel;
 			
 		// Control signal for brush rotation level
 		interface def brushRotationLevelPorts {
