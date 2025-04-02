@@ -7,7 +7,6 @@ package DriveController{
 	private import Engine::*;
 	private import LaserTower::*;
 	private import InfraredController::*;
-	private import InfraredController::infraredController;
 
 
     part def stearingController{

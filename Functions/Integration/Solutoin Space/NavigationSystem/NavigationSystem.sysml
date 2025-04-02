@@ -10,7 +10,6 @@ package Navigation{
 	private import LaserTower::*;
 	private import DriveController::*;
 	private import InfraredController::*;
-	private import Requirement::*;
 
 
 	part def navigation{

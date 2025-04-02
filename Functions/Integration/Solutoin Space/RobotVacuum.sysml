@@ -11,7 +11,24 @@ package 'Robotic Vacuum Cleaner'{
 		part NavigationSystem : navigation;
 		part EnergySystem : EnergySupplySystem;
 		part VacuumingSystem : vacuumingSystem;
-			
+		
+
+		interface : DriverUnitControlInterface connect
+			supplierPort ::> ControllerSystem.driverSignalOutputPort to
+			consumerPort ::> NavigationSystem.driverUnitControlSignalInputPort;
+
+		interface : DriverUnitControlInterface connect
+			supplierPort ::> NavigationSystem.driverUnitControlSignalInputPort to
+			consumerPort ::> NavigationSystem.DriveController.driverUnitControlSignalInputPort;
+
+		interface : DriverUnitControlInterface connect
+			supplierPort ::> NavigationSystem.DriveController.driverUnitControlSignalInputPort to
+			consumerPort ::> NavigationSystem.DriveController.StearingController.driverUnitControlSignalInputPort;
+		
+		interface : VacuumingSystem::suctionLevelPorts connect
+			supplierPort ::> ControllerSystem.suctionLevel to
+			consumerPort ::> VacuumingSystem.suctionLevel;
+
 		// Control signal for brush rotation level
 		interface def brushRotationLevelPorts {
 			end supplierPort : BrushRotationLevel;
@@ -52,13 +69,13 @@ package 'Robotic Vacuum Cleaner'{
 			supplierPort ::> VacuumingSystem.cleanAirFlow to
 			consumerPort ::> cleanAirFlow;
 
-
+		action def VaccumingTim;
+		
 		state def VacuumCleanerBehavior{
 		doc /* This is the Statemachine Diagram */
 		entry; then Idle;
 
 		/* It seems that we need to declare actions here and  */		
-
 		attribute startVacuumingSignal : RoboticVacuumCleaner::ControllerSystem::StartVacuumingSignal;
 		attribute stopVacuumingSignal : RoboticVacuumCleaner::ControllerSystem::StopVacuumingSignal;
 		attribute idleVacuumingSignal : RoboticVacuumCleaner::ControllerSystem::IdleVacuumingSignal;
@@ -132,8 +149,5 @@ package 'Robotic Vacuum Cleaner'{
 			then Charging;
 
 		}
-		
-
-
 	}
 }
