@@ -11,7 +11,8 @@ package 'Robotic Vacuum Cleaner'{
 		part NavigationSystem : navigation;
 		part EnergySystem : EnergySupplySystem;
 		part VacuumingSystem : vacuumingSystem;
-		
+
+		action def doClean;
 
 		interface : DriverUnitControlInterface connect
 			supplierPort ::> ControllerSystem.driverSignalOutputPort to
@@ -69,85 +70,5 @@ package 'Robotic Vacuum Cleaner'{
 			supplierPort ::> VacuumingSystem.cleanAirFlow to
 			consumerPort ::> cleanAirFlow;
 
-		action def VaccumingTim;
-		
-		state def VacuumCleanerBehavior{
-		doc /* This is the Statemachine Diagram */
-		entry; then Idle;
-
-		/* It seems that we need to declare actions here and  */		
-		attribute startVacuumingSignal : RoboticVacuumCleaner::ControllerSystem::StartVacuumingSignal;
-		attribute stopVacuumingSignal : RoboticVacuumCleaner::ControllerSystem::StopVacuumingSignal;
-		attribute idleVacuumingSignal : RoboticVacuumCleaner::ControllerSystem::IdleVacuumingSignal;
-		attribute lowBatterySignal : RoboticVacuumCleaner::EnergySystem::LowBatterySignal;
-		attribute charingSignal : RoboticVacuumCleaner::EnergySystem::CharingSignal;
-		attribute continueVacuumingSingal : RoboticVacuumCleaner::EnergySystem::ContinueVacuumingSingal;
-		
-		/* It seems that we need to composite actions
-		We might need to consider race-conditions*/
-		action VaccumingDoActions {
-			action doNavigate : RoboticVacuumCleaner::NavigationSystem::DoNavigate;
-			action isCarpet : RoboticVacuumCleaner::ControllerSystem::IsCarpet;
-			// Energy: DoEnergy()
-			// Vacuum: DoVacuum()
-		}
-		
-		action ChargingDoActions{
-			// Energy: DoCharge()
-			action findHome : RoboticVacuumCleaner::NavigationSystem::FindHome;
-			// Vacuum: EmptyVacuum()
-		}
-
-		// States
-		state Idle{
-		}
-
-		state Vaccuming {
-			do VaccumingDoActions;
-		}
-
-		state Finish{
-		}
-
-		state LowBattery{
-		}
-
-		state Charging {
-			do ChargingDoActions;
-		}
-		
-		//Transition
-
-		transition IdleToVaccuming
-			first Idle
-			accept startVacuumingSignal
-			then Vaccuming;
-
-		transition VaccumingToFinish
-			first Vaccuming
-			accept stopVacuumingSignal
-			then Finish;
-
-		transition FinishToIdle
-			first Finish
-			accept idleVacuumingSignal
-			then Idle;
-		
-		transition ChargingToVacuuming
-			first Charging
-			accept continueVacuumingSingal
-			then Vaccuming;
-
-		transition VaccumingToLowBattery
-			first Vaccuming
-			accept lowBatterySignal
-			then LowBattery;
-
-		transition LowBatteryToCharing
-			first LowBattery
-			accept charingSignal
-			then Charging;
-
-		}
 	}
 }

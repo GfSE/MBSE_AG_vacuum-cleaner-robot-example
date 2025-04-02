@@ -1,4 +1,4 @@
-package Requirement {
+package <VRSRE> VRS_Requirements {
 
     // Top-level requirement
     requirement def <'r1'> LowBattery{
@@ -9,7 +9,8 @@ package Requirement {
         subject : ESS_Bat::Battery;
 
         //create actor
-
+        actor : VRSA::'Loading Environment';
+        
         // Subsystem-specific requirements
         //no def needed for subrequirements
         requirement<'r1.1'> LowBattery_Navigation {

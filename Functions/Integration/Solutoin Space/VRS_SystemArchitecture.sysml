@@ -1,11 +1,11 @@
-package 'System'{
+package <VRSSA> VRS_SystemArchitecture{
 
     private import 'Robotic Vacuum Cleaner'::*;
-    private import Requirement::*;
-    private import 'Use Cases'::*;
+    private import VRSRE::*;
+    private import VRSUC::*;
 
     // Usage of RoboticVacuumCleaner
-    part system : RoboticVacuumCleaner{
+    part System : RoboticVacuumCleaner{
         requirement req1 : LowBattery;
         satisfy req1 by EnergySystem.bat;
         satisfy req1.LowBattery_Navigation by NavigationSystem;
