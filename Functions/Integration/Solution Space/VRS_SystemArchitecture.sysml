@@ -6,7 +6,9 @@ package <VRSSA> VRS_SystemArchitecture{
 
     // Usage of RoboticVacuumCleaner
     part System : RoboticVacuumCleaner{
-        requirement req1 : LowBattery;
+        requirement req1 : LowBattery{
+            actor ::> VRSA::Environment;
+        }
         satisfy req1 by EnergySystem.bat;
         satisfy req1.LowBattery_Navigation by NavigationSystem;
 

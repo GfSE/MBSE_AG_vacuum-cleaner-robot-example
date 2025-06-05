@@ -17,8 +17,9 @@ package <VRSUC> VRS_UseCases {
         first start;
         then action doCheckSuctionChamber;
         then action doCheckBatteryCharge;
+        //Zig-Zag pattern:
         then action roboticVacuumCleaner:RoboticVacuumCleaner::doClean;
-        //wem gehört die action "doClean" -> Robotic VaccumCleaner
+        then action roboticVacuumCleaner:Navigation::navigation::FindHome;
         then action doCleanSuctionChamber;
         then action doRechargeBattery;
         then done; // sysml v1 -> Flow Final

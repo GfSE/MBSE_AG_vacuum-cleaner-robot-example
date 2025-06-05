@@ -9,8 +9,10 @@ package <VRSRE> VRS_Requirements {
         subject : ESS_Bat::Battery;
 
         //create actor
-        actor : VRSA::'Loading Environment';
+        actor : VRSA::Battery;
         
+        
+
         // Subsystem-specific requirements
         //no def needed for subrequirements
         requirement<'r1.1'> LowBattery_Navigation {
@@ -18,13 +20,14 @@ package <VRSRE> VRS_Requirements {
                and generate a path to reach it. */
         subject : Navigation::navigation;
         //create actor
+        actor : VRSA::NavigationSystem; //falsch?
     }
     }
 
 
 
     requirement def <'r2'> CarpetDetected{
-        doc /*•	When the robot detects a carpeted surface,
+        doc /* When the robot detects a carpeted surface,
         it shall automatically increase the vacuum speed to its maximum level
          to ensure optimal cleaning performance.*/
     }

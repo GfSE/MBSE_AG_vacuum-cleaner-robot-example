@@ -18,14 +18,6 @@ package 'Robotic Vacuum Cleaner'{
 			supplierPort ::> ControllerSystem.driverSignalOutputPort to
 			consumerPort ::> NavigationSystem.driverUnitControlSignalInputPort;
 
-		interface : DriverUnitControlInterface connect
-			supplierPort ::> NavigationSystem.driverUnitControlSignalInputPort to
-			consumerPort ::> NavigationSystem.DriveController.driverUnitControlSignalInputPort;
-
-		interface : DriverUnitControlInterface connect
-			supplierPort ::> NavigationSystem.DriveController.driverUnitControlSignalInputPort to
-			consumerPort ::> NavigationSystem.DriveController.StearingController.driverUnitControlSignalInputPort;
-		
 		interface : VacuumingSystem::suctionLevelPorts connect
 			supplierPort ::> ControllerSystem.suctionLevel to
 			consumerPort ::> VacuumingSystem.suctionLevel;
