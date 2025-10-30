@@ -48,4 +48,54 @@ This will then be pushed to the configured API server (in case of [Sysmlv2Lab](h
 
 ## Looking up models
 
-In the following the
+The consuming will be shown in Swagger.
+The Intercax Implementation (http://sysml2.intercax.com:9000/docs/) is used as an example.
+
+When you want to use a function, open the drop down and insert the required variables into the input fields.
+
+The most important ID is the project id - you need it in every call you do:
+
+| Name | From | Example |
+|------|------|---------|
+| ``Project id`` | Publishing command | ``574918a3-62b7-442c-9fb1-e2ba904f585e`` |
+| ``branch id`` | Publishing command | ``bfaf4577-5d86-451f-8a71-d64d5c78e774`` |
+| ``Commit id`` | Publishing command | ``4ec9b97c-ca51-4def-b764-4a5111e63b70`` |
+
+
+You can verify them with ``GET /projects/{projectId}`` and ``GET /projects/{projectId}/commits``
+
+![alt text](../assets/API_Swagger_GetProjects.png)
+
+To get see all existing elements use ``GET /projects/{projectId}/commits/{commitId}/elements``
+
+If you want a specific part it is better to use queries.
+The [SysML v2 API Cookbook](https://github.com/Systems-Modeling/SysML-v2-API-Cookbook/blob/main/Queries.ipynb) shows how to do them.
+
+In our example, you can use the following in ``POST
+/projects/{projectId}/query-results``
+
+```json
+{
+  "@type": "Query",
+  "name": "string",
+  "select": [
+    "@id", 
+    "declaredName"
+  ],
+  "where": {
+    "@type": "CompositeConstraint",
+    "operator": "and",
+    "constraint": [
+    {
+        "@type": "PrimitiveConstraint",
+        "operator": "=",
+        "property": "@type",
+        "value": ["PartUsage"]
+    }]
+  }
+}
+```
+
+![alt text](../assets/API_Swagger_Query.png)
+
+Select the element you would like to inspect and check the other functions as well.
