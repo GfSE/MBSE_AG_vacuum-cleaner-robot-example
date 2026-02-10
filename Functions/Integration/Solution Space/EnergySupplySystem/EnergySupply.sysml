@@ -1,4 +1,4 @@
-package EnergySupply {
+package energy_supply {
     doc /*
     =======================================================================
     The following SysML v2 package specifies the energy
@@ -9,10 +9,10 @@ package EnergySupply {
     private import PortDef::*;
     private import Signals::*;
 
-    private import ESS_Processor::*;
-    private import ESS_Bat::Battery;
-    private import ESS_Reg::*;
-    private import ESS_Charge::*;
+    private import ess_processor::*;
+    private import ess_bat::Battery;
+    private import ess_reg::*;
+    private import ess_charge::*;
   	private import Signals::BatterySignals::BatterySignal;
     private import RobotPortDefs::*;
 
@@ -69,5 +69,5 @@ package EnergySupply {
             tgt ::> reg.batEnergy;   
 
     }
-    
+	
 }

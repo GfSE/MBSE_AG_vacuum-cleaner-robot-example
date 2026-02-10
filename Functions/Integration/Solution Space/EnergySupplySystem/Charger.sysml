@@ -1,4 +1,4 @@
-package ESS_Charge {
+package ess_charge {
 
   private import ScalarValues::*;
   private import PortDef::*;

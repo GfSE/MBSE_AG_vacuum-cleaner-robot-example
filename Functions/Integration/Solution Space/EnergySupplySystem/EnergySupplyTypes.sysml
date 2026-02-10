@@ -1,4 +1,4 @@
-package 'EnergySupplyTypes' {
+package 'energy_supply_types' {
 
 	import ScalarValues::*;
   import Signals::ControllerSignals::*;
@@ -44,5 +44,5 @@ package 'EnergySupplyTypes' {
     end : ElectricalEnergy;
     end : ElectricalEnergy;
   }
-
+  
 }

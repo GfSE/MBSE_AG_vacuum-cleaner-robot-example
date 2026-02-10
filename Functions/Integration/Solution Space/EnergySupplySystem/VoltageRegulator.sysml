@@ -1,4 +1,4 @@
-package ESS_Reg {
+package ess_reg {
 
    private import PortDef::*;
    private import RobotPortDefs::*;
