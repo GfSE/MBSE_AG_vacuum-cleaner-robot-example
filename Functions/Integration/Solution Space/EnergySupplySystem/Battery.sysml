@@ -1,4 +1,4 @@
-package ESS_Bat {
+package ess_bat {
   
   private import ScalarValues::*;
   private import RoboCleanRequirements::*;
@@ -32,16 +32,16 @@ package ESS_Bat {
     item def Energy;
     attribute mass : Real;
     // attribute TotCapacity : ActiveEnergyValue;
-    attribute TotCapacity;
+    attribute totCapacity;
     
-    part def cell {
-      Capacity  : Real;
-      Voltage   : Real;
+    part def Cell {
+      capacity  : Real;
+      voltage   : Real;
     }
     
-    part def cellConnector;
+    part def CellConnector;
     
-    attribute def layout {
+    attribute def Layout {
       numOfParCells : Integer;
       numOfSerCells : Integer;
     }
@@ -50,10 +50,10 @@ package ESS_Bat {
   part def BMS {  // @Ralf: now instantiated by CPU? 
                   // Maybe move to EnergySupply.sysml
     // Parts
-    part def volSensor;
-    part def curSensor;
-    part def tempSensor;
-    part def microController;
+    part def VolSensor;
+    part def CurSensor;
+    part def TempSensor;
+    part def MicroController;
     part def Balancer;
 
     // Ports
@@ -63,6 +63,5 @@ package ESS_Bat {
   
   comment about BMS 
   /* BMS = Battery Management System */
-  
 
 }
