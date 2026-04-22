@@ -1,4 +1,4 @@
-package ESS_Processor {
+package ess_processor {
 
 	private import Signals::*;
 	private import ScalarValues::*;
