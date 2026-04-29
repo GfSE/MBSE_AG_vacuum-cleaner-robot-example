@@ -68,7 +68,7 @@ jobs:
           echo "syntax highlighting"
           cp output.txt outtest.html
       - name: store generated website
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: website.txt
           path: output.txt
