@@ -25,7 +25,7 @@ jobs:
                 additional_content="$additional_content"
                 fp="${line:2:1000}"
                 echo "$fp"
-                model_content=$(<$fp)
+                model_content=$(<"$fp")
                 additional_content="$additional_content $html_pre $model_content $html_post"
                 echo "o $(<$fp)"
               else
@@ -68,7 +68,7 @@ jobs:
           echo "syntax highlighting"
           cp output.txt outtest.html
       - name: store generated website
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: website.txt
           path: output.txt
