@@ -1,62 +1,62 @@
-!!Functions/Integration/VaccuumRobot_view_tree.png
+!!Functions/VacuumingRoboterSystem/Solution Space/VaccuumRobot_view_tree.png
 
 This image depicts the high-level architecture of our robotic vacuum cleaner model.
 As shown, the modules within the architecture import pertinent information from other modules, facilitating the robot's operation.
-!!Functions/Integration/Staubsaugerroboter.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/RobotVacuum.sysml
 
 The depicted image shows the controller, which assumes responsibility for interfacing with external systems and relaying information to the various sub-systems.
-!!Functions/Integration/ControllerSystem/Controller.png
-!!Functions/Integration/ControllerSystem/ControllerSystem.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/ControllerSystem/Controller.png
+!!Functions/VacuumingRoboterSystem/Solution Space/ControllerSystem/ControllerSystem.sysml
 
 The energy supply sub-system controls electrical energy storage and management.
-!!Functions/Integration/EnergySupplySystem/EnergySupply.sysml
-!!Functions/Integration/EnergySupplySystem/Battery.sysml
-!!Functions/Integration/EnergySupplySystem/BatteryLevelComputer.sysml
-!!Functions/Integration/EnergySupplySystem/Charger.sysml
-!!Functions/Integration/EnergySupplySystem/EnergySupplyTypes.sysml
-!!Functions/Integration/EnergySupplySystem/VoltageRegulator.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/EnergySupplySystem/EnergySupply.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/EnergySupplySystem/Battery.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/EnergySupplySystem/BatteryLevelComputer.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/EnergySupplySystem/Charger.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/EnergySupplySystem/EnergySupplyTypes.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/EnergySupplySystem/VoltageRegulator.sysml
 
 This image portrays the high-level architecture of our navigation system.
 Similarly to the previous module, the architecture imports data from other modules to enable proper functionality
-!!Functions/Integration/NavigationSystem/NavigationSystem.sysml
-!!Functions/Integration/NavigationSystem/Navigation BDD Compartments.jpg
+!!Functions/VacuumingRoboterSystem/Solution Space/NavigationSystem/NavigationSystem.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/NavigationSystem/Navigation BDD Compartments.jpg
 
 This image showcases the Bumber implementation.
-!!Functions/Integration/NavigationSystem/Bumber/Bumber.sysml
-!!Functions/Integration/NavigationSystem/Bumber/BDD compartments.jpg
+!!Functions/VacuumingRoboterSystem/Solution Space/NavigationSystem/Bumber/Bumber.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/NavigationSystem/Bumber/BDD compartments.jpg
 
 This image showcases the DriveController implementation.
-!!Functions/Integration/NavigationSystem/DriveController/DriveController.sysml
-!!Functions/Integration/NavigationSystem/DriveController/BDD compartments.jpg
+!!Functions/VacuumingRoboterSystem/Solution Space/NavigationSystem/DriveController/DriveController.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/NavigationSystem/DriveController/BDD compartments.jpg
 
 This image showcases the Engine implementation.
-!!Functions/Integration/NavigationSystem/Engine/Engine.sysml
-!!Functions/Integration/NavigationSystem/Engine/BDD compartments.jpg
+!!Functions/VacuumingRoboterSystem/Solution Space/NavigationSystem/Engine/Engine.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/NavigationSystem/Engine/BDD compartments.jpg
 
 This image showcases the LaserTower implementation.
-!!Functions/Integration/NavigationSystem/LaserTower/LaserTower.sysml
-!!Functions/Integration/NavigationSystem/LaserTower/BDD compartments.jpg
+!!Functions/VacuumingRoboterSystem/Solution Space/NavigationSystem/LaserTower/LaserTower.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/NavigationSystem/LaserTower/BDD compartments.jpg
 
 This image showcases the InfraredController implementation.
-!!Functions/Integration/NavigationSystem/InfraredController/InfraredController.sysml
-!!Functions/Integration/NavigationSystem/InfraredController/BDD compartments.jpg
+!!Functions/VacuumingRoboterSystem/Solution Space/NavigationSystem/InfraredController/InfraredController.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/NavigationSystem/InfraredController/BDD compartments.jpg
 
 This image showcases the public ports utilized in the system's operation.
-!!Functions/Integration/Ports&Signals/Port.png
-!!Functions/Integration/Ports&Signals/RobotPortDefs.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/Ports&Signals/Port.png
+!!Functions/VacuumingRoboterSystem/Solution Space/Ports&Signals/RobotPortDefs.sysml
 
 ToDo: add description.
-!!Functions/Integration/VacuumingSystem/VaccuumingSystem.png
-!!Functions/Integration/VacuumingSystem/VacuumingSystem.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/VacuumingSystem/VaccuumingSystem.png
+!!Functions/VacuumingRoboterSystem/Solution Space/VacuumingSystem/VacuumingSystem.sysml
 
 ToDo: add description.
-!!Functions/Integration/VacuumingSystem/BrushSystem.png
-!!Functions/Integration/VacuumingSystem/BrushSystem.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/VacuumingSystem/BrushSystem.png
+!!Functions/VacuumingRoboterSystem/Solution Space/VacuumingSystem/BrushSystem.sysml
 
 ToDo: add description.
-!!Functions/Integration/VacuumingSystem/FilterSystem.png
-!!Functions/Integration/VacuumingSystem/FilterSystem.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/VacuumingSystem/FilterSystem.png
+!!Functions/VacuumingRoboterSystem/Solution Space/VacuumingSystem/FilterSystem.sysml
 
 ToDo: add description.
-!!Functions/Integration/VacuumingSystem/SuctionDevice.png
-!!Functions/Integration/VacuumingSystem/SuctionDevice.sysml
+!!Functions/VacuumingRoboterSystem/Solution Space/VacuumingSystem/SuctionDevice.png
+!!Functions/VacuumingRoboterSystem/Solution Space/VacuumingSystem/SuctionDevice.sysml
