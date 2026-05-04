@@ -23,7 +23,7 @@ package NavigationSystem_Navigation {
         port driverUnitControlSignalInputPort : ~DriverUnitControlPort;
         port powerSignal : PowerSignal;
 
-        interface : BumberInterface connect
+        interface : BumperInterface connect
             supplierPort ::> bumber.collisionOutputPort to
             consumerPort ::> driveController.collisionInputPort;
 

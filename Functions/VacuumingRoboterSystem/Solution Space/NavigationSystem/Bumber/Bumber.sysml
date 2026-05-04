@@ -8,7 +8,7 @@ package NavigationSystem_Bumper {
         out item collisionDetection : CollisionDetection;
     }
 
-    interface def BumberInterface {
+    interface def BumperInterface {
         end supplierPort : CollisionPort;
         end consumerPort : ~CollisionPort;
 
