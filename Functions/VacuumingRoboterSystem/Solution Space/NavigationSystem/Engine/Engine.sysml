@@ -16,32 +16,29 @@ package NavigationSystem_Engine {
         flow supplierPort.pwm to consumerPort.pwm;
     }
 
-    part def Engine {
+    state def MotorDirection {
+    entry; then idle;
 
-        part motorTire : Tire[2];
+    state idle;
 
-        port pwmInputPort : PwmPort;
+    transition idle_to_left
+        first idle
+        then left;
 
-        state def MotorDirection {
-            entry; then idle;
+    transition idle_to_right
+        first idle
+        then right;
 
-            state idle;
+    state left;
 
-            transition idle_to_left
-                first idle
-                then left;
+    transition left_to_idle
+        first left
+        then idle;
 
-            state left;
+    state right;
 
-            transition left_to_idle
-                first left
-                then idle;
-
-            state right;
-
-            transition right_to_idle
-                first right
-                then idle;
-        }
-    }
+    transition right_to_idle
+        first right
+        then idle;
+}
 }
