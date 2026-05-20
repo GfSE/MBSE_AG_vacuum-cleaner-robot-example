@@ -36,10 +36,6 @@ package NavigationSystem_Navigation {
             supplierPort ::> driverUnitControlSignalInputPort to
             consumerPort ::> driveController.driverUnitControlSignalInputPort;
 
-        interface : DriverUnitControlInterface connect
-            supplierPort ::> driveController.driverUnitControlSignalInputPort to
-            consumerPort ::> driveController.steeringController.driverUnitControlSignalInputPort;
-
         interface : InfraredControllerInterface connect
             supplierPort ::> infraredController.contactChargerOutputPort to
             consumerPort ::> driveController.contactChargerInputPort;

@@ -12,8 +12,8 @@ package <VRSSA> VRS_SystemArchitecture{
         satisfy req1 by EnergySystem.bat;
         satisfy req1.LowBattery_Navigation by NavigationSystem;
 
-        use case UC1 : Vacuming{
-            subject :>> roboticVacuumCleaner = self;
+        use case UC1 : Vacuuming{
+            first StartVacuuming;
         }
 
         //wenn die Satisfy beziehung dem NavigationSystem gehört
