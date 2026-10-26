@@ -1,7 +1,7 @@
 package 'energy_supply_types' {
 
-	import ScalarValues::*;
-  import Signals::ControllerSignals::*;
+	private import ScalarValues::*;
+  private import Signals::ControllerSignals::*;
 
   doc /*
     =======================================================================

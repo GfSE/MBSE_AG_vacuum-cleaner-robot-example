@@ -5,6 +5,7 @@ package ess_bat {
   private import PortDef::*;
   private import Signals::*;
   private import Signals::BatterySignals::BatterySignal;
+  private import ISQ::*;
 
   doc /*
     =======================================================================
@@ -16,8 +17,8 @@ package ess_bat {
   part def Battery {
     
     // current charge
-    attribute capacity :> activeEnergy; 
-    attribute totCapacity :> activeEnergy;
+    attribute capacity : EnergyValue; 
+    attribute totCapacity : EnergyValue;
 
     // Ports
     port requriedEnergy : PowerInOutPort; // input from charging station
