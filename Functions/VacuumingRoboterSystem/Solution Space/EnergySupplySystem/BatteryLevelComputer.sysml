@@ -1,5 +1,7 @@
 package ess_processor {
 
+	private import ISQ::*; // International System of Quantities
+	private import SI::*;
 	private import Signals::*;
 	private import ScalarValues::*;
 	private import ControllerSignals::*;
@@ -18,20 +20,21 @@ package ess_processor {
 	  port energyLevel : EnergyRegulation; // out
 
     // Attributes  
-    attribute batteryCapacity : Real = 1000; 
+    attribute batteryCapacity : ISQ::ElectricChargeValue = 1000 [SI::ampere * SI::hour];
+	attribute batteryNominalVoltage : ISQ::ElectricPotentialValue = 12 [SI::volt];
     
     // Behavior
     // Realized through a StateChart which takes inputs from the incoming port 
     // and part attribute. Produces a return value to outgoing port ledSig.
     exhibit state BatteryLevelComputerStates {
       in  ref maxBatCap     = batteryCapacity; // 'this' would be nice
-      //out ref ledSig {color = computedColor;}
+      // out ref ledSig {color = computedColor;}
     }
     
 	}
 	
 	/**
-	 * As actions need to be instnatiated somewhere, we leverage a very small
+	 * As actions need to be instantiated somewhere, we leverage a very small
 	 * statechart to perform the actual computations.
 	 */
 	state def BatteryLevelComputerStates {
@@ -39,25 +42,27 @@ package ess_processor {
 	  
 	  // Definition of state x instantiates action 
 	  state x { 
-	    entry act {batCap; maxBatCap; computedColor;}
+	    entry act {x_usedEnergy; x_batCapacity; x_batNominalVoltage; x_computedIndicatorColor;}
 	  }  
 	}
 
-	action act : ComputeBatteryInfo{batCap; maxBatCap; computedColor;}
+	action act : IndicateBatterySOC{usedEnergy; batCapacity; batNominalVoltage; computedIndicatorColor;}
 	
 	/**
-	 * The action ComputeBatteryInfo delegates to the calculation CalcBatteryLevel
+	 * The action IndicateBatterySOC delegates to the calculation CalcBatteryLevel
 	 */
-	action def ComputeBatteryInfo{in  batteryCapacity    : Real;
-	                              in  maxBatteryCapacity : Real;
-	                              out batteryColor       : LED_COLOR = CalcBatteryLevel(batteryCapacity, maxBatteryCapacity);
+	action def IndicateBatterySOC{in  energy    : ISQ::ElectricChargeValue;
+	                              in  nominalBatteryCapacity : ISQ::ElectricChargeValue;
+								  in  nominalBatteryVoltage: ISQ::ElectricPotentialValue;
+								  out batteryIndicatorColor	: LED_COLOR = CalcSOC(energy, nominalBatteryCapacity, nominalBatteryVoltage);
 	}
 	
-	calc def CalcBatteryLevel{
-		in energy : Real; 
-		in capacity : Real; 
+	calc def CalcSOC{
+		in usedEnergy 		: ISQ::EnergyValue; 
+		in nominalCapacity 	: ISQ::ElectricChargeValue; 
+		in nominalVoltage 	: ISQ::ElectricPotentialValue;
         
-		energy / capacity
+		usedEnergy / (nominalCapacity * nominalVoltage)
     }
 
 }

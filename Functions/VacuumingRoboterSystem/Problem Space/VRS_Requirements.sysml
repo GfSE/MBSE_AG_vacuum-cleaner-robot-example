@@ -19,6 +19,7 @@ package <VRSRE> VRS_Requirements {
         doc /* The Navigation System shall determine the nearest charging station
                and generate a path to reach it. */
         subject : Navigation::navigation;
+
         //create actor
         actor : VRSA::NavigationSystem; //falsch?
     }
@@ -30,5 +31,13 @@ package <VRSRE> VRS_Requirements {
         doc /* When the robot detects a carpeted surface,
         it shall automatically increase the vacuum speed to its maximum level
          to ensure optimal cleaning performance.*/
+    }
+
+    action def IndicateBatterySOC;
+    
+    requirement def <'r3'> IndicateBatteryStateOfCharge{
+        doc /* The state of charge of the battery shall be indicated to the user.
+        */
+        subject indicateBatterySOC: IndicateBatterySOC;
     }
 }
