@@ -13,8 +13,9 @@ package NavigationSystem_DriveController {
     }
 
     part def SteeringController {
-        doc /* Setzt Fahrbefehle in PWM-Signale für die Motoren um. */
-        port pwmOutputPort : PwmPort;
+        doc /* Setzt Fahrbefehle in PWM-Signale für den linken und rechten Motor um. */
+        port pwmLeftOutputPort : PwmPort;
+        port pwmRightOutputPort : PwmPort;
         port driverUnitControlSignalInputPort : ~DriverUnitControlPort;
         port driveCommandInputPort : ~DriveCommandPort;
     }
@@ -31,16 +32,18 @@ package NavigationSystem_DriveController {
         doc /* Fahrsteuerung des Roboters, bestehend aus Orientierung und Lenkung. */
         port collisionInputPort : ~CollisionPort;
         port laserTowerInputPort : ~LaserTowerPosition;
-        port pwmOutputPort : PwmPort;
         port contactChargerInputPort : ~ContactCharger;
         port driverUnitControlSignalInputPort : ~DriverUnitControlPort;
+        port pwmLeftOutputPort : PwmPort;
+        port pwmRightOutputPort : PwmPort;
 
         part steeringController : SteeringController;
         part orientationController : OrientationController;
 
-        // Delegation Außenports → Innenports
+        // Delegation Außenports → Innenteile
         bind driverUnitControlSignalInputPort = steeringController.driverUnitControlSignalInputPort;
-        bind pwmOutputPort                    = steeringController.pwmOutputPort;
+        bind pwmLeftOutputPort                = steeringController.pwmLeftOutputPort;
+        bind pwmRightOutputPort               = steeringController.pwmRightOutputPort;
         bind collisionInputPort               = orientationController.collisionInputPort;
         bind laserTowerInputPort              = orientationController.laserTowerInputPort;
         bind contactChargerInputPort          = orientationController.contactChargerInputPort;
@@ -48,6 +51,5 @@ package NavigationSystem_DriveController {
         // Interne Verbindung Orientierung → Lenkung
         connect orientationController.driveCommandOutputPort
              to steeringController.driveCommandInputPort;
-
     }
 }
