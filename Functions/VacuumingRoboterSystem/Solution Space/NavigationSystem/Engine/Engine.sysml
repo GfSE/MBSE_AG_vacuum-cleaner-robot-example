@@ -1,21 +1,24 @@
 package NavigationSystem_Engine {
-    /* This package implements the Engine-System 
-     * The engine drives the system */
+    doc /* Antriebsmotor des Roboters: PWM-gesteuert, treibt ein Rad an. */
+
+    private import RobotPortDefs::*;
 
     part def Tire {
         doc /* Rad, das vom Motor angetrieben wird. */
     }
+
     item def Pwm {
         doc /* Pulsweitenmoduliertes Steuersignal für einen Motor. */
     }
 
-    // Port aus Senderperspektive: Der DriveController liefert PWM.
     port def PwmPort {
-        doc /* Überträgt ein PWM-Signal vom Steuergerät zum Motor. */
+        doc /* Richtung: DriveController → Engine.
+             * Aus Senderperspektive definiert; Empfänger nutzt ~PwmPort. */
         out item pwm : Pwm;
     }
 
     interface def PwmControlInterface {
+        doc /* Verbindet einen PWM-Ausgang des DriveControllers mit einem Motor. */
         end supplierPort : PwmPort;
         end consumerPort : ~PwmPort;
 
@@ -23,35 +26,24 @@ package NavigationSystem_Engine {
     }
 
     part def Engine {
-        doc /* Elektromotor, gesteuert über ein PWM-Signal. */
+        doc /* Elektromotor, gesteuert über ein PWM-Signal und versorgt über einen Stromeingang. */
         port pwmInputPort : ~PwmPort;
+        port powerInputPort : ~PowerSignal;
 
         exhibit state motorDirection : MotorDirection;
     }
 
     state def MotorDirection {
-    entry; then idle;
+        doc /* Drehrichtungszustände des Motors. Trigger folgen mit dem Verhalten. */
+        entry; then idle;
 
-    state idle;
+        state idle;
+        state left;
+        state right;
 
-    transition idle_to_left
-        first idle
-        then left;
-
-    transition idle_to_right
-        first idle
-        then right;
-
-    state left;
-
-    transition left_to_idle
-        first left
-        then idle;
-
-    state right;
-
-    transition right_to_idle
-        first right
-        then idle;
-}
+        transition idle_to_left  first idle  then left;
+        transition left_to_idle  first left  then idle;
+        transition idle_to_right first idle  then right;
+        transition right_to_idle first right then idle;
+    }
 }
