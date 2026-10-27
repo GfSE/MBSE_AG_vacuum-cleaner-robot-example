@@ -9,7 +9,7 @@ package NavigationSystem_DriveController {
     private import NavigationSystem_InfraredController::*;
 
     part def SteeringController {
-        port pwmOutputPort : ~PwmPort;
+        port pwmOutputPort : PwmPort;
         port driverUnitControlSignalInputPort : ~DriverUnitControlSignal;
     }
 
@@ -22,7 +22,7 @@ package NavigationSystem_DriveController {
     part def DriveController {
         port collisionInputPort : ~CollisionPort;
         port laserTowerInputPort : ~LaserTowerPosition;
-        port pwmOutputPort : ~PwmPort;
+        port pwmOutputPort : PwmPort;
         port contactChargerInputPort : ~ContactCharger;
         port driverUnitControlSignalInputPort : ~DriverUnitControlSignal;
 

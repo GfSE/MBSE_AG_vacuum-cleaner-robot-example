@@ -41,7 +41,7 @@ package NavigationSystem_Navigation {
             consumerPort ::> driveController.contactChargerInputPort;
 
         interface : PwmControlInterface connect
-            supplierPort ::> engine.pwmInputPort to
-            consumerPort ::> driveController.pwmOutputPort;
+            supplierPort ::> driveController.pwmOutputPort to
+            consumerPort ::> engine.pwmInputPort;
     }
 }
