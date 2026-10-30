@@ -54,12 +54,12 @@ package ess_processor {
 		state mediumCharge;
 		accept when (batteryLevel / maxBatCap) <= BLC_BATTERY_LOW_CHARGE_TRESHOLD
 		  then lowCharge;
-        accept when (batteryLevel / maxBatCap) > BLC_BATTERY_LOW_CHARGE_TRESHOLD
+        accept when (batteryLevel / maxBatCap) > BLC_BATTERY_HIGH_CHARGE_TRESHOLD
 		  then highCharge;
 		
 		
 		state highCharge;
-        accept when (batteryLevel / maxBatCap) <= BLC_BATTERY_LOW_CHARGE_TRESHOLD
+        accept when (batteryLevel / maxBatCap) <= BLC_BATTERY_HIGH_CHARGE_TRESHOLD
 		  then mediumCharge;
 
 	
