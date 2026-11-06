@@ -1,68 +1,51 @@
 package ess_bat {
-  
-  private import ScalarValues::*;
-  private import RoboCleanRequirements::*;
-  private import PortDef::*;
-  private import Signals::*;
-  private import Signals::BatterySignals::BatterySignal;
-  private import ISQ::*;
+    doc /* Batterie des Roboters (Black-Box-Sicht) sowie erste Entwürfe für ihren inneren Aufbau. */
 
-  doc /*
-    =======================================================================
-    The following SysML v2 package specifies the battery 
-    of the vacuum cleaner robot in a black-box fashion
-    =======================================================================
-    */  
+    private import ScalarValues::*;
+    private import PortDef::*;
+    private import Signals::BatterySignals::BatterySignal;
+    private import ISQ::*;
 
-  part def Battery {
-    
-    // current charge
-    attribute capacity : EnergyValue; 
-    attribute totCapacity : EnergyValue;
+    part def Battery {
+        doc /* Batterie: speichert die Energie vom Ladegerät und gibt sie an den Spannungsregler ab. */
 
-    // Ports
-    port requriedEnergy : PowerInOutPort; // input from charging station
-    port providedEnergy : PowerInOutPort; // output to other robot components
+        // aktuelle Ladung
+        attribute capacity : EnergyValue;
+        attribute totCapacity : EnergyValue;
 
-  }
-
-
-
-  
-  part def Accumulator {
-    item def Energy;
-    attribute mass : Real;
-    // attribute TotCapacity : ActiveEnergyValue;
-    attribute totCapacity;
-    
-    part def Cell {
-      capacity  : Real;
-      voltage   : Real;
+        port energyInputPort : PowerInOutPort;    // vom Ladegerät
+        port energyOutputPort : PowerInOutPort;   // an den Spannungsregler
     }
-    
-    part def CellConnector;
-    
-    attribute def Layout {
-      numOfParCells : Integer;
-      numOfSerCells : Integer;
+
+    // Entwurf: innerer Aufbau der Batterie, wird von Battery noch nicht verwendet
+    part def Accumulator {
+        doc /* Akkupack aus Zellen. Entwurf, noch nicht in Battery verwendet. */
+        item def Energy;
+        attribute mass : Real;
+        attribute totCapacity;
+
+        part def Cell {
+            capacity  : Real;
+            voltage   : Real;
+        }
+
+        part def CellConnector;
+
+        attribute def Layout {
+            numOfParCells : Integer;
+            numOfSerCells : Integer;
+        }
     }
-  }
-      
-  part def BMS {  // @Ralf: now instantiated by CPU? 
-                  // Maybe move to EnergySupply.sysml
-    // Parts
-    part def VolSensor;
-    part def CurSensor;
-    part def TempSensor;
-    part def MicroController;
-    part def Balancer;
 
-    // Ports
-    port batSig : BatterySignal;
+    // Entwurf: Batteriemanagement, wird von Battery noch nicht verwendet
+    part def BMS {
+        doc /* Battery Management System. Entwurf, noch nicht in Battery verwendet. */
+        part def VolSensor;
+        part def CurSensor;
+        part def TempSensor;
+        part def MicroController;
+        part def Balancer;
 
-  }
-  
-  comment about BMS 
-  /* BMS = Battery Management System */
-
+        port batSig : BatterySignal;
+    }
 }
