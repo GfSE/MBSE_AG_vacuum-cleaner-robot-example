@@ -15,30 +15,52 @@ package 'Robotic Vacuum Cleaner'{
 		action def doClean;
 
 		interface : DriverUnitControlInterface connect
-			supplierPort ::> ControllerSystem.driverSignalOutputPort to
+			supplierPort ::> ControllerSystem.driverUnitControlOutputPort to
 			consumerPort ::> NavigationSystem.driverUnitControlSignalInputPort;
 
-		// Saugstufe Controller → Saugsystem
-		interface : SuctionLevelInterface connect
-			supplierPort ::> ControllerSystem.suctionLevel to
-			consumerPort ::> vacuumingSystem.suctionLevelInputPort;
+		interface : VacuumingSystem::suctionLevelPorts connect
+			supplierPort ::> ControllerSystem.suctionLevelOutputPort to
+			consumerPort ::> VacuumingSystem.suctionLevel;
 
-		// Bürstenstufe Controller → Saugsystem
-		interface : BrushRotationLevelInterface connect
-			supplierPort ::> ControllerSystem.brushRotationLevel to
-			consumerPort ::> vacuumingSystem.brushRotationLevelInputPort;
-
-		// Füllstand Saugsystem → Controller
-		interface : FillStateInterface connect
-			supplierPort ::> vacuumingSystem.fillStateOutputPort to
-			consumerPort ::> ControllerSystem.fillState;
-
-		// Luftstrom: Umgebung → Roboter → Umgebung
-		port dirtyAirFlowInputPort : ~DirtyAirFlow;
-		port cleanAirFlowOutputPort : CleanAirFlow;
-
-		bind dirtyAirFlowInputPort  = vacuumingSystem.dirtyAirFlowInputPort;
-		bind cleanAirFlowOutputPort = vacuumingSystem.cleanAirFlowOutputPort;
+		// Control signal for brush rotation level
+		interface def brushRotationLevelPorts {
+			end supplierPort : BrushRotationLevel;
+			end consumerPort : BrushRotationLevel;
+		}
+		
+		interface: brushRotationLevelPorts connect
+			supplierPort ::> ControllerSystem.brushRotationLevelOutputPort to
+			consumerPort ::> VacuumingSystem.bs.brushRotationLevel;
+		
+		// Current fill state of debris container
+		interface def fillStatePorts {
+			end supplierPort : FillState;
+			end consumerPort : FillState;
+		}
+		
+		interface: fillStatePorts connect
+			supplierPort ::> VacuumingSystem.fillState to
+			consumerPort ::> ControllerSystem.fillStateInputPort;
+		
+		// Dirty air flow
+		interface def dirtyAirPorts {
+			end supplierPort : DirtyAirFlow;
+			end consumerPort : DirtyAirFlow;
+		}
+		
+		interface: dirtyAirPorts connect
+			supplierPort ::> dirtyAirFlow to
+			consumerPort ::> VacuumingSystem.dirtyAirFlow;
+			
+		// Clean air flow
+		interface def cleanAirPorts {
+			end supplierPort : CleanAirFlow;
+			end consumerPort : CleanAirFlow;
+		}
+		
+		interface: cleanAirPorts connect
+			supplierPort ::> VacuumingSystem.cleanAirFlow to
+			consumerPort ::> cleanAirFlow;
 
 	}
 }
