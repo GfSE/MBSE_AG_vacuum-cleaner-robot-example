@@ -1,114 +1,63 @@
-package SuctionDevice {
+package vacuuming_system_suction_device {
+    doc /* Saugeinheit: Der Saugmotor erzeugt Saugleistung, mit der die Saugkammer
+         * die verschmutzte Luft ansaugt und weiterleitet. */
 
-	private import RobotPortDefs::*;
-	private import Ports::*;
-	private import ISQ::*;
-	private import ISQMechanics::*;
-	private import ISQSpaceTime::*;
-	private import ScalarValues::*;
-/*
-	calc def calcActualPower {
-      	in powerLevel : Real;
-		in maxPower : PowerValue;
-		
-		return PowerValue = powerLevel * maxPower;
-  	}
-        
-    calc def calcVolFlow {
-		in setpointPower :> ISQ::power;
-		in diffPressure :> ISQ::pressure;
+    private import ISQ::*;
+    private import RobotPortDefs::*;
 
-		return : ISQMechanics::volumeFlowRate = setpointPower / diffPressure;
-	}
-			
-	calc def calcFlowRate {
-		in inFlow :> ISQSpaceTime::volume;
-		in volFlow :> ISQMechanics::volumeFlowRate;
+    port def SuctionPower {
+        doc /* Saugleistung. Richtung: SuctionMotor → SuctionChamber.
+             * Aus Senderperspektive definiert; Empfänger nutzt ~SuctionPower. */
+        out suctionPower :> ISQ::power;
+    }
 
-		return : ISQSpaceTime::volume;
-		// not sure how to model without time steps
-		
-	}*/
+    interface def SuctionPowerInterface {
+        doc /* Verbindet den Saugmotor mit der Saugkammer. */
+        end supplierPort : SuctionPower;
+        end consumerPort : ~SuctionPower;
 
-	part def SuctionMotor {
-		port suctionLevel : ~SuctionLevel;
-		port suctionPower : SuctionPower {
-			//suctionPower = powerOut.res;
-		}
-			
-		attribute parMaxPower :> ISQ::power;
-		/*	
-		calc powerOut : calcActualPower {
-			in powerLevel = suctionLevel::suctionLevel;
-			in maxPower = parMaxPower;
-		    return res;
-		
-		}*/
-			
-	}
-			
-	part def SuctionChamber {
-		port dirtyAirFlowIn : DirtyAirFlow;
-		port dirtyAirFlowOut : ~DirtyAirFlow {
-			//dirtyAirFlow = flowRate.currentFlowRate;
-		}
-		port suctionPower : ~SuctionPower;
-				
-		attribute parDiffPressure :> ISQ::pressure;
-		/*		
-		calc flowRate : calcFlowRate {
-			in inFlow = dirtyAirFlowIn::dirtyAirFlow;
-			in volFlow = calcVolFlow(suctionPower::suctionPower, parDiffPressure);
-		    return currentFlowRate;
-		}*/
-	}
-		
-	part def suctionDevice { 
-		part sm : SuctionMotor;
-		part sc : SuctionChamber {
-			attribute redefines parDiffPressure = 25000; // 25kPa is a common pressure difference for suction devices
-		}
-		
-		port dirtyAirFlowIn : DirtyAirFlow;
-		port dirtyAirFlowOut : ~DirtyAirFlow;
-		port suctionLevel : ~SuctionLevel;
+        flow supplierPort.suctionPower to consumerPort.suctionPower;
+    }
 
-		interface def dirtyAirFlowInPorts {
-			end supplierPort : DirtyAirFlow;
-			end consumerPort : DirtyAirFlow;
-		}
-		
-		interface: dirtyAirFlowInPorts connect
-			supplierPort ::> dirtyAirFlowIn to
-			consumerPort ::> sc.dirtyAirFlowIn;
-		
-		interface def dirtyAirFlowOutPorts {
-			end supplierPort : DirtyAirFlow;
-			end consumerPort : DirtyAirFlow;
-		}
-		
-		interface: dirtyAirFlowOutPorts connect
-			supplierPort ::> sc.dirtyAirFlowOut to
-			consumerPort ::> dirtyAirFlowOut;
-			
-		interface def suctionLevelPorts {
-			end supplierPort : SuctionLevel;
-			end consumerPort : SuctionLevel;
-		}
-		
-		interface: suctionLevelPorts connect
-			supplierPort ::> suctionLevel to
-			consumerPort ::> sm.suctionLevel;
+    part def SuctionMotor {
+        doc /* Saugmotor: erzeugt abhängig von der Saugstufe die Saugleistung. */
+        port suctionLevelInputPort : ~SuctionLevel;
+        port suctionPowerOutputPort : SuctionPower;
 
-		connect sm to sc;
+        attribute parMaxPower :> ISQ::power;
+    }
 
-		interface def suctionPowerPorts {
-			end supplierPort : SuctionPower;
-			end consumerPort : SuctionPower;
-		}
-		
-		interface: suctionPowerPorts connect
-			supplierPort ::> sm.suctionPower to
-			consumerPort ::> sc.suctionPower;	
-	}
+    part def SuctionChamber {
+        doc /* Saugkammer: saugt mit der Saugleistung verschmutzte Luft an und gibt sie an den Filter weiter. */
+        port dirtyAirFlowInputPort : ~DirtyAirFlow;
+        port dirtyAirFlowOutputPort : DirtyAirFlow;
+        port suctionPowerInputPort : ~SuctionPower;
+
+        attribute parDiffPressure :> ISQ::pressure;
+    }
+
+    part def SuctionDevice {
+        doc /* Saugeinheit aus Saugmotor und Saugkammer. */
+
+        // Außenports
+        port dirtyAirFlowInputPort : ~DirtyAirFlow;
+        port dirtyAirFlowOutputPort : DirtyAirFlow;
+        port suctionLevelInputPort : ~SuctionLevel;
+
+        part suctionMotor : SuctionMotor;
+        part suctionChamber : SuctionChamber {
+            // 25 kPa sind eine übliche Druckdifferenz für Saugeinheiten
+            attribute redefines parDiffPressure = 25000;
+        }
+
+        // Delegation Außenports → Innenteile
+        bind dirtyAirFlowInputPort  = suctionChamber.dirtyAirFlowInputPort;
+        bind dirtyAirFlowOutputPort = suctionChamber.dirtyAirFlowOutputPort;
+        bind suctionLevelInputPort  = suctionMotor.suctionLevelInputPort;
+
+        // Saugmotor → Saugkammer
+        interface : SuctionPowerInterface connect
+            supplierPort ::> suctionMotor.suctionPowerOutputPort to
+            consumerPort ::> suctionChamber.suctionPowerInputPort;
+    }
 }
