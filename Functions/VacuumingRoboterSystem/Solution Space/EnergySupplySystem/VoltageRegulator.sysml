@@ -1,15 +1,14 @@
 package ess_reg {
+    doc /* Spannungsregler: wandelt die Batteriespannung in die Versorgungsspannung des Roboters. */
 
-   private import PortDef::*;
-   private import RobotPortDefs::*;
+    private import PortDef::*;
+    private import RobotPortDefs::*;
 
-   part def VoltageRegulator {
+    part def VoltageRegulator {
+        doc /* Spannungsregler: regelt die Ausgangsspannung auf den Sollwert des BatteryLevelComputers. */
 
-     // Ports
-     port tgtVoltage : ~EnergyRegulation;
-     port batEnergy : PowerInOutPort; // input from battery
-     port providedEnergy : PowerInOutPort; // output to other robot components
-
-   }
-
+        port targetVoltageInputPort : ~EnergyRegulation;
+        port batteryEnergyInputPort : PowerInOutPort;   // von der Batterie
+        port energyOutputPort : PowerInOutPort;         // an die anderen Subsysteme
+    }
 }
