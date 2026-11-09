@@ -1,78 +1,45 @@
-package VacuumingSystem{
-	private import BrushSystem::*;
-	private import SuctionDevice::*;
-	private import FilterSystem::*;
-	private import Ports::*;
-	private import RobotPortDefs::*;
+package vacuuming_system {
+    doc /* Saugsystem des Roboters: löst Schmutz mit den Bürsten, saugt ihn mit der
+         * Saugeinheit an und trennt ihn im Filtersystem von der Luft. */
 
-	part def vacuumingSystem{
-		part bs : brushSystem;
-		part sd : suctionDevice;
-		part fs : filterSystem;
-		
-		port dirtyAirFlow : DirtyAirFlow;
-		port cleanAirFlow : CleanAirFlow;
-		port debris : Debris;
-		port fillState : FillState;
-		port suctionLevel : ~SuctionLevel;
-		port brushRotationLevel : ~BrushRotationLevel;
-		
-		interface def suctionLevelPorts {
-			end supplierPort : SuctionLevel;
-			end consumerPort : SuctionLevel;
-		}
-		
-		interface def rotationLevelPorts {
-			end supplierPort : BrushRotationLevel;
-			end consumerPort : BrushRotationLevel;
-		}
-		
-		interface: rotationLevelPorts connect
-			supplierPort ::> brushRotationLevel to
-			consumerPort ::> bs.brushRotationLevel;	
-			
-		interface def externalDirtyAirPorts {
-			end supplierPort : DirtyAirFlow;
-			end consumerPort : DirtyAirFlow;
-		}
-		
-		interface: externalDirtyAirPorts connect
-			supplierPort ::> dirtyAirFlow to
-			consumerPort ::> sd.dirtyAirFlowIn;	
-			
-		//connect sd to fs;
-		
-		interface def internalDirtyAirPorts {
-			end supplierPort : DirtyAirFlow;
-			end consumerPort : DirtyAirFlow;
-		}
-		
-		interface: internalDirtyAirPorts connect
-			supplierPort ::> sd.dirtyAirFlowOut to
-			consumerPort ::> fs.dirtyAirFlow;	
-			
-		interface def cleanAirPorts {
-			end supplierPort : CleanAirFlow;
-			end consumerPort : CleanAirFlow;
-		}
-		
-		interface: cleanAirPorts connect
-			supplierPort ::> fs.cleanAirFlow to
-			consumerPort ::> cleanAirFlow;
-			
-		
-		
-		interface: suctionLevelPorts connect
-			supplierPort ::> suctionLevel to
-			consumerPort ::> sd.suctionLevel;
-			
-		interface def fillStatePorts {
-			end supplierPort : FillState;
-			end consumerPort : FillState;
-		}
-		
-		interface: fillStatePorts connect
-			supplierPort ::> fs.fillState to
-			consumerPort ::> fillState;
-	}
+    private import RobotPortDefs::*;
+    private import vacuuming_system_brush::*;
+    private import vacuuming_system_suction_device::*;
+    private import vacuuming_system_filter::*;
+
+    interface def DirtyAirFlowInterface {
+        doc /* Verbindet die Saugeinheit mit dem Filtersystem (verschmutzte Luft). */
+        end supplierPort : DirtyAirFlow;
+        end consumerPort : ~DirtyAirFlow;
+
+        flow supplierPort.dirtyAirFlow to consumerPort.dirtyAirFlow;
+    }
+
+    part def VacuumingSystem {
+        doc /* Saugsystem aus Bürstensystem, Saugeinheit und Filtersystem.
+             * Bekommt Saugstufe und Bürstendrehzahl vom Controller und meldet den Füllstand zurück. */
+
+        // Außenports
+        port dirtyAirFlowInputPort : ~DirtyAirFlow;
+        port cleanAirFlowOutputPort : CleanAirFlow;
+        port fillStateOutputPort : FillState;
+        port suctionLevelInputPort : ~SuctionLevel;
+        port brushRotationLevelInputPort : ~BrushRotationLevel;
+
+        part brushSystem : BrushSystem;
+        part suctionDevice : SuctionDevice;
+        part filterSystem : FilterSystem;
+
+        // Delegation Außenports → Innenteile
+        bind dirtyAirFlowInputPort       = suctionDevice.dirtyAirFlowInputPort;
+        bind cleanAirFlowOutputPort      = filterSystem.cleanAirFlowOutputPort;
+        bind fillStateOutputPort         = filterSystem.fillStateOutputPort;
+        bind suctionLevelInputPort       = suctionDevice.suctionLevelInputPort;
+        bind brushRotationLevelInputPort = brushSystem.brushRotationLevelInputPort;
+
+        // Saugeinheit → Filtersystem
+        interface : DirtyAirFlowInterface connect
+            supplierPort ::> suctionDevice.dirtyAirFlowOutputPort to
+            consumerPort ::> filterSystem.dirtyAirFlowInputPort;
+    }
 }

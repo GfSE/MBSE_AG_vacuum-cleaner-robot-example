@@ -1,70 +1,63 @@
-package BrushSystem {
-	private import ScalarValues::*;
-	private import RobotPortDefs::*;
-	private import ISQSpaceTime::*;
-	/*
-	calc def calcSetpointRPM {
-		in rotationLevel : Real;
-        in maxRPM :> ISQSpaceTime::rotationalFrequency;
-		return : ISQSpaceTime::rotationalFrequency;
+package vacuuming_system_brush {
+    doc /* Bürstensystem: eine Hauptbürste und zwei Seitenbürsten, angesteuert von einem Bürstencontroller. */
 
-        rotationLevel * maxRPM 
+    private import RobotPortDefs::*;
+
+    port def BrushRotationSpeed {
+        doc /* Solldrehzahl einer Bürste. Richtung: BrushController → Bürste.
+             * Aus Senderperspektive definiert; Empfänger nutzt ~BrushRotationSpeed. */
+        out brushRotationSpeed :> ISQSpaceTime::rotationalFrequency;
     }
-	*/
-	part def MainBrush {
-		port rotationSpeed : ~BrushRotationSpeed;
-	}
-	
-	part def SmallBrush {
-		port rotationSpeed : ~BrushRotationSpeed;
-	}
-	
-	part def BrushController {
-		//port rotationSpeed : BrushRotationSpeed = setpointRPM.rotSpeed;
-		port brushRotationLevel : ~BrushRotationLevel;
-		
-		attribute parMaxRPM :> ISQSpaceTime::rotationalFrequency;
-	/*
-		calc setpointRPM : calcSetpointRPM {
-			in rotationLevel = brushRotationLevel::brushRotationLevel;
-			in maxRPM = parMaxRPM;
-    		return rotSpeed;
-		}
-	*/	
-	}
-	
-	part def brushSystem{
-		part mb : MainBrush;
-		part sb : SmallBrush[2];
-		part bc : BrushController{
-			attribute redefines parMaxRPM = 167; // 10000 rpm is a common rotational speed of the brushes, recalculation because rotationalFrequency is [1/s]
-		}
-		
-		port brushRotationLevel : ~BrushRotationLevel;
-		
-		connect bc to mb;
-		
-		interface def rotationSetPointMainPorts {
-			end supplierPort : BrushRotationSpeed;
-			end consumerPort : BrushRotationSpeed;
-		}
-		/*
-		interface: rotationSetPointMainPorts connect
-			supplierPort ::> bc.rotationSpeed to
-			consumerPort ::> mb.rotationSpeed;
-		
-		connect bc to sb;
-		*/
-		interface def rotationSetPointSmallPorts {
-			end supplierPort : BrushRotationSpeed;
-			end consumerPort : BrushRotationSpeed;
-		}
-		/*
-		interface: rotationSetPointSmallPorts connect
-			supplierPort ::> bc.rotationSpeed to
-			consumerPort ::> sb.rotationSpeed;
-	*/
+
+    interface def BrushRotationSpeedInterface {
+        doc /* Verbindet den Drehzahlausgang des Bürstencontrollers mit einer Bürste. */
+        end supplierPort : BrushRotationSpeed;
+        end consumerPort : ~BrushRotationSpeed;
+
+        flow supplierPort.brushRotationSpeed to consumerPort.brushRotationSpeed;
+    }
+
+    part def MainBrush {
+        doc /* Hauptbürste unter dem Roboter: löst Schmutz vom Boden. */
+        port rotationSpeedInputPort : ~BrushRotationSpeed;
+    }
+
+    part def SmallBrush {
+        doc /* Seitenbürste: kehrt Schmutz aus Ecken und Kanten zur Hauptbürste. */
+        port rotationSpeedInputPort : ~BrushRotationSpeed;
+    }
+
+    part def BrushController {
+        doc /* Setzt die Bürstenstufe vom Controller in eine Solldrehzahl für die Bürsten um. */
+        port brushRotationLevelInputPort : ~BrushRotationLevel;
+        port rotationSpeedOutputPort : BrushRotationSpeed;
+
+        attribute parMaxRPM :> ISQSpaceTime::rotationalFrequency;
+    }
+
+    part def BrushSystem {
+        doc /* Bürstensystem aus Hauptbürste, zwei Seitenbürsten und Bürstencontroller. */
+
+        // Außenport
+        port brushRotationLevelInputPort : ~BrushRotationLevel;
+
+        part mainBrush : MainBrush;
+        part smallBrush : SmallBrush[2];
+        part brushController : BrushController {
+            // 10000 rpm sind eine übliche Bürstendrehzahl; rotationalFrequency ist in 1/s, daher 167
+            attribute redefines parMaxRPM = 167;
+        }
+
+        // Delegation Außenport → Innenteil
+        bind brushRotationLevelInputPort = brushController.brushRotationLevelInputPort;
+
+        // Bürstencontroller → Bürsten
+        interface : BrushRotationSpeedInterface connect
+            supplierPort ::> brushController.rotationSpeedOutputPort to
+            consumerPort ::> mainBrush.rotationSpeedInputPort;
+
+        interface : BrushRotationSpeedInterface connect
+            supplierPort ::> brushController.rotationSpeedOutputPort to
+            consumerPort ::> smallBrush.rotationSpeedInputPort;
     }
 }
-		
-	
