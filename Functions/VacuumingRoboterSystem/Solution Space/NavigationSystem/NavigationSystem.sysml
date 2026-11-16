@@ -22,6 +22,8 @@ package NavigationSystem_Navigation {
         // Außenports
         port driverUnitControlSignalInputPort : ~DriverUnitControlPort;
         port powerInputPort : ~PowerSignal;
+        port driveTaskInputPort : ~DriveTask;
+        port navigationStatusOutputPort : NavigationStatus;
 
         // Delegation Außenports → Innenteile
         bind driverUnitControlSignalInputPort = driveController.driverUnitControlSignalInputPort;

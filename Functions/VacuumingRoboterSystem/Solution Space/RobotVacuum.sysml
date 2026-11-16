@@ -1,66 +1,59 @@
-package 'Robotic Vacuum Cleaner'{
-	
+package 'Robotic Vacuum Cleaner' {
+	doc /* Top Level des Saugroboters: die vier Subsysteme und ihre Verbindungen. */
+
 	private import ControllerSystem_Controller::*;
 	private import NavigationSystem_Navigation::*;
-	private import EnergySupply::*;
+	private import energy_supply::*;
 	private import vacuuming_system::*;
 	private import RobotPortDefs::*;
-	
-	part def RoboticVacuumCleaner{
+
+	part def RoboticVacuumCleaner {
+		doc /* Saugroboter aus Controller, Navigation, Energieversorgung und Saugsystem.
+		     * Der Controller entscheidet, wohin gefahren wird (Fahrauftrag an die Navigation),
+		     * und wann zurückgefahren wird (Füllstand, Ladezustand, Fahrstatus). */
+
 		part ControllerSystem : Controller;
 		part NavigationSystem : Navigation;
 		part EnergySystem : EnergySupplySystem;
 		part vacuumingSystem : VacuumingSystem;
 
-		action def doClean;
+		// Außenports: Luftstrom
+		port dirtyAirFlowInputPort : ~DirtyAirFlow;
+		port cleanAirFlowOutputPort : CleanAirFlow;
+
+		// Delegation Außenports → Saugsystem
+		bind dirtyAirFlowInputPort  = vacuumingSystem.dirtyAirFlowInputPort;
+		bind cleanAirFlowOutputPort = vacuumingSystem.cleanAirFlowOutputPort;
+
+		// 1a) Wohin geht's: Controller → Navigation
+		interface : DriveTaskInterface connect
+			supplierPort ::> ControllerSystem.driveTaskOutputPort to
+			consumerPort ::> NavigationSystem.driveTaskInputPort;
 
 		interface : DriverUnitControlInterface connect
 			supplierPort ::> ControllerSystem.driverUnitControlOutputPort to
 			consumerPort ::> NavigationSystem.driverUnitControlSignalInputPort;
 
-		interface : VacuumingSystem::suctionLevelPorts connect
-			supplierPort ::> ControllerSystem.suctionLevelOutputPort to
-			consumerPort ::> VacuumingSystem.suctionLevel;
-
-		// Control signal for brush rotation level
-		interface def brushRotationLevelPorts {
-			end supplierPort : BrushRotationLevel;
-			end consumerPort : BrushRotationLevel;
-		}
-		
-		interface: brushRotationLevelPorts connect
-			supplierPort ::> ControllerSystem.brushRotationLevelOutputPort to
-			consumerPort ::> VacuumingSystem.bs.brushRotationLevel;
-		
-		// Current fill state of debris container
-		interface def fillStatePorts {
-			end supplierPort : FillState;
-			end consumerPort : FillState;
-		}
-		
-		interface: fillStatePorts connect
-			supplierPort ::> VacuumingSystem.fillState to
+		// 1b) Wann müssen wir zurück: Subsysteme → Controller
+		interface : FillStateInterface connect
+			supplierPort ::> vacuumingSystem.fillStateOutputPort to
 			consumerPort ::> ControllerSystem.fillStateInputPort;
-		
-		// Dirty air flow
-		interface def dirtyAirPorts {
-			end supplierPort : DirtyAirFlow;
-			end consumerPort : DirtyAirFlow;
-		}
-		
-		interface: dirtyAirPorts connect
-			supplierPort ::> dirtyAirFlow to
-			consumerPort ::> VacuumingSystem.dirtyAirFlow;
-			
-		// Clean air flow
-		interface def cleanAirPorts {
-			end supplierPort : CleanAirFlow;
-			end consumerPort : CleanAirFlow;
-		}
-		
-		interface: cleanAirPorts connect
-			supplierPort ::> VacuumingSystem.cleanAirFlow to
-			consumerPort ::> cleanAirFlow;
 
+		interface : BatteryLevelInterface connect
+			supplierPort ::> EnergySystem.batteryLevelOutputPort to
+			consumerPort ::> ControllerSystem.batteryLevelInputPort;
+
+		interface : NavigationStatusInterface connect
+			supplierPort ::> NavigationSystem.navigationStatusOutputPort to
+			consumerPort ::> ControllerSystem.navigationStatusInputPort;
+
+		// Saugleistung: Controller → Saugsystem
+		interface : SuctionLevelInterface connect
+			supplierPort ::> ControllerSystem.suctionLevelOutputPort to
+			consumerPort ::> vacuumingSystem.suctionLevelInputPort;
+
+		interface : BrushRotationLevelInterface connect
+			supplierPort ::> ControllerSystem.brushRotationLevelOutputPort to
+			consumerPort ::> vacuumingSystem.brushRotationLevelInputPort;
 	}
 }
