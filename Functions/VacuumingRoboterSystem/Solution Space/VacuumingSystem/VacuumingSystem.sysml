@@ -3,6 +3,7 @@ package vacuuming_system {
          * Saugeinheit an und trennt ihn im Filtersystem von der Luft. */
 
     private import RobotPortDefs::*;
+    private import RobotActionDefs::*;
     private import vacuuming_system_brush::*;
     private import vacuuming_system_suction_device::*;
     private import vacuuming_system_filter::*;
@@ -18,6 +19,9 @@ package vacuuming_system {
     part def VacuumingSystem {
         doc /* Saugsystem aus Bürstensystem, Saugeinheit und Filtersystem.
              * Bekommt Saugstufe und Bürstendrehzahl vom Controller und meldet den Füllstand zurück. */
+
+        // Funktionen
+        perform action vacuum : Vacuum;
 
         // Außenports
         port dirtyAirFlowInputPort : ~DirtyAirFlow;
