@@ -4,6 +4,7 @@ package ControllerSystem_Controller {
 
     private import ScalarValues::*;
     private import RobotPortDefs::*;
+    private import RobotActionDefs::*;
 
     port def DriverUnitControlPort {
         doc /* Fahrbefehl. Richtung: Controller → Navigation.
@@ -38,5 +39,9 @@ package ControllerSystem_Controller {
 
         // Versorgung
         port powerInputPort : ~PowerSignal;
+
+        // Funktionen
+        perform action startCleaning : StartCleaning;
+        perform action systemsCheck : SystemsCheck;
     }
 }
