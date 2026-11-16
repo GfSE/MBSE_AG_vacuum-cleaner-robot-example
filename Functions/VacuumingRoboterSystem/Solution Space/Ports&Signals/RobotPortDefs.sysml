@@ -49,7 +49,66 @@ package RobotPortDefs {
     }
 
 
+    // Controller ↔ Navigation
+
+    enum def DriveMode {
+        doc /* Fahrauftrag des Controllers an die Navigation. */
+        enum cleanRoom;      // Raum abfahren
+        enum returnToDock;   // zur Ladestation fahren
+        enum stop;           // anhalten
+    }
+
+    port def DriveTask {
+        doc /* Fahrauftrag: wohin die Navigation fahren soll. Richtung: Controller → Navigation.
+             * Aus Senderperspektive definiert; Empfänger nutzt ~DriveTask. */
+        out attribute driveMode : DriveMode;
+    }
+
+    port def NavigationStatus {
+        doc /* Zustand der Fahrt. Richtung: Navigation → Controller.
+             * Aus Senderperspektive definiert; Empfänger nutzt ~NavigationStatus. */
+        out attribute roomCovered : Boolean;   // Raum vollständig abgefahren
+        out attribute docked : Boolean;        // an der Ladestation angedockt
+        out attribute driveFault : Boolean;    // Fahrt nicht möglich (z. B. festgefahren)
+    }
+
+    // Controller ↔ Energieversorgung
+
+    port def BatteryLevel {
+        doc /* Ladezustand der Batterie, 0 = leer, 1 = voll. Richtung: Energieversorgung → Controller.
+             * Aus Senderperspektive definiert; Empfänger nutzt ~BatteryLevel. */
+        out attribute stateOfCharge : Real;
+    }
+
+
     // Interfaces zwischen den Subsystemen
+
+    interface def DriveTaskInterface {
+        doc /* Verbindet den Fahrauftrag des Controllers mit der Navigation. */
+        end supplierPort : DriveTask;
+        end consumerPort : ~DriveTask;
+
+        flow supplierPort.driveMode to consumerPort.driveMode;
+    }
+
+    interface def NavigationStatusInterface {
+        doc /* Verbindet die Statusmeldung der Navigation mit dem Controller. */
+        end supplierPort : NavigationStatus;
+        end consumerPort : ~NavigationStatus;
+
+        flow supplierPort.roomCovered to consumerPort.roomCovered;
+        flow supplierPort.docked to consumerPort.docked;
+        flow supplierPort.driveFault to consumerPort.driveFault;
+    }
+
+    interface def BatteryLevelInterface {
+        doc /* Verbindet den Ladezustand der Energieversorgung mit dem Controller. */
+        end supplierPort : BatteryLevel;
+        end consumerPort : ~BatteryLevel;
+
+        flow supplierPort.stateOfCharge to consumerPort.stateOfCharge;
+    }
+
 
     interface def SuctionLevelInterface {
         doc /* Verbindet die Saugstufe des Controllers mit dem Saugsystem. */
