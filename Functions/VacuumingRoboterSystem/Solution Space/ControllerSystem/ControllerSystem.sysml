@@ -28,6 +28,13 @@ package ControllerSystem_Controller {
 
         // Zur Navigation
         port driverUnitControlOutputPort : DriverUnitControlPort;
+        port driveTaskOutputPort : DriveTask;
+
+        // Von der Navigation
+        port navigationStatusInputPort : ~NavigationStatus;
+
+        // Von der Energieversorgung
+        port batteryLevelInputPort : ~BatteryLevel;
 
         // Zum Saugsystem
         port suctionLevelOutputPort : SuctionLevel;
