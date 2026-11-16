@@ -2,6 +2,7 @@ package NavigationSystem_Navigation {
     doc /* Navigationssystem des Roboters: erfasst die Umgebung und steuert die Antriebe. */
 
     private import RobotPortDefs::*;
+    private import RobotActionDefs::*;
     private import ControllerSystem_Controller::*;
     private import NavigationSystem_Bumper::*;
     private import NavigationSystem_Engine::*;
@@ -18,6 +19,10 @@ package NavigationSystem_Navigation {
         part laserTower : LaserTower;
         part bumper : Bumper;
         part infraredController : InfraredController;
+
+        // Funktionen
+        perform action driveRoute : DriveRoute;
+        perform action returnToDock : ReturnToDock;
 
         // Außenports
         port driverUnitControlSignalInputPort : ~DriverUnitControlPort;
