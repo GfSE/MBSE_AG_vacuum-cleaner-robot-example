@@ -95,5 +95,20 @@ package RobotPortDefs {
         // ToDo
     }
 
+    port def BatteryStateOfCharge {
+        doc /* Battery state of charge as a fraction 0..1 (0 = empty, 1 = full).
+             * Direction: energy supply → consumer (e.g. controller).
+             * Defined from the sender's perspective; the receiver uses ~BatteryStateOfCharge. */
+        out attribute stateOfCharge : Real;
+    }
+
+    interface def BatteryStateOfChargeInterface {
+        doc /* Connects the state of charge of the energy supply to a consumer. */
+        end supplierPort : BatteryStateOfCharge;
+        end consumerPort : ~BatteryStateOfCharge;
+
+        flow supplierPort.stateOfCharge to consumerPort.stateOfCharge;
+    }
+
 
 }

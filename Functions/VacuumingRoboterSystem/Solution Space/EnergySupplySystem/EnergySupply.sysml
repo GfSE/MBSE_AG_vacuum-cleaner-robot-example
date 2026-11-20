@@ -32,6 +32,7 @@ package energy_supply {
         port energyDistributionCommandInputPort : ~EnergyDistributionCommand;
         port stationEnergyInputPort : PowerInOutPort;   // von der Ladestation
         port energyOutputPort : PowerInOutPort;         // an die anderen Subsysteme
+        port stateOfCharge : BatteryStateOfCharge; // state of charge 0..1 (not yet delegated)
 
         part charger : Charger;
         part battery : Battery;

@@ -19,18 +19,24 @@ package ess_processor {
       port energyDemand : ~EnergyDistributionCommand; // in
       port chargeCmd : ChargeCommand; // out
 	  port energyLevel : EnergyRegulation; // out
+	  port stateOfCharge : BatteryStateOfCharge; // out, state of charge 0..1
+	  port ledOutputPort : LEDSignal; // out, LED color indicating the state of charge
 
-    // Attributes  
+    // Attributes
     attribute batteryCapacity : ISQ::ElectricChargeValue default = BLC_BATTERY_CAPACITY [SI::ampere * SI::hour];
 	attribute batteryNominalVoltage : ISQ::ElectricPotentialValue := BLC_BATTERY_NOMINAL_VOLTAGE [SI::volt];
 	attribute batteryLevel : ISQ::ElectricChargeValue;
-    
+
+    // State of charge (0..1), continuously provided at the port
+    attribute soc : Real = batteryLevel / batteryCapacity;
+    bind stateOfCharge.stateOfCharge = soc;
+
     // Behavior
-    // Realized through a StateChart which takes inputs from the incoming port 
-    // and part attribute. Produces a return value to outgoing port ledSig.
-    exhibit state BatteryLevelComputerStates {
-      in  ref maxBatCap     = batteryCapacity; // 'this' would be nice
-      // out ref ledSig {color = computedColor;}
+    // Realized through a StateChart which takes inputs from the incoming port
+    // and part attribute. Sets the LED color at the outgoing port ledOutputPort.
+    exhibit state batteryLevelComputerStates : BatteryLevelComputerStates {
+      in  ref :>> maxBatCap = batteryCapacity; // 'this' would be nice
+      out attribute :>> ledColor = ledOutputPort.color;
     }
     
 	}
@@ -43,22 +49,29 @@ package ess_processor {
 	state def BatteryLevelComputerStates {
 		in maxBatCap : ISQ::ElectricChargeValue;
 		in batteryLevel : ISQ::ElectricChargeValue;
+		out ledColor : LED_COLOR; // LED color indicating the current charge state
 
 	    first start then lowCharge;
 
-		state lowCharge;
+		state lowCharge {
+			entry assign ledColor := LED_COLOR::RED;
+		}
         accept when (batteryLevel / maxBatCap) > BLC_BATTERY_LOW_CHARGE_TRESHOLD
 		  then mediumCharge;
 		  
 
-		state mediumCharge;
+		state mediumCharge {
+			entry assign ledColor := LED_COLOR::YELLOW;
+		}
 		accept when (batteryLevel / maxBatCap) <= BLC_BATTERY_LOW_CHARGE_TRESHOLD
 		  then lowCharge;
         accept when (batteryLevel / maxBatCap) > BLC_BATTERY_HIGH_CHARGE_TRESHOLD
 		  then highCharge;
 		
 		
-		state highCharge;
+		state highCharge {
+			entry assign ledColor := LED_COLOR::GREEN;
+		}
         accept when (batteryLevel / maxBatCap) <= BLC_BATTERY_HIGH_CHARGE_TRESHOLD
 		  then mediumCharge;
 
