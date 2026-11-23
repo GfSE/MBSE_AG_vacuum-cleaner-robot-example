@@ -70,7 +70,14 @@ root_package
   * No special characters except underscore (_) in packages
   * Comments / Documentation: Use comments for all definitions to improve readability
 
-## ToDo: Systems Enginering Methodology
+## Systems Enginering Methodology
+The model gets elaborated along the RFLT-scheme. This scheme states that the project activities follow a development flow with four main process elements:
+
+Requirements - Functions - Logical (Architecture) Elements - Technical (Architecture) Elements
+
+This describes a logical sequence of activities, not necessarily a temporal sequence. A Logical Element is a principle solution for a Function. For example in a car a “differential in the rear axis” is a principle solution for the function of a vehicle to be able to follow a curved path. But it could well be that in a specific situation an engineer works first on the Logical Element and second on the definition of that function.
+
+The logical sequence of engineering activities is also the logical sequence of process elements. Requirements provide a rationale for Functions, Functions provide a rationale for Logical (Architecture) Elements, and finally Logical Elements provide a rationale for Technical (Architecture) Elements.
 
 
   
