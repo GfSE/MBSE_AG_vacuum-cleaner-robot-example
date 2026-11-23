@@ -70,7 +70,7 @@ root_package
   * No special characters except underscore (_) in packages
   * Comments / Documentation: Use comments for all definitions to improve readability
 
-## Systems Enginering Methodology
+## Systems Engineering Methodology
 The model gets elaborated along the RFLT-scheme. This scheme states that the project activities follow a development flow with four main process elements:
 
 Requirements - Functions - Logical (Architecture) Elements - Technical (Architecture) Elements
